@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".MainActivity">
+    <item android:id="@+id/action_alan_ekle"
+          android:title="Alan Ekle"
+          android:icon="@drawable/alan_ekle"
+          android:orderInCategory="100"
+          android:showAsAction="always"/>
+    <item android:id="@+id/action_kayit_ekle"
+          android:title="Kayıt Ekle"
+          android:icon="@drawable/kayit_ekle"
+          android:orderInCategory="100"
+          android:showAsAction="always"/>
+</menu>
