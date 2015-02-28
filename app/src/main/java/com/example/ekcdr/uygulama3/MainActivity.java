@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,13 +63,13 @@ public class MainActivity extends Activity
     //private static String TAG = "uyg3";
     private static File xmlKlasorYolu;
     private static String xmlDosyaYolu;
-    private static final String PARCA="parca";
-    private static final String RENK="renk";
-    private static final String BASLIK="baslik";
-    private static final String YAZILAR="yazilar";
-    private static final String ROOT="root";
-    private static final String KAYIT="kayit";
-    private static final String ALTPARCA="altparca";
+    private static final String PARCA = "parca";
+    private static final String RENK = "renk";
+    private static final String BASLIK = "baslik";
+    private static final String YAZILAR = "yazilar";
+    private static final String ROOT = "root";
+    private static final String KAYIT = "kayit";
+    private static final String ALTPARCA = "altparca";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -199,8 +202,6 @@ public class MainActivity extends Activity
                     "</root>");
             out.close();
             ////////////////////////////////////////
-
-
         }
         catch (IOException e)
         {
@@ -489,7 +490,7 @@ public class MainActivity extends Activity
         //xml parse edildikten sonra kayitları ana ekrana ekler
         public void kayitlariAnaEkranaEkle(String yazi)
         {
-            TextView tv =new TextView(getActivity());
+            TextView tv = new TextView(getActivity());
             tv.setText(yazi);
             tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
             anaLayout.addView(tv);
@@ -690,21 +691,22 @@ public class MainActivity extends Activity
             });
         }
 
-
         public EditText yaziAlaniOlustur()
         {
             actionBarOnay();
 
-            EditText edittext=new EditText(getActivity());
+            EditText edittext = new EditText(getActivity());
             anaLayout.addView(edittext);
             return edittext;
         }
 
         //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
-        public void yaziyiKaydet(String alanYazi)
+        public void yaziyiKaydet(EditText et)
         {
             try
             {
+                String alanYazi = et.getText().toString();
+
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 dbf.setValidating(false);
                 DocumentBuilder db = dbf.newDocumentBuilder();
@@ -746,8 +748,11 @@ public class MainActivity extends Activity
                         nodeYazi.setTextContent(str.toString());
                         */
 
-                        break;
+                        klavyeKapat(getActivity(), et.getWindowToken());
+                        anaLayout.removeView(et);
+                        kayitlariAnaEkranaEkle(alanYazi);
 
+                        break;
                     }
                 }
                 doc.normalize();
@@ -773,6 +778,19 @@ public class MainActivity extends Activity
                 Log.e("hata[19]", e.getMessage());
                 ekranaHataYazdir("19", e);
             }
+        }
+
+        public static void klavyeAc(Context c, EditText et)
+        {
+            et.requestFocus();
+            InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
+        }
+
+        public static void klavyeKapat(Context c, IBinder windowToken)
+        {
+            InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mgr.hideSoftInputFromWindow(windowToken, 0);
         }
 
         //actionBar'a menu_main_onay tuslarını cizer
@@ -808,9 +826,11 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_kayit_ekle:
                     etEklenecek = yaziAlaniOlustur();
+                    klavyeAc(getActivity(), etEklenecek);
                     return true;
                 case R.id.action_tamam:
-                    yaziyiKaydet(etEklenecek.getText().toString());
+                    //yaziyiKaydet(etEklenecek.getText().toString());
+                    yaziyiKaydet(etEklenecek);
                     actionBarIlk();
                     return true;
                 case R.id.action_iptal:
