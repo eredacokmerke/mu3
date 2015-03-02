@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
@@ -18,8 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -70,6 +71,7 @@ public class MainActivity extends Activity
     private static final String ROOT = "root";
     private static final String KAYIT = "kayit";
     private static final String ALTPARCA = "altparca";
+    private static ColorDrawable actionBarArkaPlan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -99,11 +101,13 @@ public class MainActivity extends Activity
             getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment(sonuc)).commit();
         }
 
-        ActionBar bar = getActionBar();
-        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00CED1")));
+        ActionBar bar =  getActionBar();
+        actionBarArkaPlan = new ColorDrawable(Color.parseColor("#009ED1"));
+        bar.setBackgroundDrawable(actionBarArkaPlan);
+        //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF0000")));
     }
 
-    //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor
+    //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve son xmlID'sini donduruyor
     public int xmlDosyasiKontrolEt()
     {
         int xmlID;
@@ -245,8 +249,8 @@ public class MainActivity extends Activity
         private LinearLayout anaLayout;
         private int xmlID;
         private String xmlIsaretciID = "0";//içinde olunan parçanın id si
-        private MenuInflater inflater2;
-        private Menu menu2;
+        private MenuInflater inflaterActionBar;
+        private Menu menuActionBar;
         private int xmlIsaretciNesil = 2;//içinde olunan parcanın nesli
         private String TAG = "uyg3";
         private EditText etEklenecek;
@@ -301,77 +305,6 @@ public class MainActivity extends Activity
             Toast.makeText(getActivity(), "hata[" + id + "]: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        /*
-        //http://android-developers.blogspot.com.tr/2011/12/watch-out-for-xmlpullparsernexttext.html
-        private String safeNextText(XmlPullParser parser) throws XmlPullParserException, IOException
-        {
-            String result = parser.nextText();
-            if (parser.getEventType() != XmlPullParser.END_TAG)
-            {
-                parser.nextTag();
-            }
-            return result;
-        }
-
-        public void parseIlkNesil()
-        {
-            try
-            {
-                XmlPullParser parser;
-                parser = XmlPullParserFactory.newInstance().newPullParser();
-                parser.setInput(fileToIS(), null);
-
-                xmlYapisi yapi = new xmlYapisi();
-                int eventType = parser.getEventType();
-
-                while (eventType != XmlPullParser.END_DOCUMENT)
-                {
-                    String tagName = parser.getName();
-
-                    if (eventType == XmlPullParser.START_TAG)
-                    {
-                        if (parser.getDepth() == 3)//root'un altındaki ilk girişler
-                        {
-                            if (tagName.equals(PARCA))
-                            {
-                                //Log.d(TAG, "parca : " + safeNextText(parser));
-                                //Log.e("id", parser.getAttributeValue(null, "id")+" "+parser.getDepth());
-                            }
-                            else if (tagName.equals(BASLIK))
-                            {
-                                yapi.mBaslik = safeNextText(parser);
-                            }
-                            else if (tagName.equals(RENK))
-                            {
-                                yapi.mRenk = safeNextText(parser);
-                            }
-                            else if (tagName.equals("yazi"))
-                            {
-                                yapi.mYazi = safeNextText(parser);
-                            }
-                            else if (tagName.equals(ALTPARCA))
-                            {
-                                alanEkleKendiligindenEkle(yapi.mBaslik, yapi.mRenk, yapi.mYazi, false);
-                            }
-                        }
-                    }
-                    eventType = parser.next();
-                }
-                yapi = null;
-            }
-            catch (XmlPullParserException e)
-            {
-                Log.e("hata[24]", e.getMessage());
-                ekranaHataYazdir("24", e);
-            }
-            catch (IOException e)
-            {
-                Log.e("hata[24-2]", e.getMessage());
-                ekranaHataYazdir("24", e);
-            }
-        }
-        */
-
         //parcanın altparcalarını ekrana döşüyor
         public String parseXml(String parcaID)
         {
@@ -424,7 +357,8 @@ public class MainActivity extends Activity
                             {
                                 if (tagName.equals(KAYIT))
                                 {
-                                    kayitlariAnaEkranaEkle(parser.nextText());
+                                    String ID = parser.getAttributeValue(null, "id");
+                                    kayitlariAnaEkranaEkle(parser.nextText(), Integer.parseInt(ID));
                                 }
                             }
                         }
@@ -488,11 +422,98 @@ public class MainActivity extends Activity
         }
 
         //xml parse edildikten sonra kayitları ana ekrana ekler
-        public void kayitlariAnaEkranaEkle(String yazi)
+        public void kayitlariAnaEkranaEkle(String yazi, int eklenenID)
         {
-            TextView tv = new TextView(getActivity());
+            customTextView tv = new customTextView(getActivity());
+            tv.setCstID(eklenenID);
             tv.setText(yazi);
             tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+            tv.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    ActionBar bar = getActivity().getActionBar();
+                    ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.red));
+                    ColorDrawable[] color = {actionBarArkaPlan, red};
+                    TransitionDrawable trans = new TransitionDrawable(color);
+                    actionBarArkaPlan = red;
+                    bar.setBackgroundDrawable(trans);
+                    trans.startTransition(250);
+
+                    final int parcaID = ((customTextView)view).getCstID();
+                    final View islemYapilanView = view;
+
+                    //ActionBar bar = getActivity().getActionBar();
+                    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00FF00")));
+
+                    //alertdialog un içindeki ana LinearLayout
+                    LinearLayout alertLL = new LinearLayout(getActivity());
+                    LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                    alertLL.setLayoutParams(pa);
+                    alertLL.setOrientation(LinearLayout.VERTICAL);
+                    alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                    alertLL.setWeightSum(1f);
+
+                    Button btnTamamlandi = new Button(getActivity());
+                    btnTamamlandi.setText("Tamanlandı olarak işaretle");
+                    alertLL.addView(btnTamamlandi);
+                    Button btnSil = new Button(getActivity());
+                    btnSil.setText("Sil");
+                    alertLL.addView(btnSil);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setView(alertLL);
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+
+                    //kaydı siliyor
+                    btnSil.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            try
+                            {
+                                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                                dbf.setValidating(false);
+                                DocumentBuilder db = dbf.newDocumentBuilder();
+                                Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                                Element element = doc.getElementById(String.valueOf(parcaID));
+                                element.getParentNode().removeChild(element);
+                                doc.normalize();
+                                documentToFile(doc);
+
+                                anaLayout.removeView(islemYapilanView);
+                            }
+                            catch (FileNotFoundException e)
+                            {
+                                Log.e("hata[20]", e.getMessage());
+                                ekranaHataYazdir("20", e);
+                            }
+                            catch (ParserConfigurationException e)
+                            {
+                                Log.e("hata[21]", e.getMessage());
+                                ekranaHataYazdir("21", e);
+                            }
+                            catch (IOException e)
+                            {
+                                Log.e("hata[22]", e.getMessage());
+                                ekranaHataYazdir("22", e);
+                            }
+                            catch (SAXException e)
+                            {
+                                Log.e("hata[23]", e.getMessage());
+                                ekranaHataYazdir("23", e);
+                            }
+                            alert.dismiss();
+                        }
+                    });
+
+                    return false;
+                }
+            });
             anaLayout.addView(tv);
         }
 
@@ -646,7 +667,7 @@ public class MainActivity extends Activity
         }
 
         //ana ekrana ve xml'e kategori ekler(parca)
-        public void kategoriEkle()
+        public void kategoriKaydet()
         {
             //alertdialog un içindeki ana LinearLayout
             LinearLayout alertLL = new LinearLayout(getActivity());
@@ -666,7 +687,7 @@ public class MainActivity extends Activity
             builder.setTitle("Kategori Adı");
             builder.setView(alertLL);
 
-            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için butaya null değeri giriyorum
+            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
             builder.setNegativeButton("İptal", null);
             final AlertDialog alert = builder.create();
             alert.show();
@@ -703,6 +724,7 @@ public class MainActivity extends Activity
         //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
         public void yaziyiKaydet(EditText et)
         {
+            xmlID++;
             try
             {
                 String alanYazi = et.getText().toString();
@@ -718,7 +740,9 @@ public class MainActivity extends Activity
                 {
                     if (nodeParcaCocuklari.item(i).getNodeName().equals(YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
                     {
-                        Element yeniNodeKayit = doc.createElement(KAYIT);
+                        int eklenenID = xmlID;
+                        Element yeniNodeKayit = doc.createElement(KAYIT);//kayıt etiketi olsuturuyor
+                        yeniNodeKayit.setAttribute("id", String.valueOf(xmlID));//parca ya id özelliği ekleniyor
                         nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
 
                         StringBuilder str = new StringBuilder(alanYazi);//alt satıra geçmeyi anlayabilmek için \n <br> ile değiştiriliyor
@@ -750,7 +774,7 @@ public class MainActivity extends Activity
 
                         klavyeKapat(getActivity(), et.getWindowToken());
                         anaLayout.removeView(et);
-                        kayitlariAnaEkranaEkle(alanYazi);
+                        kayitlariAnaEkranaEkle(alanYazi, eklenenID);
 
                         break;
                     }
@@ -796,24 +820,24 @@ public class MainActivity extends Activity
         //actionBar'a menu_main_onay tuslarını cizer
         public void actionBarOnay()
         {
-            menu2.clear();
-            inflater2.inflate(R.menu.menu_main_onay, menu2);
+            menuActionBar.clear();
+            inflaterActionBar.inflate(R.menu.menu_main_onay, menuActionBar);
         }
 
         //actionBarın ilk hali
         public void actionBarIlk()
         {
-            menu2.clear();
-            inflater2.inflate(R.menu.menu_main, menu2);
+            menuActionBar.clear();
+            inflaterActionBar.inflate(R.menu.menu_main, menuActionBar);
         }
 
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
         {
             super.onCreateOptionsMenu(menu, inflater);
-            inflater2 = inflater;
-            menu2 = menu;
-            inflater2.inflate(R.menu.menu_main, menu2);
+            inflaterActionBar = inflater;
+            menuActionBar = menu;
+            inflaterActionBar.inflate(R.menu.menu_main, menuActionBar);
         }
 
         @Override
@@ -822,7 +846,7 @@ public class MainActivity extends Activity
             switch (item.getItemId())
             {
                 case R.id.action_alan_ekle:
-                    kategoriEkle();
+                    kategoriKaydet();
                     return true;
                 case R.id.action_kayit_ekle:
                     etEklenecek = yaziAlaniOlustur();
@@ -834,6 +858,7 @@ public class MainActivity extends Activity
                     actionBarIlk();
                     return true;
                 case R.id.action_iptal:
+                    klavyeKapat(getActivity(), etEklenecek.getWindowToken());
                     actionBarIlk();
                     return true;
             }
@@ -875,5 +900,25 @@ public class MainActivity extends Activity
         public static final String YAZI = "yazi";
         public static final String ID = "id";
         */
+    }
+
+    public static class customTextView extends TextView
+    {
+        private int cstID = -1;
+
+        public customTextView(Context context)
+        {
+            super(context);
+        }
+
+        public int getCstID()
+        {
+            return cstID;
+        }
+
+        public void setCstID(int cstID)
+        {
+            this.cstID = cstID;
+        }
     }
 }
