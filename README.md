@@ -1,1 +1,0 @@
-<a href="https://drive.google.com/file/d/0B0FKsjy1moZnOFBMNGNTal9CYms/view?usp=sharing">uygulama3.apk</a>

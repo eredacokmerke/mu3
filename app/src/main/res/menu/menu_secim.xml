@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_tamam"
-          android:title="Tamam"
+    <item android:id="@+id/action_tamamlandi"
+          android:title="Tamamlandı"
           android:icon="@drawable/tamam"
           android:orderInCategory="100"
           android:showAsAction="always"/>
-    <item android:id="@+id/action_iptal"
-          android:title="İptal"
-          android:icon="@drawable/iptal"
+    <item android:id="@+id/action_sil"
+          android:title="Sil"
+          android:icon="@drawable/sil"
           android:orderInCategory="100"
           android:showAsAction="always"/>
 </menu>

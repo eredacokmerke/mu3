@@ -7,7 +7,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
@@ -20,9 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +46,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -61,17 +62,20 @@ import javax.xml.transform.stream.StreamResult;
 
 public class MainActivity extends Activity
 {
-    //private static String TAG = "uyg3";
     private static File xmlKlasorYolu;
     private static String xmlDosyaYolu;
-    private static final String PARCA = "parca";
-    private static final String RENK = "renk";
-    private static final String BASLIK = "baslik";
-    private static final String YAZILAR = "yazilar";
-    private static final String ROOT = "root";
-    private static final String KAYIT = "kayit";
-    private static final String ALTPARCA = "altparca";
-    private static ColorDrawable actionBarArkaPlan;
+    private static final String XML_PARCA = "parca";
+    private static final String XML_RENK = "renk";
+    private static final String XML_BASLIK = "baslik";
+    private static final String XML_YAZILAR = "yazilar";
+    private static final String XML_ROOT = "root";
+    private static final String XML_KAYIT = "kayit";
+    private static final String XML_ALTPARCA = "altparca";
+    private static final String XML_ID = "id";
+    private static final String DURUM_YENI = "0";
+    private static final String DURUM_TAMAMLANDI = "1";
+    private static final String DURUM = "durum";
+    private static final String FRAGMENT_TAG = "fragment_tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -98,12 +102,13 @@ public class MainActivity extends Activity
 
         if (savedInstanceState == null)
         {
-            getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment(sonuc)).commit();
+            getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment(sonuc), FRAGMENT_TAG).commit();
         }
 
         ActionBar bar = getActionBar();
-        actionBarArkaPlan = new ColorDrawable(Color.parseColor("#009ED1"));
+        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor("#009ED1"));
         bar.setBackgroundDrawable(actionBarArkaPlan);
+        //bar.setDisplayHomeAsUpEnabled(true);
         //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF0000")));
     }
 
@@ -117,6 +122,10 @@ public class MainActivity extends Activity
             if (xmlDosyasi.exists())//dosya sistemde mevcut
             {
                 xmlID = sonIDyiBul();
+                if (xmlID == -1)
+                {
+                    ekranaHataYazdir("1", "xml okunamadı");
+                }
             }
             else//dosya yok
             {
@@ -130,6 +139,7 @@ public class MainActivity extends Activity
             xmlID = 0;
             xmlDosyasiOlustur();
         }
+
         return xmlID;
     }
 
@@ -153,40 +163,62 @@ public class MainActivity extends Activity
     //uygulama açıldığında xml dosyasındaki en büyük id yi buluyor ve id vermeye o sayıdan devam ediyor
     public int sonIDyiBul()
     {
-        int sonID = 0;
         Log.d("proje32", "xmlDosyaYolu : " + xmlDosyaYolu);
         try
         {
+            int sonIDParca = 0;
+            int sonIDKayit = 0;
+
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setValidating(false);
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-            NodeList nodeListParca = doc.getElementsByTagName(PARCA);
+            NodeList nodeListParca = doc.getElementsByTagName(XML_PARCA);
+            NodeList nodeListKayit = doc.getElementsByTagName(XML_KAYIT);
+
             for (int i = 0; i < nodeListParca.getLength(); i++)
             {
-                if (Integer.parseInt(nodeListParca.item(i).getAttributes().getNamedItem("id").getNodeValue()) > sonID)
+                if (Integer.parseInt(nodeListParca.item(i).getAttributes().getNamedItem(XML_ID).getNodeValue()) > sonIDParca)
                 {
-                    sonID = Integer.parseInt(nodeListParca.item(i).getAttributes().getNamedItem("id").getNodeValue());
+                    sonIDParca = Integer.parseInt(nodeListParca.item(i).getAttributes().getNamedItem(XML_ID).getNodeValue());
                 }
+            }
+            for (int i = 0; i < nodeListKayit.getLength(); i++)
+            {
+                if (Integer.parseInt(nodeListKayit.item(i).getAttributes().getNamedItem(XML_ID).getNodeValue()) > sonIDKayit)
+                {
+                    sonIDKayit = Integer.parseInt(nodeListKayit.item(i).getAttributes().getNamedItem(XML_ID).getNodeValue());
+                }
+            }
+
+            if (sonIDKayit > sonIDParca)
+            {
+                return sonIDKayit;
+            }
+            else
+            {
+                return sonIDParca;
             }
         }
         catch (IOException e)
         {
             Log.e("hata[1]", e.getMessage());
-            ekranaHataYazdir("1", e);
+            ekranaHataYazdir("1", e.getMessage());
+            return -1;
         }
         catch (ParserConfigurationException e)
         {
             Log.e("hata[2]", e.getMessage());
-            ekranaHataYazdir("2", e);
+            ekranaHataYazdir("2", e.getMessage());
+            return -1;
         }
         catch (SAXException e)
         {
             Log.e("hata[28]", e.getMessage());
-            ekranaHataYazdir("28", e);
+            ekranaHataYazdir("28", e.getMessage());
+            return -1;
         }
-        return sonID;
     }
 
     //xml dosyası yoksa oluşturuyor
@@ -198,6 +230,7 @@ public class MainActivity extends Activity
             BufferedWriter out = new BufferedWriter(new FileWriter(xmlDosyaYolu));
             out.write("<?xml version=\"1.0\"?><root>" +
                     "<parca id=\"0\">" +
+                    "<baslik/>" +
                     "<renk/>" +
                     "<yazilar/>" +
                     "<altparca/>" +
@@ -209,7 +242,7 @@ public class MainActivity extends Activity
         catch (IOException e)
         {
             Log.e("hata[3]", e.getMessage());
-            ekranaHataYazdir("3", e);
+            ekranaHataYazdir("3", e.getMessage());
         }
     }
 
@@ -229,7 +262,7 @@ public class MainActivity extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId())
         {
-            case R.id.action_alan_ekle://fragment sınıfının içinde yakaladığım için false döndürüyor
+            case R.id.action_kategori_ekle://fragment sınıfının içinde yakaladığım için false döndürüyor
                 return false;
             case R.id.action_kayit_ekle://fragment sınıfının içinde yakaladığım için false döndürüyor
                 return false;
@@ -238,29 +271,29 @@ public class MainActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    public void ekranaHataYazdir(String id, Exception e)
+    public void ekranaHataYazdir(String id, String hata)
     {
-        Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
     public static class PlaceholderFragment extends Fragment
     {
-        private LinearLayout anaLayout;
-        private int xmlID;
-        private String xmlIsaretciID = "0";//içinde olunan parçanın id si
+        private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
+        private int xmlID;//eklenen kategori ve kayıtlara id verebilmek için
+        private String xmlEtiketID = "0";//içinde olunan parçanın id si
+        private int xmlEtiketNesil = 2;//içinde olunan parcanın nesli
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
-        private int xmlIsaretciNesil = 2;//içinde olunan parcanın nesli
-        private String TAG = "uyg3";
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
-        private static String DURUM_YENI = "0";
-        private static String DURUM_TAMAMLANDI = "1";
-        private static String DURUM = "durum";
-        private static String ID = "id";
+        private List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
+        private List<Integer> listSeciliYazi;//seçilen kayıtların listesi
+        private String TAG = "uyg3";
 
         public PlaceholderFragment(int sonuc)
         {
             xmlID = sonuc;
+            listSeciliYazi = new ArrayList<>();
+            listSeciliKategori = new ArrayList<>();
         }
 
         //new.xml dosyasını inputstream a dönüştürüyor
@@ -292,145 +325,389 @@ public class MainActivity extends Activity
             catch (UnsupportedEncodingException e)
             {
                 Log.e("hata[12]", e.getMessage());
-                ekranaHataYazdir("12", e);
+                ekranaHataYazdir("12", e.getMessage());
                 return null;
             }
             catch (IOException e)
             {
                 Log.e("hata[13]", e.getMessage());
-                ekranaHataYazdir("13", e);
+                ekranaHataYazdir("13", e.getMessage());
                 return null;
             }
         }
 
-        public void ekranaHataYazdir(String id, Exception e)
+        public void ekranaHataYazdir(String id, String hata)
         {
-            Toast.makeText(getActivity(), "hata[" + id + "]: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
         }
 
-        //parcanın altparcalarını ekrana döşüyor
-        public void parseXml(String parcaID)
+        public boolean xmlKayitlariGetir(XmlPullParser parser)
         {
-            boolean dogruParca = false;//doğru parcanın altparcalarını yazdırması için
             try
             {
-                XmlPullParser parser;
-                parser = XmlPullParserFactory.newInstance().newPullParser();
-                parser.setInput(fileToIS(), null);
-
-                xmlYapisi study = new xmlYapisi();
+                boolean bulundu = false;
                 int eventType = parser.getEventType();
-                parser.next();
+                String tagName = parser.getName();
+
                 while (eventType != XmlPullParser.END_DOCUMENT)
                 {
-                    String tagName = parser.getName();
+                    parser.next();
+                    eventType = parser.getEventType();
+                    tagName = parser.getName();
+                    //Log.d(TAG, "1 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil );
 
-                    if (parser.getDepth() == xmlIsaretciNesil)
+                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil + 1)
                     {
-                        if (tagName.equals(PARCA))
+                        Log.d(TAG, "kayit bulundu");
+                        bulundu = true;
+                        break;
+                    }
+                }
+
+                if (bulundu)
+                {
+                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil + 1))
+                    {
+                        parser.next();
+                        eventType = parser.getEventType();
+                        tagName = parser.getName();
+
+                        Log.d(TAG, "tagName 3 : " + tagName + " eventType : " + eventType);
+
+                        if (tagName.equals(XML_KAYIT) && eventType == XmlPullParser.START_TAG && parser.getDepth() == xmlEtiketNesil + 2)
                         {
-                            dogruParca = parcaID.equals(parser.getAttributeValue(null, "id"));
-                        }
-                        if (dogruParca)
-                        {
-                            while (!(eventType == XmlPullParser.END_TAG && tagName.equals(PARCA) && parser.getDepth() == xmlIsaretciNesil))
-                            {
+                                String kayitID = parser.getAttributeValue(null, XML_ID);
+                                String kayitDurum = parser.getAttributeValue(null, "durum");
+                                Log.d(TAG, "kayitDurum : " + kayitDurum);
+
                                 parser.next();
                                 eventType = parser.getEventType();
                                 tagName = parser.getName();
 
-
-                                if (tagName.equals(YAZILAR) && eventType == XmlPullParser.START_TAG)
+                                if (eventType == XmlPullParser.TEXT)
                                 {
-                                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(YAZILAR)))
-                                    {
-                                        parser.next();
-                                        eventType = parser.getEventType();
-                                        tagName = parser.getName();
-                                        //Log.d(TAG, "parser name 2 : " + tagName + " : " + eventType);
-
-                                        if (tagName.equals(KAYIT) && eventType == XmlPullParser.START_TAG)
-                                        {
-                                            Log.d(TAG, "parser id 2 : " + parser.getAttributeValue(null, "id"));
-
-                                            String kayitID = parser.getAttributeValue(null, "id");
-                                            parser.next();
-                                            eventType = parser.getEventType();
-                                            tagName = parser.getName();
-
-                                            if (eventType == XmlPullParser.TEXT)
-                                            {
-                                                kayitlariAnaEkranaEkle(parser.getText(), Integer.parseInt(kayitID));
-                                                Log.d(TAG, "parser name text 2 : " + parser.getText());
-                                            }
-                                        }
-                                    }
+                                    //Log.d(TAG, "1 kayit text : " + parser.getText() + " kayitID : " + kayitID +" durum : "+parser.getAttributeValue(1));
+                                    kayitlariAnaEkranaEkle(parser.getText(), Integer.parseInt(kayitID), kayitDurum);
                                 }
-                                else if (tagName.equals(ALTPARCA) && eventType == XmlPullParser.START_TAG)
-                                {
-                                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(ALTPARCA)))
-                                    {
-                                        parser.next();
-                                        eventType = parser.getEventType();
-                                        tagName = parser.getName();
-                                        //Log.d(TAG, "parser name 3 : " + tagName + " : " + eventType);
 
-                                        if (tagName.equals(PARCA))
-                                        {
-                                            //Log.d(TAG, "parser id 3 : " + parser.getAttributeValue(null, "id"));
+                        }
+                    }
+                }
+                return bulundu;
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[142]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+                return false;
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[15]", e.getMessage());
+                ekranaHataYazdir("15", e.getMessage());
+                return false;
+            }
 
-                                            String kategoriID = parser.getAttributeValue(null, "id");
+        }
 
-                                            while (!(eventType == XmlPullParser.END_TAG && tagName.equals(PARCA)))
-                                            {
-                                                parser.next();
-                                                eventType = parser.getEventType();
-                                                tagName = parser.getName();
+        public boolean xmlKategoriBasliginiGetir(XmlPullParser parser, String kategoriID)
+        {
+            try
+            {
+                boolean bulunduBaslik = false;
+                int eventType = parser.getEventType();
+                String tagName = parser.getName();
 
-                                                //Log.d(TAG, "parser name 4 : " + tagName + " : " + eventType);
+                while (eventType != XmlPullParser.END_DOCUMENT)
+                {
+                    parser.next();
+                    eventType = parser.getEventType();
+                    tagName = parser.getName();
+                    //Log.d(TAG, "4 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil );
 
-                                                if (tagName.equals(BASLIK))
-                                                {
-                                                    parser.next();
-                                                    eventType = parser.getEventType();
-                                                    tagName = parser.getName();
+                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_BASLIK) && parser.getDepth() == xmlEtiketNesil + 3)
+                    {
+                        String baslik = parser.nextText();
+                        Log.d(TAG, "bulundu baslik : " + baslik);
 
-                                                    if (eventType == XmlPullParser.TEXT)
-                                                    {
-                                                        kategorileriAnaEkranaEkle(parser.getText(), study.mRenk, study.mYazi, true, kategoriID);
-                                                        //kategorileriAnaEkranaEkle(study.mBaslik, study.mRenk, study.mYazi, true, kategoriID);
-                                                        Log.d(TAG, "parser name text4: " + parser.getText());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                        kategorileriAnaEkranaEkle(baslik, Integer.parseInt(kategoriID));
+                        bulunduBaslik = true;
+                        break;
+                    }
+                }
+                return bulunduBaslik;
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[143]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+                return false;
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[15]", e.getMessage());
+                ekranaHataYazdir("15", e.getMessage());
+                return false;
+            }
+        }
+
+        public boolean xmlKategorileriGetir(XmlPullParser parser)
+        {
+            try
+            {
+                boolean bulunduAltParca = false;
+                int eventType = parser.getEventType();
+                String tagName = parser.getName();
+                boolean sonuc = true;
+
+                while (eventType != XmlPullParser.END_DOCUMENT)
+                {
+                    parser.next();
+                    eventType = parser.getEventType();
+                    tagName = parser.getName();
+                    //Log.d(TAG, "2 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil );
+
+                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil + 1)
+                    {
+                        Log.d(TAG, "alt parca bulundu");
+                        bulunduAltParca = true;
+                        break;
+                    }
+                }
+
+                if (bulunduAltParca)
+                {
+                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil + 1))
+                    {
+                        parser.next();
+                        eventType = parser.getEventType();
+                        tagName = parser.getName();
+                        //Log.d(TAG, "3 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil);
+
+                        if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_PARCA) && parser.getDepth() == xmlEtiketNesil + 2)
+                        {
+                            String kategoriID = parser.getAttributeValue(null, XML_ID);
+                            Log.d(TAG, "parca bulundu : id : " + kategoriID);
+                            sonuc = sonuc && xmlKategoriBasliginiGetir(parser, kategoriID);
+                        }
+
+                    }
+                    return sonuc;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[144]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+                return false;
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[15]", e.getMessage());
+                ekranaHataYazdir("15", e.getMessage());
+                return false;
+            }
+        }
+
+        //xml'de aranan parcayi id'yi kullanarak bulur
+        public boolean xmlDogruParcayiBul(XmlPullParser parser, String parcaID, int nesil)
+        {
+            try
+            {
+                //boolean dogruParca = false;//doğru parcanın altparcalarını yazdırması için
+                int eventType = parser.getEventType();
+                while (eventType != XmlPullParser.END_DOCUMENT)
+                {
+
+                    String tagName = parser.getName();
+                    if (parser.getDepth() == nesil && eventType == XmlPullParser.START_TAG)
+                    {
+                        if (tagName.equals(XML_PARCA))
+                        {
+                            if (parcaID.equals(parser.getAttributeValue(null, XML_ID)))
+                            {
+                                Log.d(TAG, "parca bulundu");
+                                return true;
                             }
                         }
                     }
                     eventType = parser.next();
                 }
+                return false;
             }
             catch (XmlPullParserException e)
             {
-                Log.e("hata[14]", e.getMessage());
-                ekranaHataYazdir("14", e);
+                Log.e("hata[145]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+                return false;
             }
             catch (IOException e)
             {
                 Log.e("hata[15]", e.getMessage());
-                ekranaHataYazdir("15", e);
+                ekranaHataYazdir("15", e.getMessage());
+                return false;
+            }
+        }
+
+        public List<String> xmlUstIDyiBul(String parcaID)
+        {
+            List<String> sonuc = new ArrayList<>();
+
+            try
+            {
+                String ustID = "-1";
+                String ustBaslik = "-1";
+
+                XmlPullParser parser;
+                parser = XmlPullParserFactory.newInstance().newPullParser();
+                parser.setInput(fileToIS(), null);
+                parser.next();
+
+                int eventType = parser.getEventType();
+                while (eventType != XmlPullParser.END_DOCUMENT)
+                {
+                    String tagName = parser.getName();
+                    if (parser.getDepth() == xmlEtiketNesil - 2 && eventType == XmlPullParser.START_TAG)//girdiği parçanın id ve basligini tutuyor. eğer parent ise döndürüyor
+                    {
+                        if (tagName.equals(XML_PARCA))
+                        {
+                            ustID = parser.getAttributeValue(null, XML_ID);
+
+                            while (eventType != XmlPullParser.END_DOCUMENT)
+                            {
+                                parser.next();
+                                eventType = parser.getEventType();
+                                tagName = parser.getName();
+
+                                if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_BASLIK) && parser.getDepth() == xmlEtiketNesil - 1)
+                                {
+                                    ustBaslik = parser.nextText();
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+                    if (parser.getDepth() == xmlEtiketNesil && eventType == XmlPullParser.START_TAG)
+                    {
+                        if (tagName.equals(XML_PARCA))
+                        {
+                            if (parcaID.equals(parser.getAttributeValue(null, XML_ID)))
+                            {
+                                sonuc.add(ustID);
+                                sonuc.add(ustBaslik);
+                                return sonuc;
+                            }
+                        }
+                    }
+                    eventType = parser.next();
+                }
+                return sonuc;
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[146]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+                return sonuc;
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[15]", e.getMessage());
+                ekranaHataYazdir("15", e.getMessage());
+                return sonuc;
+            }
+        }
+
+        //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
+        public boolean parseXmlIlkNesil(String parcaID)
+        {
+            try
+            {
+                XmlPullParser parser;
+                parser = XmlPullParserFactory.newInstance().newPullParser();
+                parser.setInput(fileToIS(), null);
+                parser.next();
+
+                if (xmlDogruParcayiBul(parser, parcaID, xmlEtiketNesil))
+                {
+                    if (!xmlKayitlariGetir(parser))
+                    {
+                        return false;
+                    }
+                    if (!xmlKategorileriGetir(parser))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    Log.e("hata[147]", "xml dosyası okunamadı");
+                    ekranaHataYazdir("14", "xml dosyası okunamadı");
+                    return false;
+                }
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[148]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+                return false;
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[15]", e.getMessage());
+                ekranaHataYazdir("15", e.getMessage());
+                return false;
             }
         }
 
         //xml parse edildikten sonra kayitları ana ekrana ekler
-        public void kayitlariAnaEkranaEkle(String yazi, int eklenenID)
+        public void kayitlariAnaEkranaEkle(String yazi, final int eklenenID, String durum)
         {
             final customTextView tv = new customTextView(getActivity());
             tv.setCstID(eklenenID);
-            tv.setText(yazi);
+            tv.setId(eklenenID);
+            tv.setCstSeciliMi(false);
+            if(durum.equals(DURUM_TAMAMLANDI))
+            {
+             tv.setText("\u2714" + " " + yazi);
+            }
+            else
+            {
+                tv.setText(yazi);
+            }
+            //tv.setText(yazi);
             tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+            tv.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    if (tv.isCstSeciliMi())
+                    {
+                        listSeciliYazi.remove(listSeciliYazi.indexOf(eklenenID));
+                        tv.setCstSeciliMi(false);
+                        tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
+                        {
+                            actionBarIlk();
+                        }
+                    }
+                    else
+                    {
+                        listSeciliYazi.add(eklenenID);
+                        tv.setCstSeciliMi(true);
+                        actionBarKayit();
+                        tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                    }
+                }
+            });
+
+            /*
             tv.setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
@@ -493,22 +770,22 @@ public class MainActivity extends Activity
                             catch (FileNotFoundException e)
                             {
                                 Log.e("hata[20]", e.getMessage());
-                                ekranaHataYazdir("20", e);
+                                ekranaHataYazdir("20", e.getMessage());
                             }
                             catch (ParserConfigurationException e)
                             {
                                 Log.e("hata[21]", e.getMessage());
-                                ekranaHataYazdir("21", e);
+                                ekranaHataYazdir("21", e.getMessage());
                             }
                             catch (IOException e)
                             {
                                 Log.e("hata[22]", e.getMessage());
-                                ekranaHataYazdir("22", e);
+                                ekranaHataYazdir("22", e.getMessage());
                             }
                             catch (SAXException e)
                             {
                                 Log.e("hata[23]", e.getMessage());
-                                ekranaHataYazdir("23", e);
+                                ekranaHataYazdir("23", e.getMessage());
                             }
                             alert.dismiss();
                         }
@@ -535,22 +812,22 @@ public class MainActivity extends Activity
                             catch (FileNotFoundException e)
                             {
                                 Log.e("hata[20]", e.getMessage());
-                                ekranaHataYazdir("20", e);
+                                ekranaHataYazdir("20", e.getMessage());
                             }
                             catch (ParserConfigurationException e)
                             {
                                 Log.e("hata[21]", e.getMessage());
-                                ekranaHataYazdir("21", e);
+                                ekranaHataYazdir("21", e.getMessage());
                             }
                             catch (IOException e)
                             {
                                 Log.e("hata[22]", e.getMessage());
-                                ekranaHataYazdir("22", e);
+                                ekranaHataYazdir("22", e.getMessage());
                             }
                             catch (SAXException e)
                             {
                                 Log.e("hata[23]", e.getMessage());
-                                ekranaHataYazdir("23", e);
+                                ekranaHataYazdir("23", e.getMessage());
                             }
                             alert.dismiss();
                         }
@@ -559,22 +836,83 @@ public class MainActivity extends Activity
                     return false;
                 }
             });
+            */
             anaLayout.addView(tv);
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        public void kategorileriAnaEkranaEkle(final String baslik, final String staticrenk, final String yazi, boolean cerceve, String kategoriID)
+        //public void kategorileriAnaEkranaEkle(final String baslik, final String staticrenk, final String yazi, boolean cerceve, final int kategoriID)
+        public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID)
         {
-            final customLinearLayout ll = kategoriAlaniOlustur(baslik);
-            ll.setCstID(Integer.parseInt(kategoriID));
+            final customRelativeLayout ll = kategoriAlaniOlustur(baslik, kategoriID);
+            ll.setCstID(kategoriID);
+            ll.setId(kategoriID);
             ll.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    
+                    if (ll.isCstSeciliMi())
+                    {
+                        listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
+                        ll.setCstSeciliMi(false);
+                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
+                        {
+                            actionBarIlk();
+                        }
+                    }
+                    else
+                    {
+                        listSeciliKategori.add(kategoriID);
+                        ll.setCstSeciliMi(true);
+                        actionBarKayit();
+                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                    }
                 }
             });
+            /*
+            ll.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    if (ll.isCstSeciliMi())
+                    {
+                        listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
+                        ll.setCstSeciliMi(false);
+                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
+                        {
+                            actionBarIlk();
+                        }
+                    }
+                    else
+                    {
+                        listSeciliKategori.add(kategoriID);
+                        ll.setCstSeciliMi(true);
+                        actionBarKayit();
+                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                    }
+                    return true;
+                }
+            });
+
+            ll.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    anaLayout.removeAllViews();
+                    getActivity().getActionBar().setTitle(baslik);
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    xmlEtiketID = String.valueOf(kategoriID);
+                    xmlEtiketNesil = xmlEtiketNesil + 2;
+
+                    parseXmlIlkNesil(String.valueOf(kategoriID));
+                }
+            });
+            */
             anaLayout.addView(ll);
         }
 
@@ -601,17 +939,17 @@ public class MainActivity extends Activity
             catch (TransformerConfigurationException e)
             {
                 Log.e("hata[9]", e.getMessage());
-                ekranaHataYazdir("9", e);
+                ekranaHataYazdir("9", e.getMessage());
             }
             catch (TransformerException e)
             {
                 Log.e("hata[10]", e.getMessage());
-                ekranaHataYazdir("10", e);
+                ekranaHataYazdir("10", e.getMessage());
             }
             catch (IOException e)
             {
                 Log.e("hata[11]", e.getMessage());
-                ekranaHataYazdir("11", e);
+                ekranaHataYazdir("11", e.getMessage());
             }
         }
 
@@ -621,7 +959,7 @@ public class MainActivity extends Activity
             xmlID++;
             try
             {
-                //if (txtIsaretci.getText().equals(ROOT))
+                //if (txtIsaretci.getText().equals(XML_ROOT))
                 if (false)
                 {
                     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -629,18 +967,18 @@ public class MainActivity extends Activity
                     DocumentBuilder db = dbf.newDocumentBuilder();
                     Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-                    Node nodeRoot = doc.getElementsByTagName(ROOT).item(0);//ilk görülen root tagını alıyor
-                    Element yeniNodeParca = doc.createElement(PARCA);//parca isimli elemanı oluşturuyor
-                    yeniNodeParca.setAttribute(ID, String.valueOf(xmlID));//parca icinde id isimli özellik oluşturuluyor
+                    Node nodeRoot = doc.getElementsByTagName(XML_ROOT).item(0);//ilk görülen root tagını alıyor
+                    Element yeniNodeParca = doc.createElement(XML_PARCA);//parca isimli elemanı oluşturuyor
+                    yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlID));//parca icinde id isimli özellik oluşturuluyor
                     nodeRoot.appendChild(yeniNodeParca);//root etiketine parca etiketi ekleniyor
 
                     Node nodeParca = doc.getElementById(String.valueOf(xmlID));//xmlid id sine sahip eleman alınıyor. üstte oluşturulan parca etiketi
-                    Element yeniNodeBaslik = doc.createElement(BASLIK);//baslik isimli etiket oluşturuluyor
+                    Element yeniNodeBaslik = doc.createElement(XML_BASLIK);//baslik isimli etiket oluşturuluyor
                     yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri ekleniyor
-                    Element yeniNodeRenk = doc.createElement(RENK);//renk isimli etiket oluşturuluyor
+                    Element yeniNodeRenk = doc.createElement(XML_RENK);//renk isimli etiket oluşturuluyor
                     yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri ekleniyor
-                    Element yeniNodeYazi = doc.createElement(YAZILAR);//yazi isimli etiket oluşturuluyor
-                    Element yeniNodeAltparca = doc.createElement(ALTPARCA);//altparca isimli etiket oluşturuluyor
+                    Element yeniNodeYazi = doc.createElement(XML_YAZILAR);//yazi isimli etiket oluşturuluyor
+                    Element yeniNodeAltparca = doc.createElement(XML_ALTPARCA);//altparca isimli etiket oluşturuluyor
                     nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
                     nodeParca.appendChild(yeniNodeRenk);//parca etiketine renk etiketi ekleniyor
                     nodeParca.appendChild(yeniNodeYazi);//parca etiketine yazi etiketi ekleniyor
@@ -656,24 +994,24 @@ public class MainActivity extends Activity
                     DocumentBuilder db = dbf.newDocumentBuilder();
                     Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-                    Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlIsaretciID));//içinde bulunulan parcaya giriyor
+                    Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlEtiketID));//içinde bulunulan parcaya giriyor
                     NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
                     for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
                     {
-                        if (nodeParcaCocuklari.item(i).getNodeName().equals(ALTPARCA))//parcanın içindeki altparca etiketine ulaşılıyor
+                        if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_ALTPARCA))//parcanın içindeki altparca etiketine ulaşılıyor
                         {
                             Node nodeAltparca = nodeParcaCocuklari.item(i);//altparcaya giriliyor
-                            Element yeniNodeParca = doc.createElement(PARCA);//parca isimli etiket olşuturuluyor
-                            yeniNodeParca.setAttribute(ID, String.valueOf(xmlID));//parca ya id özelliği ekleniyor
+                            Element yeniNodeParca = doc.createElement(XML_PARCA);//parca isimli etiket olşuturuluyor
+                            yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlID));//parca ya id özelliği ekleniyor
                             nodeAltparca.appendChild(yeniNodeParca);//altparca etiketine parca ekleniyor
 
                             Node nodeParca = doc.getElementById(String.valueOf(xmlID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
-                            Element yeniNodeBaslik = doc.createElement(BASLIK);//baslik etiketi oluşturuluyor
+                            Element yeniNodeBaslik = doc.createElement(XML_BASLIK);//baslik etiketi oluşturuluyor
                             yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
-                            Element yeniNodeRenk = doc.createElement(RENK);//renk etiketi oluşturuluyor
+                            Element yeniNodeRenk = doc.createElement(XML_RENK);//renk etiketi oluşturuluyor
                             yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
-                            Element yeniNodeYazi = doc.createElement("yazi");//yazi etiketi oluşturuluyor
-                            Element yeniNodeAltparca = doc.createElement(ALTPARCA);//altparca etiketi oluşturuluyor
+                            Element yeniNodeYazi = doc.createElement(XML_YAZILAR);//yazi etiketi oluşturuluyor
+                            Element yeniNodeAltparca = doc.createElement(XML_ALTPARCA);//altparca etiketi oluşturuluyor
                             nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
                             nodeParca.appendChild(yeniNodeRenk);//parca etiketine renk etiketi ekleniyor
                             nodeParca.appendChild(yeniNodeYazi);//parca etiketine yazi etiketi ekleniyor
@@ -688,34 +1026,68 @@ public class MainActivity extends Activity
             catch (IOException e)
             {
                 Log.e("hata[4]", e.getMessage());
-                ekranaHataYazdir("4", e);
+                ekranaHataYazdir("4", e.getMessage());
             }
             catch (SAXException e)
             {
                 Log.e("hata[5]", e.getMessage());
-                ekranaHataYazdir("5", e);
+                ekranaHataYazdir("5", e.getMessage());
             }
             catch (ParserConfigurationException e)
             {
                 Log.e("hata[6]", e.getMessage());
-                ekranaHataYazdir("6", e);
+                ekranaHataYazdir("6", e.getMessage());
             }
         }
 
-        //ana ekrana eklenecek kategori alanini olusturuyor
-        public customLinearLayout kategoriAlaniOlustur(String yazi)
+        //listSeciliKategori ve listSeciliYazi'yi sıfırlar ve actionbar ı ilk haline döndürür
+        public void seciliElemanListeleriniSifirla()
         {
-            customLinearLayout ll = new customLinearLayout(getActivity());//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            listSeciliKategori.clear();
+            listSeciliYazi.clear();
+            actionBarIlk();
+        }
+
+        //ana ekrana eklenecek kategori alanini olusturuyor
+        public customRelativeLayout kategoriAlaniOlustur(final String kategoriBaslik, final int kategoriID)
+        {
+            customRelativeLayout ll = new customRelativeLayout(getActivity());//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            //ll.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             pa.setMargins(0, 10, 0, 10);
             ll.setLayoutParams(pa);
             ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
 
-            TextView tv = new TextView(getActivity());
-            tv.setTextSize(30);
-            tv.setText(yazi);
-            tv.setTextColor(Color.WHITE);
-            ll.addView(tv);
+            TextView tvBaslik = new TextView(getActivity());
+            tvBaslik.setTextSize(30);
+            tvBaslik.setText(kategoriBaslik);
+            tvBaslik.setTextColor(Color.WHITE);
+            ll.addView(tvBaslik);
+
+            TextView tvIsaret = new TextView(getActivity());
+            tvIsaret.setTextSize(30);
+            tvIsaret.setText("\u2192");
+            tvIsaret.setTextColor(Color.WHITE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lp.addRule(RelativeLayout.CENTER_VERTICAL);
+            ll.addView(tvIsaret, lp);
+            tvIsaret.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    anaLayout.removeAllViews();
+                    getActivity().getActionBar().setTitle(kategoriBaslik);
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    xmlEtiketID = String.valueOf(kategoriID);
+                    xmlEtiketNesil = xmlEtiketNesil + 2;
+
+                    seciliElemanListeleriniSifirla();
+
+                    parseXmlIlkNesil(String.valueOf(kategoriID));
+                }
+            });
 
             return ll;
 
@@ -761,6 +1133,10 @@ public class MainActivity extends Activity
             builder.setNegativeButton("İptal", null);
             final AlertDialog alert = builder.create();
             alert.show();
+
+            final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -773,11 +1149,23 @@ public class MainActivity extends Activity
                     }
                     else//anaLayout'a yeni alan ekliyor
                     {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
                         alert.dismiss();
-                        LinearLayout ll = kategoriAlaniOlustur(kategoriAdi);
+                        RelativeLayout ll = kategoriAlaniOlustur(kategoriAdi, xmlID + 1);
                         anaLayout.addView(ll);
                         xmlDosyasiniGuncelle(kategoriAdi, "");
                     }
+                }
+            });
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+                    alert.dismiss();
                 }
             });
         }
@@ -789,6 +1177,34 @@ public class MainActivity extends Activity
             EditText edittext = new EditText(getActivity());
             anaLayout.addView(edittext);
             return edittext;
+        }
+
+        public void ustSeviyeyiGetir()
+        {
+            List<String> ustSeviyeListe = xmlUstIDyiBul(String.valueOf(xmlEtiketID));
+
+            if (ustSeviyeListe.size() == 2)
+            {
+                String ustID = ustSeviyeListe.get(0);
+                String ustBaslik = ustSeviyeListe.get(1);
+
+                anaLayout.removeAllViews();
+                getActivity().getActionBar().setTitle(ustBaslik);
+                xmlEtiketNesil = xmlEtiketNesil - 2;
+                xmlEtiketID = ustID;
+                parseXmlIlkNesil(xmlEtiketID);
+
+                if (xmlEtiketID.equals("0"))
+                {
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+                }
+
+            }
+            else
+            {
+                Log.e("hata[15]", "ust seviye hatasi");
+                ekranaHataYazdir("15", "ust seviye hatasi");
+            }
         }
 
         //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
@@ -804,15 +1220,15 @@ public class MainActivity extends Activity
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-                Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlIsaretciID));//içinde bulunulan parcaya giriyor
+                Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlEtiketID));//içinde bulunulan parcaya giriyor
                 NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
                 for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
                 {
-                    if (nodeParcaCocuklari.item(i).getNodeName().equals(YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
+                    if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
                     {
                         int eklenenID = xmlID;
-                        Element yeniNodeKayit = doc.createElement(KAYIT);//kayıt etiketi olsuturuyor
-                        yeniNodeKayit.setAttribute(ID, String.valueOf(xmlID));//parca ya id özelliği ekleniyor
+                        Element yeniNodeKayit = doc.createElement(XML_KAYIT);//kayıt etiketi olusturuyor
+                        yeniNodeKayit.setAttribute(XML_ID, String.valueOf(xmlID));//parca ya id özelliği ekleniyor
                         yeniNodeKayit.setAttribute(DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
                         nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
 
@@ -845,7 +1261,7 @@ public class MainActivity extends Activity
 
                         klavyeKapat(getActivity(), et.getWindowToken());
                         anaLayout.removeView(et);
-                        kayitlariAnaEkranaEkle(alanYazi, eklenenID);
+                        kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI);
 
                         break;
                     }
@@ -856,23 +1272,349 @@ public class MainActivity extends Activity
             catch (ParserConfigurationException e)
             {
                 Log.e("hata[16]", e.getMessage());
-                ekranaHataYazdir("16", e);
+                ekranaHataYazdir("16", e.getMessage());
             }
             catch (FileNotFoundException e)
             {
                 Log.e("hata[17]", e.getMessage());
-                ekranaHataYazdir("17", e);
+                ekranaHataYazdir("17", e.getMessage());
             }
             catch (IOException e)
             {
                 Log.e("hata[18]", e.getMessage());
-                ekranaHataYazdir("18", e);
+                ekranaHataYazdir("18", e.getMessage());
             }
             catch (SAXException e)
             {
                 Log.e("hata[19]", e.getMessage());
-                ekranaHataYazdir("19", e);
+                ekranaHataYazdir("19", e.getMessage());
             }
+        }
+
+        //sil tusuna basıldığı zaman secili elemanları siler
+        public void seciliElemanlariSil()
+        {
+            if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
+            {
+                Toast.makeText(getActivity(), "Seçim yapılmadı", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                String soru = "Kayıtlar silinsin mi ?";
+                if (!listSeciliKategori.isEmpty())
+                {
+                    soru = "Kategori içindeki bütün kayıtlar silinsin mi ?";
+                }
+
+                LinearLayout alertLL = new LinearLayout(getActivity());
+                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                alertLL.setLayoutParams(pa);
+                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                alertLL.setWeightSum(1f);
+
+                final TextView alertTV = new TextView(getActivity());
+                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+                alertTV.setLayoutParams(pa2);
+                alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                alertTV.setText(soru);
+                alertLL.addView(alertTV);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Onay");
+                builder.setView(alertLL);
+
+                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                builder.setNegativeButton("İptal", null);
+                final AlertDialog alert = builder.create();
+                alert.show();
+
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        yaziSil(listSeciliYazi);
+                        kategoriSil(listSeciliKategori);
+
+                        seciliElemanListeleriniSifirla();
+
+                        alert.dismiss();
+                    }
+                });
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        alert.dismiss();
+                    }
+                });
+            }
+        }
+
+        public void kategoriSil(List<Integer> listeSilinecek)
+        {
+            try
+            {
+                for (int i = 0; i < listeSilinecek.size(); i++)
+                {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setValidating(false);
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                    Element element = doc.getElementById(String.valueOf(listeSilinecek.get(i)));
+                    element.getParentNode().removeChild(element);
+                    doc.normalize();
+                    documentToFile(doc);
+
+                    customRelativeLayout view = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
+                    anaLayout.removeView(view);
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                Log.e("hata[20]", e.getMessage());
+                ekranaHataYazdir("20", e.getMessage());
+            }
+            catch (ParserConfigurationException e)
+            {
+                Log.e("hata[21]", e.getMessage());
+                ekranaHataYazdir("21", e.getMessage());
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[22]", e.getMessage());
+                ekranaHataYazdir("22", e.getMessage());
+            }
+            catch (SAXException e)
+            {
+                Log.e("hata[23]", e.getMessage());
+                ekranaHataYazdir("23", e.getMessage());
+            }
+        }
+
+        public void yaziSil(List<Integer> listeSilinecek)
+        {
+            try
+            {
+                for (int i = 0; i < listeSilinecek.size(); i++)
+                {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setValidating(false);
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                    Element element = doc.getElementById(String.valueOf(listeSilinecek.get(i)));
+                    element.getParentNode().removeChild(element);
+                    doc.normalize();
+                    documentToFile(doc);
+
+                    customTextView view = (customTextView) anaLayout.findViewById(listeSilinecek.get(i));
+                    anaLayout.removeView(view);
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                Log.e("hata[20]", e.getMessage());
+                ekranaHataYazdir("20", e.getMessage());
+            }
+            catch (ParserConfigurationException e)
+            {
+                Log.e("hata[21]", e.getMessage());
+                ekranaHataYazdir("21", e.getMessage());
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[22]", e.getMessage());
+                ekranaHataYazdir("22", e.getMessage());
+            }
+            catch (SAXException e)
+            {
+                Log.e("hata[23]", e.getMessage());
+                ekranaHataYazdir("23", e.getMessage());
+            }
+        }
+
+
+        //secili kayıtları ve kategorilerin altındaki kayıtları tamamalandı olarak isaretler
+        public void seciliElemanlariTamamla()
+        {
+            yaziTamamla(listSeciliYazi);
+            kategoriTamamla(listSeciliKategori);
+
+            seciliElemanListeleriniSifirla();
+        }
+
+        public void kategorininButunCocuklariniGetir(XmlPullParser parser, int xmlEtiketNesil2)
+        {
+            try
+            {
+                boolean bulundu = false;
+                int eventType = parser.getEventType();
+                String tagName = parser.getName();
+                Log.d(TAG, "tagName 1 : " + tagName + " eventType : " + eventType);
+
+                while (eventType != XmlPullParser.END_DOCUMENT)
+                {
+                    parser.next();
+                    eventType = parser.getEventType();
+                    tagName = parser.getName();
+
+                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil2 + 1)
+                    {
+                        //Log.d(TAG, "kayit bulundu");
+                        bulundu = true;
+                        break;
+                    }
+                }
+
+                if (bulundu)
+                {
+                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil2 + 1))
+                    {
+                        parser.next();
+                        eventType = parser.getEventType();
+                        tagName = parser.getName();
+
+                        if (eventType == XmlPullParser.START_TAG)
+                        {
+                            if (tagName.equals(XML_KAYIT) && parser.getDepth() == xmlEtiketNesil2 + 2)
+                            {
+                                String kayitID = parser.getAttributeValue(null, XML_ID);
+                                Log.d(TAG, "qq kayitID : " + kayitID);
+
+                                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                                dbf.setValidating(false);
+                                DocumentBuilder db = dbf.newDocumentBuilder();
+                                Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                                Element elementKayit = doc.getElementById(kayitID);
+                                elementKayit.setAttribute(DURUM, DURUM_TAMAMLANDI);
+
+                                doc.normalize();
+                                documentToFile(doc);
+                            }
+                        }
+                    }
+                }
+
+                parser.next();
+                eventType = parser.getEventType();
+                tagName = parser.getName();
+
+                boolean bulunduAltParca = false;
+                if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil2 + 1)
+                {
+                    Log.d(TAG, "qqq alt parca bulundu");
+                    bulunduAltParca = true;
+                    //break;
+                }
+
+                if (bulunduAltParca)
+                {
+                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil2 + 1))
+                    {
+                        parser.next();
+                        eventType = parser.getEventType();
+                        tagName = parser.getName();
+
+                        if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_PARCA) && parser.getDepth() == xmlEtiketNesil2 + 2)
+                        {
+                            String kategoriID = parser.getAttributeValue(null, XML_ID);
+                            Log.d(TAG, "qqq parca bulundu : id : " + kategoriID);
+                            kategorininButunCocuklariniGetir(parser, xmlEtiketNesil2 + 2);
+                            //sonuc = sonuc && xmlKategoriBasliginiGetir(parser, kategoriID);
+                        }
+                    }
+                    //return sonuc;
+                }
+            }
+            catch (SAXException e)
+            {
+            }
+            catch (ParserConfigurationException e)
+            {
+            }
+            catch (IOException e)
+            {
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[141]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+            }
+        }
+
+        //kategorinin butun alt kayıtlarını tamamlandı olarak isaretler
+        public void kategoriTamamla(List<Integer> listeSilinecek)
+        {
+            try
+            {
+                for (int i = 0; i < listeSilinecek.size(); i++)
+                {
+                    XmlPullParser parser;
+                    parser = XmlPullParserFactory.newInstance().newPullParser();
+                    parser.setInput(fileToIS(), null);
+                    parser.next();
+
+                    int xmlEtiketNesil2 = xmlEtiketNesil + 2;
+
+                    if (xmlDogruParcayiBul(parser, String.valueOf(listeSilinecek.get(i)), xmlEtiketNesil2))
+                    {
+                        kategorininButunCocuklariniGetir(parser, xmlEtiketNesil2);
+                    }
+                }
+            }
+
+            catch (FileNotFoundException e)
+            {
+            }
+            catch (IOException e)
+            {
+            }
+            catch (XmlPullParserException e)
+            {
+                Log.e("hata[141]", e.getMessage());
+                ekranaHataYazdir("14", e.getMessage());
+            }
+
+        }
+
+        //secilen yaziyi tamamlandı olarak değiştirir
+        public void yaziTamamla(List<Integer> listeSilinecek)
+        {
+            try
+            {
+                for (int i = 0; i < listeSilinecek.size(); i++)
+                {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setValidating(false);
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                    Element elementKayit = doc.getElementById(String.valueOf(listeSilinecek.get(i)));
+                    elementKayit.setAttribute(DURUM, DURUM_TAMAMLANDI);
+
+                    doc.normalize();
+                    documentToFile(doc);
+
+
+                }
+            }
+            catch (ParserConfigurationException e)
+            {
+            }
+            catch (FileNotFoundException e)
+            {
+            }
+            catch (IOException e)
+            {
+            }
+            catch (SAXException e)
+            {
+            }
+
         }
 
         public static void klavyeAc(Context c, EditText et)
@@ -886,6 +1628,13 @@ public class MainActivity extends Activity
         {
             InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
             mgr.hideSoftInputFromWindow(windowToken, 0);
+        }
+
+        //kayıt secildiği zaman actionBar'a menu_secim tuslarını cizer
+        public void actionBarKayit()
+        {
+            menuActionBar.clear();
+            inflaterActionBar.inflate(R.menu.menu_secim, menuActionBar);
         }
 
         //actionBar'a menu_main_onay tuslarını cizer
@@ -916,7 +1665,7 @@ public class MainActivity extends Activity
         {
             switch (item.getItemId())
             {
-                case R.id.action_alan_ekle:
+                case R.id.action_kategori_ekle:
                     kategoriKaydet();
                     return true;
                 case R.id.action_kayit_ekle:
@@ -924,7 +1673,6 @@ public class MainActivity extends Activity
                     klavyeAc(getActivity(), etEklenecek);
                     return true;
                 case R.id.action_tamam:
-                    //yaziyiKaydet(etEklenecek.getText().toString());
                     yaziyiKaydet(etEklenecek);
                     actionBarIlk();
                     return true;
@@ -933,6 +1681,15 @@ public class MainActivity extends Activity
                     anaLayout.removeView(etEklenecek);
                     actionBarIlk();
                     return true;
+                case R.id.action_sil:
+                    seciliElemanlariSil();
+                    return true;
+                case R.id.action_tamamlandi:
+                    seciliElemanlariTamamla();
+                    return true;
+                case android.R.id.home:
+                    ustSeviyeyiGetir();
+                    break;
             }
             return super.onOptionsItemSelected(item);
         }
@@ -951,10 +1708,24 @@ public class MainActivity extends Activity
             anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
             if (xmlID > 0)//xml de kayıt varsa ekrana eklesin
             {
-                parseXml("0");
+                parseXmlIlkNesil("0");
                 //parseIlkNesil();
             }
             return rootView;
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+        if (fr.xmlEtiketID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            fr.ustSeviyeyiGetir();
         }
     }
 
@@ -966,17 +1737,18 @@ public class MainActivity extends Activity
         public String mID;
 
         /*
-        public static final String PARCA = PARCA;
-        public static final String BASLIK = BASLIK;
-        public static final String RENK = RENK;
+        public static final String XML_PARCA = XML_PARCA;
+        public static final String XML_BASLIK = XML_BASLIK;
+        public static final String XML_RENK = XML_RENK;
         public static final String YAZI = "yazi";
-        public static final String ID = "id";
+        public static final String XML_ID = "id";
         */
     }
 
     public static class customTextView extends TextView
     {
         private int cstID = -1;
+        private boolean cstSeciliMi = false;
 
         public customTextView(Context context)
         {
@@ -992,13 +1764,24 @@ public class MainActivity extends Activity
         {
             this.cstID = cstID;
         }
+
+        public boolean isCstSeciliMi()
+        {
+            return cstSeciliMi;
+        }
+
+        public void setCstSeciliMi(boolean cstSeciliMi)
+        {
+            this.cstSeciliMi = cstSeciliMi;
+        }
     }
 
-    public static class customLinearLayout extends LinearLayout
+    public static class customRelativeLayout extends RelativeLayout
     {
         private int cstID = -1;
+        private boolean cstSeciliMi = false;
 
-        public customLinearLayout(Context context)
+        public customRelativeLayout(Context context)
         {
             super(context);
         }
@@ -1011,6 +1794,16 @@ public class MainActivity extends Activity
         public void setCstID(int cstID)
         {
             this.cstID = cstID;
+        }
+
+        public boolean isCstSeciliMi()
+        {
+            return cstSeciliMi;
+        }
+
+        public void setCstSeciliMi(boolean cstSeciliMi)
+        {
+            this.cstSeciliMi = cstSeciliMi;
         }
     }
 }
