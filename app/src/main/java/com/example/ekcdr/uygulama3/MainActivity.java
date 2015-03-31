@@ -1058,20 +1058,24 @@ public class MainActivity extends Activity
             ll.setLayoutParams(pa);
             ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
 
-            TextView tvBaslik = new TextView(getActivity());
-            tvBaslik.setTextSize(30);
-            tvBaslik.setText(kategoriBaslik);
-            tvBaslik.setTextColor(Color.WHITE);
-            ll.addView(tvBaslik);
-
             TextView tvIsaret = new TextView(getActivity());
             tvIsaret.setTextSize(30);
+            tvIsaret.setId(View.generateViewId());
             tvIsaret.setText("\u2192");
             tvIsaret.setTextColor(Color.WHITE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             lp.addRule(RelativeLayout.CENTER_VERTICAL);
             ll.addView(tvIsaret, lp);
+
+            TextView tvBaslik = new TextView(getActivity());
+            tvBaslik.setTextSize(30);
+            tvBaslik.setText(kategoriBaslik);
+            tvBaslik.setTextColor(Color.WHITE);
+            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp2.addRule(RelativeLayout.LEFT_OF,tvIsaret.getId());
+            ll.addView(tvBaslik, lp2);
+
             tvIsaret.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -1578,7 +1582,6 @@ public class MainActivity extends Activity
                 Log.e("hata[141]", e.getMessage());
                 ekranaHataYazdir("14", e.getMessage());
             }
-
         }
 
         //secilen yaziyi tamamlandı olarak değiştirir
@@ -1599,7 +1602,9 @@ public class MainActivity extends Activity
                     doc.normalize();
                     documentToFile(doc);
 
-
+                    customTextView ctv = (customTextView) anaLayout.findViewById(listeSilinecek.get(i));
+                    ctv.setText("\u2714" + ctv.getText());
+                    ctv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
                 }
             }
             catch (ParserConfigurationException e)
@@ -1614,7 +1619,6 @@ public class MainActivity extends Activity
             catch (SAXException e)
             {
             }
-
         }
 
         public static void klavyeAc(Context c, EditText et)
