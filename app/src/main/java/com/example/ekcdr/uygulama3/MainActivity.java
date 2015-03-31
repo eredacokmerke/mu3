@@ -76,6 +76,8 @@ public class MainActivity extends Activity
     private static final String DURUM_TAMAMLANDI = "1";
     private static final String DURUM = "durum";
     private static final String FRAGMENT_TAG = "fragment_tag";
+    private static final int ELEMAN_TUR_KAYIT = 0;
+    private static final int ELEMAN_TUR_KATEGORI = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -358,7 +360,7 @@ public class MainActivity extends Activity
 
                     if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil + 1)
                     {
-                        Log.d(TAG, "kayit bulundu");
+                        //Log.d(TAG, "kayit bulundu");
                         bulundu = true;
                         break;
                     }
@@ -372,23 +374,23 @@ public class MainActivity extends Activity
                         eventType = parser.getEventType();
                         tagName = parser.getName();
 
-                        Log.d(TAG, "tagName 3 : " + tagName + " eventType : " + eventType);
+                        //Log.d(TAG, "tagName 3 : " + tagName + " eventType : " + eventType);
 
                         if (tagName.equals(XML_KAYIT) && eventType == XmlPullParser.START_TAG && parser.getDepth() == xmlEtiketNesil + 2)
                         {
-                                String kayitID = parser.getAttributeValue(null, XML_ID);
-                                String kayitDurum = parser.getAttributeValue(null, "durum");
-                                Log.d(TAG, "kayitDurum : " + kayitDurum);
+                            String kayitID = parser.getAttributeValue(null, XML_ID);
+                            String kayitDurum = parser.getAttributeValue(null, "durum");
+                            //Log.d(TAG, "kayitDurum : " + kayitDurum);
 
-                                parser.next();
-                                eventType = parser.getEventType();
-                                tagName = parser.getName();
+                            parser.next();
+                            eventType = parser.getEventType();
+                            tagName = parser.getName();
 
-                                if (eventType == XmlPullParser.TEXT)
-                                {
-                                    //Log.d(TAG, "1 kayit text : " + parser.getText() + " kayitID : " + kayitID +" durum : "+parser.getAttributeValue(1));
-                                    kayitlariAnaEkranaEkle(parser.getText(), Integer.parseInt(kayitID), kayitDurum);
-                                }
+                            if (eventType == XmlPullParser.TEXT)
+                            {
+                                //Log.d(TAG, "1 kayit text : " + parser.getText() + " kayitID : " + kayitID +" durum : "+parser.getAttributeValue(1));
+                                kayitlariAnaEkranaEkle(parser.getText(), Integer.parseInt(kayitID), kayitDurum);
+                            }
 
                         }
                     }
@@ -428,7 +430,7 @@ public class MainActivity extends Activity
                     if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_BASLIK) && parser.getDepth() == xmlEtiketNesil + 3)
                     {
                         String baslik = parser.nextText();
-                        Log.d(TAG, "bulundu baslik : " + baslik);
+                        //Log.d(TAG, "bulundu baslik : " + baslik);
 
                         kategorileriAnaEkranaEkle(baslik, Integer.parseInt(kategoriID));
                         bulunduBaslik = true;
@@ -469,7 +471,7 @@ public class MainActivity extends Activity
 
                     if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil + 1)
                     {
-                        Log.d(TAG, "alt parca bulundu");
+                        //Log.d(TAG, "alt parca bulundu");
                         bulunduAltParca = true;
                         break;
                     }
@@ -530,7 +532,7 @@ public class MainActivity extends Activity
                         {
                             if (parcaID.equals(parser.getAttributeValue(null, XML_ID)))
                             {
-                                Log.d(TAG, "parca bulundu");
+                                //Log.d(TAG, "parca bulundu");
                                 return true;
                             }
                         }
@@ -668,6 +670,45 @@ public class MainActivity extends Activity
         //xml parse edildikten sonra kayitları ana ekrana ekler
         public void kayitlariAnaEkranaEkle(String yazi, final int eklenenID, String durum)
         {
+            final customRelativeLayout crl = new customRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT);
+            crl.setCstID(eklenenID);
+            crl.setId(eklenenID);
+            crl.setCstSeciliMi(false);
+            if (durum.equals(DURUM_TAMAMLANDI))
+            {
+                crl.getTvTik().setText("\u2714");
+            }
+            else
+            {
+                crl.getTvTik().setText("");
+            }
+            crl.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    if (crl.isCstSeciliMi())
+                    {
+                        listSeciliYazi.remove(listSeciliYazi.indexOf(eklenenID));
+                        crl.setCstSeciliMi(false);
+                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
+                        {
+                            actionBarIlk();
+                        }
+                    }
+                    else
+                    {
+                        listSeciliYazi.add(eklenenID);
+                        crl.setCstSeciliMi(true);
+                        actionBarKayit();
+                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                    }
+                }
+            });
+            anaLayout.addView(crl);
+
+            /*
             final customTextView tv = new customTextView(getActivity());
             tv.setCstID(eklenenID);
             tv.setId(eklenenID);
@@ -706,157 +747,27 @@ public class MainActivity extends Activity
                     }
                 }
             });
-
-            /*
-            tv.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View view)
-                {
-                    ActionBar bar = getActivity().getActionBar();
-                    ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.red));
-                    ColorDrawable[] color = {actionBarArkaPlan, red};
-                    TransitionDrawable trans = new TransitionDrawable(color);
-                    actionBarArkaPlan = red;
-                    bar.setBackgroundDrawable(trans);
-                    trans.startTransition(250);
-
-                    final int parcaID = ((customTextView) view).getCstID();
-                    final View islemYapilanView = view;
-
-                    //ActionBar bar = getActivity().getActionBar();
-                    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00FF00")));
-
-                    //alertdialog un içindeki ana LinearLayout
-                    LinearLayout alertLL = new LinearLayout(getActivity());
-                    LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-                    alertLL.setLayoutParams(pa);
-                    alertLL.setOrientation(LinearLayout.VERTICAL);
-                    alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-                    alertLL.setWeightSum(1f);
-
-                    Button btnTamamlandi = new Button(getActivity());
-                    btnTamamlandi.setText("Tamanlandı olarak işaretle");
-                    alertLL.addView(btnTamamlandi);
-                    Button btnSil = new Button(getActivity());
-                    btnSil.setText("Sil");
-                    alertLL.addView(btnSil);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setView(alertLL);
-                    final AlertDialog alert = builder.create();
-                    alert.show();
-
-                    //kaydı siliyor
-                    btnSil.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            try
-                            {
-                                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                                dbf.setValidating(false);
-                                DocumentBuilder db = dbf.newDocumentBuilder();
-                                Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
-
-                                Element element = doc.getElementById(String.valueOf(parcaID));
-                                element.getParentNode().removeChild(element);
-                                doc.normalize();
-                                documentToFile(doc);
-
-                                anaLayout.removeView(islemYapilanView);
-                            }
-                            catch (FileNotFoundException e)
-                            {
-                                Log.e("hata[20]", e.getMessage());
-                                ekranaHataYazdir("20", e.getMessage());
-                            }
-                            catch (ParserConfigurationException e)
-                            {
-                                Log.e("hata[21]", e.getMessage());
-                                ekranaHataYazdir("21", e.getMessage());
-                            }
-                            catch (IOException e)
-                            {
-                                Log.e("hata[22]", e.getMessage());
-                                ekranaHataYazdir("22", e.getMessage());
-                            }
-                            catch (SAXException e)
-                            {
-                                Log.e("hata[23]", e.getMessage());
-                                ekranaHataYazdir("23", e.getMessage());
-                            }
-                            alert.dismiss();
-                        }
-                    });
-
-                    //kayıt durumunu tamamlandı olarak değiştiriyor
-                    btnTamamlandi.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            try
-                            {
-                                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                                dbf.setValidating(false);
-                                DocumentBuilder db = dbf.newDocumentBuilder();
-                                Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
-
-                                Element element = doc.getElementById(String.valueOf(parcaID));
-                                element.setAttribute(DURUM, DURUM_TAMAMLANDI);
-                                doc.normalize();
-                                documentToFile(doc);
-                            }
-                            catch (FileNotFoundException e)
-                            {
-                                Log.e("hata[20]", e.getMessage());
-                                ekranaHataYazdir("20", e.getMessage());
-                            }
-                            catch (ParserConfigurationException e)
-                            {
-                                Log.e("hata[21]", e.getMessage());
-                                ekranaHataYazdir("21", e.getMessage());
-                            }
-                            catch (IOException e)
-                            {
-                                Log.e("hata[22]", e.getMessage());
-                                ekranaHataYazdir("22", e.getMessage());
-                            }
-                            catch (SAXException e)
-                            {
-                                Log.e("hata[23]", e.getMessage());
-                                ekranaHataYazdir("23", e.getMessage());
-                            }
-                            alert.dismiss();
-                        }
-                    });
-
-                    return false;
-                }
-            });
-            */
             anaLayout.addView(tv);
+            */
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
         //public void kategorileriAnaEkranaEkle(final String baslik, final String staticrenk, final String yazi, boolean cerceve, final int kategoriID)
         public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID)
         {
-            final customRelativeLayout ll = kategoriAlaniOlustur(baslik, kategoriID);
-            ll.setCstID(kategoriID);
-            ll.setId(kategoriID);
-            ll.setOnClickListener(new View.OnClickListener()
+            final customRelativeLayout crl = kategoriAlaniOlustur(baslik, kategoriID);
+            crl.setCstID(kategoriID);
+            crl.setId(kategoriID);
+            crl.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    if (ll.isCstSeciliMi())
+                    if (crl.isCstSeciliMi())
                     {
                         listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
-                        ll.setCstSeciliMi(false);
-                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                        crl.setCstSeciliMi(false);
+                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
                         if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
                         {
                             actionBarIlk();
@@ -865,12 +776,13 @@ public class MainActivity extends Activity
                     else
                     {
                         listSeciliKategori.add(kategoriID);
-                        ll.setCstSeciliMi(true);
+                        crl.setCstSeciliMi(true);
                         actionBarKayit();
-                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
                     }
                 }
             });
+            anaLayout.addView(crl);
             /*
             ll.setOnLongClickListener(new View.OnLongClickListener()
             {
@@ -913,7 +825,7 @@ public class MainActivity extends Activity
                 }
             });
             */
-            anaLayout.addView(ll);
+
         }
 
         //Document nesnesini dosyaya yazıyor
@@ -1051,12 +963,21 @@ public class MainActivity extends Activity
         //ana ekrana eklenecek kategori alanini olusturuyor
         public customRelativeLayout kategoriAlaniOlustur(final String kategoriBaslik, final int kategoriID)
         {
+            /*
             customRelativeLayout ll = new customRelativeLayout(getActivity());//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
             //ll.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             pa.setMargins(0, 10, 0, 10);
             ll.setLayoutParams(pa);
             ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+
+            TextView tvTik = new TextView(getActivity());
+            tvTik.setTextSize(30);
+            tvTik.setId(View.generateViewId());
+            RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp3.addRule(RelativeLayout.CENTER_VERTICAL);
+            ll.addView(tvTik, lp3);
 
             TextView tvIsaret = new TextView(getActivity());
             tvIsaret.setTextSize(30);
@@ -1074,9 +995,12 @@ public class MainActivity extends Activity
             tvBaslik.setTextColor(Color.WHITE);
             RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp2.addRule(RelativeLayout.LEFT_OF,tvIsaret.getId());
+            lp2.addRule(RelativeLayout.RIGHT_OF,tvTik.getId());
             ll.addView(tvBaslik, lp2);
+            */
 
-            tvIsaret.setOnClickListener(new View.OnClickListener()
+            customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriBaslik, ELEMAN_TUR_KATEGORI);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            crl.getTvIsaret().setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
@@ -1093,7 +1017,7 @@ public class MainActivity extends Activity
                 }
             });
 
-            return ll;
+            return crl;
 
             /*
             LinearLayout ll = new LinearLayout(getActivity());//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
@@ -1414,8 +1338,10 @@ public class MainActivity extends Activity
                     doc.normalize();
                     documentToFile(doc);
 
-                    customTextView view = (customTextView) anaLayout.findViewById(listeSilinecek.get(i));
+                    customRelativeLayout view = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                     anaLayout.removeView(view);
+                    //customTextView view = (customTextView) anaLayout.findViewById(listeSilinecek.get(i));
+                    //anaLayout.removeView(view);
                 }
             }
             catch (FileNotFoundException e)
@@ -1440,13 +1366,11 @@ public class MainActivity extends Activity
             }
         }
 
-
         //secili kayıtları ve kategorilerin altındaki kayıtları tamamalandı olarak isaretler
         public void seciliElemanlariTamamla()
         {
             yaziTamamla(listSeciliYazi);
             kategoriTamamla(listSeciliKategori);
-
             seciliElemanListeleriniSifirla();
         }
 
@@ -1457,7 +1381,7 @@ public class MainActivity extends Activity
                 boolean bulundu = false;
                 int eventType = parser.getEventType();
                 String tagName = parser.getName();
-                Log.d(TAG, "tagName 1 : " + tagName + " eventType : " + eventType);
+                //Log.d(TAG, "tagName 1 : " + tagName + " eventType : " + eventType);
 
                 while (eventType != XmlPullParser.END_DOCUMENT)
                 {
@@ -1510,7 +1434,7 @@ public class MainActivity extends Activity
                 boolean bulunduAltParca = false;
                 if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil2 + 1)
                 {
-                    Log.d(TAG, "qqq alt parca bulundu");
+                    //Log.d(TAG, "qqq alt parca bulundu");
                     bulunduAltParca = true;
                     //break;
                 }
@@ -1568,6 +1492,11 @@ public class MainActivity extends Activity
                     {
                         kategorininButunCocuklariniGetir(parser, xmlEtiketNesil2);
                     }
+
+                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
+                    crl.getTvTik().setText("\u2714");
+                    crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                    crl.setCstSeciliMi(false);
                 }
             }
 
@@ -1602,9 +1531,16 @@ public class MainActivity extends Activity
                     doc.normalize();
                     documentToFile(doc);
 
+                    customRelativeLayout view = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
+                    view.getTvTik().setText("\u2714");
+                    view.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                    view.setCstSeciliMi(false);
+                    /*
                     customTextView ctv = (customTextView) anaLayout.findViewById(listeSilinecek.get(i));
                     ctv.setText("\u2714" + ctv.getText());
                     ctv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                    ctv.setCstSeciliMi(false);
+                    */
                 }
             }
             catch (ParserConfigurationException e)
@@ -1749,6 +1685,7 @@ public class MainActivity extends Activity
         */
     }
 
+    /*
     public static class customTextView extends TextView
     {
         private int cstID = -1;
@@ -1779,15 +1716,105 @@ public class MainActivity extends Activity
             this.cstSeciliMi = cstSeciliMi;
         }
     }
+    */
 
     public static class customRelativeLayout extends RelativeLayout
     {
         private int cstID = -1;
         private boolean cstSeciliMi = false;
+        private TextView tvTik;
+        private TextView tvIsaret;
+        private TextView tvBaslik;
+        final static int ID0 = 10000;
+        final static int ID1 = 10001;
+        final static int ID2 = 10002;
 
-        public customRelativeLayout(Context context)
+        public customRelativeLayout(Context context, String baslik, int elemanTur)
         {
             super(context);
+
+            switch (elemanTur)
+            {
+                case ELEMAN_TUR_KATEGORI:
+
+                    LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    pa.setMargins(0, 10, 0, 10);
+                    this.setLayoutParams(pa);
+                    this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+
+                    tvTik = new TextView(context);
+                    tvTik.setTextSize(30);
+                    tvTik.setId(ID0);
+                    tvTik.setTextColor(Color.WHITE);
+                    RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    lp3.addRule(RelativeLayout.CENTER_VERTICAL);
+                    this.addView(tvTik, lp3);
+
+                    tvIsaret = new TextView(context);
+                    tvIsaret.setTextSize(30);
+                    tvIsaret.setId(ID1);
+                    tvIsaret.setText("\u2192");
+                    tvIsaret.setTextColor(Color.WHITE);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    lp.addRule(RelativeLayout.CENTER_VERTICAL);
+                    this.addView(tvIsaret, lp);
+
+                    tvBaslik = new TextView(context);
+                    tvBaslik.setTextSize(30);
+                    tvBaslik.setText(baslik);
+                    tvBaslik.setTextColor(Color.WHITE);
+                    tvBaslik.setPadding(5, 0, 5, 0);
+                    RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp2.addRule(RelativeLayout.LEFT_OF, tvIsaret.getId());
+                    lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
+                    this.addView(tvBaslik, lp2);
+
+                    break;
+
+                case ELEMAN_TUR_KAYIT:
+
+                    LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    pa2.setMargins(0, 0, 0, 0);
+                    this.setLayoutParams(pa2);
+                    this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+
+                    tvTik = new TextView(context);
+                    tvTik.setTextSize(15);
+                    tvTik.setId(ID2);
+                    tvTik.setTextColor(Color.WHITE);
+                    RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    lp4.addRule(RelativeLayout.CENTER_VERTICAL);
+                    this.addView(tvTik, lp4);
+
+                    tvBaslik = new TextView(context);
+                    tvBaslik.setTextSize(15);
+                    tvBaslik.setText(baslik);
+                    tvBaslik.setTextColor(Color.WHITE);
+                    tvBaslik.setPadding(5, 0, 5, 0);
+                    RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
+                    this.addView(tvBaslik, lp5);
+
+                    break;
+            }
+        }
+
+        public TextView getTvTik()
+        {
+            return tvTik;
+        }
+
+        public TextView getTvIsaret()
+        {
+            return tvIsaret;
+        }
+
+        public TextView getTvBaslik()
+        {
+            return tvBaslik;
         }
 
         public int getCstID()
