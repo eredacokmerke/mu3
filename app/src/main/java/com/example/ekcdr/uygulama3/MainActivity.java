@@ -379,7 +379,7 @@ public class MainActivity extends Activity
                         if (tagName.equals(XML_KAYIT) && eventType == XmlPullParser.START_TAG && parser.getDepth() == xmlEtiketNesil + 2)
                         {
                             String kayitID = parser.getAttributeValue(null, XML_ID);
-                            String kayitDurum = parser.getAttributeValue(null, "durum");
+                            String kayitDurum = parser.getAttributeValue(null, DURUM);
                             //Log.d(TAG, "kayitDurum : " + kayitDurum);
 
                             parser.next();
@@ -409,7 +409,6 @@ public class MainActivity extends Activity
                 ekranaHataYazdir("15", e.getMessage());
                 return false;
             }
-
         }
 
         public boolean xmlKategoriBasliginiGetir(XmlPullParser parser, String kategoriID, String durum)
@@ -489,7 +488,7 @@ public class MainActivity extends Activity
                         if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_PARCA) && parser.getDepth() == xmlEtiketNesil + 2)
                         {
                             String kategoriID = parser.getAttributeValue(null, XML_ID);
-                            String kategoriDurum = parser.getAttributeValue(null, "durum");
+                            String kategoriDurum = parser.getAttributeValue(null, DURUM);
                             Log.d(TAG, "parca bulundu : id : " + kategoriID);
                             sonuc = sonuc && xmlKategoriBasliginiGetir(parser, kategoriID, kategoriDurum);
                         }
@@ -1381,7 +1380,7 @@ public class MainActivity extends Activity
         //secili kayıtları ve kategorilerin altındaki kayıtları tamamalandı olarak isaretler
         public void seciliElemanlariTamamla()
         {
-            yaziTamamla(listSeciliYazi);
+            kayitTamamla(listSeciliYazi);
             kategoriTamamla(listSeciliKategori);
             seciliElemanListeleriniSifirla();
         }
@@ -1561,8 +1560,45 @@ public class MainActivity extends Activity
             }
         }
 
+        //yazilar altındaki kayitların durum degerlerini kontrol eder
+        public boolean kayitDurumunuKontrolEt(Node nodeYazilar)
+        {
+            NodeList nodeList = nodeYazilar.getChildNodes();
+            for (int i = 0; i < nodeList.getLength(); i++)
+            {
+                if (nodeList.item(i).getAttributes().getNamedItem(DURUM).getNodeValue().equals("0"))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        //altparca içindeki parcaların durum degerlerini kontrol eder
+        public boolean altParcaDurumunuKontrolEt(Node nodeParca)
+        {
+            NodeList nodeList = nodeParca.getChildNodes();
+
+            for (int i = 0; i < nodeList.getLength(); i++)
+            {
+                if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
+                {
+                    NodeList nodeListAltParca = nodeList.item(i).getChildNodes();
+                    for (int j = 0; j < nodeListAltParca.getLength(); j++)
+                    {
+                        if (nodeListAltParca.item(j).getAttributes().getNamedItem(DURUM).getNodeValue().equals("0"))
+                        {
+                            return false;
+                        }
+                    }
+                    break;
+                }
+            }
+            return true;
+        }
+
         //secilen yaziyi tamamlandı olarak değiştirir
-        public void yaziTamamla(List<Integer> listeSilinecek)
+        public void kayitTamamla(List<Integer> listeSilinecek)
         {
             try
             {
@@ -1576,6 +1612,18 @@ public class MainActivity extends Activity
                     Element elementKayit = doc.getElementById(String.valueOf(listeSilinecek.get(i)));
                     elementKayit.setAttribute(DURUM, DURUM_TAMAMLANDI);
 
+                    //bütün kayıtlar tamamlandi olarak isaretlenmis ise kategorinin içindeki kategorilere baksın
+                    if (kayitDurumunuKontrolEt(elementKayit.getParentNode()))
+                    {
+                        //altparca içindeki kategoriler tamamlandi olarak isaretlenmis ise içinde bulunulan kategori de tamamlandi olarak isaretlensi
+                        if (altParcaDurumunuKontrolEt(elementKayit.getParentNode().getParentNode()))
+                        {
+                            Node nodeKategori = elementKayit.getParentNode().getParentNode();
+                            String idKategori = nodeKategori.getAttributes().getNamedItem(XML_ID).getNodeValue();
+                            kategoriDurumunuGuncelle(doc, idKategori, DURUM_TAMAMLANDI);
+                        }
+                    }
+
                     doc.normalize();
                     documentToFile(doc);
 
@@ -1583,12 +1631,6 @@ public class MainActivity extends Activity
                     view.getTvTik().setText("\u2714");
                     view.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
                     view.setCstSeciliMi(false);
-                    /*
-                    customTextView ctv = (customTextView) anaLayout.findViewById(listeSilinecek.get(i));
-                    ctv.setText("\u2714" + ctv.getText());
-                    ctv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
-                    ctv.setCstSeciliMi(false);
-                    */
                 }
             }
             catch (ParserConfigurationException e)
