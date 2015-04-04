@@ -5,12 +5,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -78,6 +81,9 @@ public class MainActivity extends Activity
     private static final String FRAGMENT_TAG = "fragment_tag";
     private static final int ELEMAN_TUR_KAYIT = 0;
     private static final int ELEMAN_TUR_KATEGORI = 1;
+    static Resources resources;
+    static float px7;
+    static int px2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,6 +118,10 @@ public class MainActivity extends Activity
         bar.setBackgroundDrawable(actionBarArkaPlan);
         //bar.setDisplayHomeAsUpEnabled(true);
         //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF0000")));
+
+        resources = getResources();
+        px7 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, resources.getDisplayMetrics());
+        px2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, resources.getDisplayMetrics());
     }
 
     //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve son xmlID'sini donduruyor
@@ -691,7 +701,8 @@ public class MainActivity extends Activity
                     {
                         listSeciliYazi.remove(listSeciliYazi.indexOf(eklenenID));
                         crl.setCstSeciliMi(false);
-                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                        arkaplanKayit(crl);
                         if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
                         {
                             actionBarIlk();
@@ -702,7 +713,8 @@ public class MainActivity extends Activity
                         listSeciliYazi.add(eklenenID);
                         crl.setCstSeciliMi(true);
                         actionBarKayit();
-                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                        arkaplanSecili(crl);
                     }
                 }
             });
@@ -775,7 +787,8 @@ public class MainActivity extends Activity
                     {
                         listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
                         crl.setCstSeciliMi(false);
-                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                        arkaplanKategori(crl);
                         if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
                         {
                             actionBarIlk();
@@ -786,7 +799,8 @@ public class MainActivity extends Activity
                         listSeciliKategori.add(kategoriID);
                         crl.setCstSeciliMi(true);
                         actionBarKayit();
-                        crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
+                        arkaplanSecili(crl);
                     }
                 }
             });
@@ -833,7 +847,6 @@ public class MainActivity extends Activity
                 }
             });
             */
-
         }
 
         //Document nesnesini dosyaya yazıyor
@@ -1507,7 +1520,8 @@ public class MainActivity extends Activity
 
                     customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                     crl.getTvTik().setText("\u2714");
-                    crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                    //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                    arkaplanKategori(crl);
                     crl.setCstSeciliMi(false);
                 }
             }
@@ -1627,10 +1641,11 @@ public class MainActivity extends Activity
                     doc.normalize();
                     documentToFile(doc);
 
-                    customRelativeLayout view = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
-                    view.getTvTik().setText("\u2714");
-                    view.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
-                    view.setCstSeciliMi(false);
+                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
+                    crl.getTvTik().setText("\u2714");
+                    //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                    arkaplanKayit(crl);
+                    crl.setCstSeciliMi(false);
                 }
             }
             catch (ParserConfigurationException e)
@@ -1679,6 +1694,33 @@ public class MainActivity extends Activity
         {
             menuActionBar.clear();
             inflaterActionBar.inflate(R.menu.menu_main, menuActionBar);
+        }
+
+        public void arkaplanSecili(customRelativeLayout crl)
+        {
+            GradientDrawable gd = new GradientDrawable();
+            gd.setColor(0xFFFF2222);
+            gd.setStroke(px2, 0xFF880000);
+            gd.setCornerRadius(px7);
+            crl.setBackground(gd);
+        }
+
+        public void arkaplanKategori(customRelativeLayout crl)
+        {
+            GradientDrawable gd = new GradientDrawable();
+            gd.setColor(0xFF00CED1);
+            gd.setStroke(px2, 0xFF009095);
+            gd.setCornerRadius(px7);
+            crl.setBackground(gd);
+        }
+
+        public void arkaplanKayit(customRelativeLayout crl)
+        {
+            GradientDrawable gd = new GradientDrawable();
+            gd.setColor(0xFF009ED1);
+            gd.setStroke(px2, 0xFF004095);
+            gd.setCornerRadius(px7);
+            crl.setBackground(gd);
         }
 
         @Override
@@ -1759,55 +1801,6 @@ public class MainActivity extends Activity
         }
     }
 
-    public static class xmlYapisi
-    {
-        public String mRenk;
-        public String mBaslik;
-        public String mYazi;
-        public String mID;
-
-        /*
-        public static final String XML_PARCA = XML_PARCA;
-        public static final String XML_BASLIK = XML_BASLIK;
-        public static final String XML_RENK = XML_RENK;
-        public static final String YAZI = "yazi";
-        public static final String XML_ID = "id";
-        */
-    }
-
-    /*
-    public static class customTextView extends TextView
-    {
-        private int cstID = -1;
-        private boolean cstSeciliMi = false;
-
-        public customTextView(Context context)
-        {
-            super(context);
-        }
-
-        public int getCstID()
-        {
-            return cstID;
-        }
-
-        public void setCstID(int cstID)
-        {
-            this.cstID = cstID;
-        }
-
-        public boolean isCstSeciliMi()
-        {
-            return cstSeciliMi;
-        }
-
-        public void setCstSeciliMi(boolean cstSeciliMi)
-        {
-            this.cstSeciliMi = cstSeciliMi;
-        }
-    }
-    */
-
     public static class customRelativeLayout extends RelativeLayout
     {
         private int cstID = -1;
@@ -1826,11 +1819,18 @@ public class MainActivity extends Activity
             switch (elemanTur)
             {
                 case ELEMAN_TUR_KATEGORI:
-
+                {
                     LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     pa.setMargins(0, 10, 0, 10);
                     this.setLayoutParams(pa);
-                    this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+                    //this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
+
+                    GradientDrawable gd = new GradientDrawable();
+                    gd.setColor(0xFF00CED1);
+                    gd.setStroke(px2, 0xFF009095);
+                    gd.setCornerRadius(px7);
+                    this.setBackground(gd);
+                    this.setPadding(10, 20, 10, 20);
 
                     tvTik = new TextView(context);
                     tvTik.setTextSize(30);
@@ -1862,13 +1862,20 @@ public class MainActivity extends Activity
                     this.addView(tvBaslik, lp2);
 
                     break;
-
+                }
                 case ELEMAN_TUR_KAYIT:
-
+                {
                     LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     pa2.setMargins(0, 0, 0, 0);
                     this.setLayoutParams(pa2);
-                    this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+                    //this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
+
+                    GradientDrawable gd = new GradientDrawable();
+                    gd.setColor(0xFF009ED1);
+                    gd.setStroke(px2, 0xFF004095);
+                    gd.setCornerRadius(px7);
+                    this.setBackground(gd);
+                    this.setPadding(10, 20, 10, 20);
 
                     tvTik = new TextView(context);
                     tvTik.setTextSize(15);
@@ -1889,6 +1896,7 @@ public class MainActivity extends Activity
                     this.addView(tvBaslik, lp5);
 
                     break;
+                }
             }
         }
 
