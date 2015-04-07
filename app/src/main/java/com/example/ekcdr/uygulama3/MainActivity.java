@@ -35,7 +35,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -49,7 +48,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -83,9 +81,9 @@ public class MainActivity extends Activity
     private static final int ELEMAN_TUR_KATEGORI = 1;
     private static final String FRAGMENT_SECIM = "fragment_secim";
     private static final String FRAGMENT_YAZI = "fragment_yazi";
-    private static final int FRAGMENT_ANA_EKRAN = 0;
+    private static final int FRAGMENT_KATEGORI_EKRANI = 0;
     private static final int FRAGMENT_KAYIT_EKRANI = 1;
-    private static int FRAGMENT_ETKIN_EKRAN = FRAGMENT_ANA_EKRAN;
+    private static int FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
     static Resources resources;
     static float px7;
     static int px2;
@@ -300,7 +298,7 @@ public class MainActivity extends Activity
         private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
         private int xmlID;//eklenen kategori ve kayıtlara id verebilmek için
         //private String xmlEtiketID = "0";//içinde olunan parçanın id si
-        private int xmlEtiketNesil = 2;//içinde olunan parcanın nesli
+        //private int xmlEtiketNesil = 2;//içinde olunan parcanın nesli
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
@@ -386,292 +384,7 @@ public class MainActivity extends Activity
             Toast.makeText(getActivity(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
         }
 
-        /*
-        public boolean xmlKayitlariGetir(XmlPullParser parser)
-        {
-            try
-            {
-                boolean bulundu = false;
-                int eventType = parser.getEventType();
-                String tagName = parser.getName();
 
-                while (eventType != XmlPullParser.END_DOCUMENT)
-                {
-                    parser.next();
-                    eventType = parser.getEventType();
-                    tagName = parser.getName();
-                    //Log.d(TAG, "1 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil );
-
-                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil + 1)
-                    {
-                        //Log.d(TAG, "kayit bulundu");
-                        bulundu = true;
-                        break;
-                    }
-                }
-
-                if (bulundu)
-                {
-                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(XML_YAZILAR) && parser.getDepth() == xmlEtiketNesil + 1))
-                    {
-                        parser.next();
-                        eventType = parser.getEventType();
-                        tagName = parser.getName();
-
-                        //Log.d(TAG, "tagName 3 : " + tagName + " eventType : " + eventType);
-
-                        if (tagName.equals(XML_KAYIT) && eventType == XmlPullParser.START_TAG && parser.getDepth() == xmlEtiketNesil + 2)
-                        {
-                            String kayitID = parser.getAttributeValue(null, XML_ID);
-                            String kayitDurum = parser.getAttributeValue(null, XML_DURUM);
-                            //Log.d(TAG, "kayitDurum : " + kayitDurum);
-
-                            parser.next();
-                            eventType = parser.getEventType();
-                            tagName = parser.getName();
-
-                            if (eventType == XmlPullParser.TEXT)
-                            {
-                                //Log.d(TAG, "1 kayit text : " + parser.getText() + " kayitID : " + kayitID +" durum : "+parser.getAttributeValue(1));
-                                kayitlariAnaEkranaEkle(parser.getText(), Integer.parseInt(kayitID), kayitDurum);
-                            }
-
-                        }
-                    }
-                }
-                return bulundu;
-            }
-            catch (XmlPullParserException e)
-            {
-                Log.e("hata[142]", e.getMessage());
-                ekranaHataYazdir("142", e.getMessage());
-                return false;
-            }
-            catch (IOException e)
-            {
-                Log.e("hata[15]", e.getMessage());
-                ekranaHataYazdir("15", e.getMessage());
-                return false;
-            }
-        }
-        */
-
-        /*
-        public boolean xmlKategoriBasliginiGetir(XmlPullParser parser, String kategoriID, String durum)
-        {
-            try
-            {
-                boolean bulunduBaslik = false;
-                int eventType = parser.getEventType();
-                String tagName = parser.getName();
-
-                while (eventType != XmlPullParser.END_DOCUMENT)
-                {
-                    parser.next();
-                    eventType = parser.getEventType();
-                    tagName = parser.getName();
-                    //Log.d(TAG, "4 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil );
-
-                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_BASLIK) && parser.getDepth() == xmlEtiketNesil + 3)
-                    {
-                        String baslik = parser.nextText();
-                        //Log.d(TAG, "bulundu baslik : " + baslik);
-
-                        kategorileriAnaEkranaEkle(baslik, Integer.parseInt(kategoriID), durum);
-                        bulunduBaslik = true;
-                        break;
-                    }
-                }
-                return bulunduBaslik;
-            }
-            catch (XmlPullParserException e)
-            {
-                Log.e("hata[143]", e.getMessage());
-                ekranaHataYazdir("143", e.getMessage());
-                return false;
-            }
-            catch (IOException e)
-            {
-                Log.e("hata[15]", e.getMessage());
-                ekranaHataYazdir("15", e.getMessage());
-                return false;
-            }
-        }
-        */
-
-        /*
-        public boolean xmlKategorileriGetir(XmlPullParser parser)
-        {
-            try
-            {
-                boolean bulunduAltParca = false;
-                int eventType = parser.getEventType();
-                String tagName = parser.getName();
-                boolean sonuc = true;
-
-                while (eventType != XmlPullParser.END_DOCUMENT)
-                {
-                    parser.next();
-                    eventType = parser.getEventType();
-                    tagName = parser.getName();
-                    //Log.d(TAG, "2 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil );
-
-                    if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil + 1)
-                    {
-                        //Log.d(TAG, "alt parca bulundu");
-                        bulunduAltParca = true;
-                        break;
-                    }
-                }
-
-                if (bulunduAltParca)
-                {
-                    while (!(eventType == XmlPullParser.END_TAG && tagName.equals(XML_ALTPARCA) && parser.getDepth() == xmlEtiketNesil + 1))
-                    {
-                        parser.next();
-                        eventType = parser.getEventType();
-                        tagName = parser.getName();
-                        //Log.d(TAG, "3 tagname : " + tagName + " -- event type : " + eventType + " -- derinlik : " + parser.getDepth() + " -- nesil : " + xmlEtiketNesil);
-
-                        if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_PARCA) && parser.getDepth() == xmlEtiketNesil + 2)
-                        {
-                            String kategoriID = parser.getAttributeValue(null, XML_ID);
-                            String kategoriDurum = parser.getAttributeValue(null, XML_DURUM);
-                            Log.d(TAG, "parca bulundu : id : " + kategoriID);
-                            sonuc = sonuc && xmlKategoriBasliginiGetir(parser, kategoriID, kategoriDurum);
-                        }
-
-                    }
-                    return sonuc;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (XmlPullParserException e)
-            {
-                Log.e("hata[144]", e.getMessage());
-                ekranaHataYazdir("144", e.getMessage());
-                return false;
-            }
-            catch (IOException e)
-            {
-                Log.e("hata[15]", e.getMessage());
-                ekranaHataYazdir("15", e.getMessage());
-                return false;
-            }
-        }
-        */
-
-        //xml'de aranan parcayi id'yi kullanarak bulur
-        public boolean xmlDogruParcayiBul(XmlPullParser parser, String parcaID, int nesil)
-        {
-            try
-            {
-                //boolean dogruParca = false;//doğru parcanın altparcalarını yazdırması için
-                int eventType = parser.getEventType();
-                while (eventType != XmlPullParser.END_DOCUMENT)
-                {
-
-                    String tagName = parser.getName();
-                    if (parser.getDepth() == nesil && eventType == XmlPullParser.START_TAG)
-                    {
-                        if (tagName.equals(XML_PARCA))
-                        {
-                            if (parcaID.equals(parser.getAttributeValue(null, XML_ID)))
-                            {
-                                //Log.d(TAG, "parca bulundu");
-                                return true;
-                            }
-                        }
-                    }
-                    eventType = parser.next();
-                }
-                return false;
-            }
-            catch (XmlPullParserException e)
-            {
-                Log.e("hata[145]", e.getMessage());
-                ekranaHataYazdir("145", e.getMessage());
-                return false;
-            }
-            catch (IOException e)
-            {
-                Log.e("hata[15]", e.getMessage());
-                ekranaHataYazdir("15", e.getMessage());
-                return false;
-            }
-        }
-
-        public List<String> xmlUstIDyiBul(String parcaID)
-        {
-            List<String> sonuc = new ArrayList<>();
-
-            try
-            {
-                String ustID = "-1";
-                String ustBaslik = "-1";
-
-                XmlPullParser parser;
-                parser = XmlPullParserFactory.newInstance().newPullParser();
-                parser.setInput(fileToIS(), null);
-                parser.next();
-
-                int eventType = parser.getEventType();
-                while (eventType != XmlPullParser.END_DOCUMENT)
-                {
-                    String tagName = parser.getName();
-                    if (parser.getDepth() == xmlEtiketNesil - 2 && eventType == XmlPullParser.START_TAG)//girdiği parçanın id ve basligini tutuyor. eğer parent ise döndürüyor
-                    {
-                        if (tagName.equals(XML_PARCA))
-                        {
-                            ustID = parser.getAttributeValue(null, XML_ID);
-
-                            while (eventType != XmlPullParser.END_DOCUMENT)
-                            {
-                                parser.next();
-                                eventType = parser.getEventType();
-                                tagName = parser.getName();
-
-                                if (eventType == XmlPullParser.START_TAG && tagName.equals(XML_BASLIK) && parser.getDepth() == xmlEtiketNesil - 1)
-                                {
-                                    ustBaslik = parser.nextText();
-                                    break;
-                                }
-                            }
-
-                        }
-                    }
-                    if (parser.getDepth() == xmlEtiketNesil && eventType == XmlPullParser.START_TAG)
-                    {
-                        if (tagName.equals(XML_PARCA))
-                        {
-                            if (parcaID.equals(parser.getAttributeValue(null, XML_ID)))
-                            {
-                                sonuc.add(ustID);
-                                sonuc.add(ustBaslik);
-                                return sonuc;
-                            }
-                        }
-                    }
-                    eventType = parser.next();
-                }
-                return sonuc;
-            }
-            catch (XmlPullParserException e)
-            {
-                Log.e("hata[146]", e.getMessage());
-                ekranaHataYazdir("146", e.getMessage());
-                return sonuc;
-            }
-            catch (IOException e)
-            {
-                Log.e("hata[15]", e.getMessage());
-                ekranaHataYazdir("15", e.getMessage());
-                return sonuc;
-            }
-        }
 
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public boolean parseXml(String parcaID)
@@ -815,7 +528,7 @@ public class MainActivity extends Activity
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(FRAGMENT_KAYIT_EKRANI, yazi)).commit();
                     actionBarKayit();
 
-                    Log.d(TAG, "kayitlariAnaEkranaEkle xmlEtiketID : "+xmlEtiketID);
+                    //Log.d(TAG, "kayitlariAnaEkranaEkle xmlEtiketID : "+xmlEtiketID);
                      /*
                     if (crl.isCstSeciliMi())
                     {
@@ -1159,13 +872,10 @@ public class MainActivity extends Activity
                     getActivity().getActionBar().setTitle(kategoriBaslik);
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
                     xmlEtiketID = String.valueOf(kategoriID);
-                    xmlEtiketNesil = xmlEtiketNesil + 2;
 
                     //seciliElemanListeleriniSifirla();
 
                     parseXml(String.valueOf(kategoriID));
-
-                    Log.d(TAG, "xmlEtiketID : "+xmlEtiketID);
                 }
             });
 
@@ -1261,75 +971,56 @@ public class MainActivity extends Activity
 
         public void ustSeviyeyiGetir()
         {
-            Log.d(TAG, "ust seviye :" + FRAGMENT_ETKIN_EKRAN);
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case FRAGMENT_KAYIT_EKRANI:
-                    Log.d(TAG, "FRAGMENT_KAYIT_EKRANI xmlEtiketID : "+xmlEtiketID + " xml nesil : "+xmlEtiketNesil);
-
                     anaLayout.removeAllViews();
-                    //xmlEtiketNesil = xmlEtiketNesil + 2;
                     parseXml(xmlEtiketID);
-                    //xmlEtiketNesil = xmlEtiketNesil - 2;
-                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_ANA_EKRAN;
+                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
                     break;
 
-                default://kategori fragmentini ekle
-
-                    Log.d(TAG, "default xmlEtiketID : "+xmlEtiketID);
-                    List<String> ustSeviyeListe = xmlUstIDyiBul(String.valueOf(xmlEtiketID));
-
-                    if (ustSeviyeListe.size() == 2)
+                case FRAGMENT_KATEGORI_EKRANI:
+                    try
                     {
-                        String ustID = ustSeviyeListe.get(0);
-                        String ustBaslik = ustSeviyeListe.get(1);
+                        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                        dbf.setValidating(false);
+                        DocumentBuilder db = dbf.newDocumentBuilder();
+                        Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                        Element element = doc.getElementById(xmlEtiketID);
+                        String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
+
+                        xmlEtiketID = ustSeviyeID;
 
                         anaLayout.removeAllViews();
-                        getActivity().getActionBar().setTitle(ustBaslik);
-                        xmlEtiketNesil = xmlEtiketNesil - 2;
-                        xmlEtiketID = ustID;
                         parseXml(xmlEtiketID);
 
-                        if (xmlEtiketID.equals("0"))
-                        {
-                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-                        }
                     }
-                    else
+                    catch (FileNotFoundException e)
                     {
-                        Log.e("hata[15]", "ust seviye hatasi");
-                        ekranaHataYazdir("15", "ust seviye hatasi");
+                        Log.e("hata[20]", e.getMessage());
+                        ekranaHataYazdir("20", e.getMessage());
                     }
+                    catch (ParserConfigurationException e)
+                    {
+                        Log.e("hata[21]", e.getMessage());
+                        ekranaHataYazdir("21", e.getMessage());
+                    }
+                    catch (IOException e)
+                    {
+                        Log.e("hata[22]", e.getMessage());
+                        ekranaHataYazdir("22", e.getMessage());
+                    }
+                    catch (SAXException e)
+                    {
+                        Log.e("hata[23]", e.getMessage());
+                        ekranaHataYazdir("23", e.getMessage());
+                    }
+                    break;
 
+                default:
+                    Log.d(TAG, "default : xmlEtiketID : "+xmlEtiketID);
             }
-
-
-            /*
-            List<String> ustSeviyeListe = xmlUstIDyiBul(String.valueOf(xmlEtiketID));
-
-            if (ustSeviyeListe.size() == 2)
-            {
-                String ustID = ustSeviyeListe.get(0);
-                String ustBaslik = ustSeviyeListe.get(1);
-
-                anaLayout.removeAllViews();
-                getActivity().getActionBar().setTitle(ustBaslik);
-                xmlEtiketNesil = xmlEtiketNesil - 2;
-                xmlEtiketID = ustID;
-                parseXml(xmlEtiketID);
-
-                if (xmlEtiketID.equals("0"))
-                {
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-                }
-
-            }
-            else
-            {
-                Log.e("hata[15]", "ust seviye hatasi");
-                ekranaHataYazdir("15", "ust seviye hatasi");
-            }
-            */
         }
 
         //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
@@ -1677,6 +1368,7 @@ public class MainActivity extends Activity
             }
         }
 
+        /*
         //kategorinin butun alt kayıtlarını tamamlandı olarak isaretler
         public void kategoriTamamla(List<Integer> listeSilinecek)
         {
@@ -1717,6 +1409,7 @@ public class MainActivity extends Activity
                 ekranaHataYazdir("141", e.getMessage());
             }
         }
+        */
 
         public void kategoriDurumunuGuncelle(Document doc, String id, String durum)
         {
@@ -1957,7 +1650,7 @@ public class MainActivity extends Activity
         {
             switch (getArguments().getInt(FRAGMENT_SECIM))
             {
-                case FRAGMENT_ANA_EKRAN:
+                case FRAGMENT_KATEGORI_EKRANI:
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
