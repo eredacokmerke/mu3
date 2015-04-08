@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -36,18 +37,13 @@ import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -88,6 +84,7 @@ public class MainActivity extends Activity
     static float px7;
     static int px2;
     private static String xmlEtiketID = "0";//içinde olunan parçanın id si
+    private static int xmlID;//eklenen kategori ve kayıtlara id verebilmek için
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -110,19 +107,17 @@ public class MainActivity extends Activity
             xmlKlasorYolu.mkdirs();
         }
         xmlDosyaYolu = xmlKlasorYolu + "/" + "new.xml";
-        int sonuc = xmlDosyasiKontrolEt();
+        xmlDosyasiKontrolEt();
 
         if (savedInstanceState == null)
         {
             //getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment(sonuc), FRAGMENT_TAG).commit();
-            getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstance(FRAGMENT_ETKIN_EKRAN, sonuc), FRAGMENT_TAG).commit();
+            getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_ETKIN_EKRAN, 0), FRAGMENT_TAG).commit();
         }
 
         ActionBar bar = getActionBar();
         ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor("#009ED1"));
         bar.setBackgroundDrawable(actionBarArkaPlan);
-        //bar.setDisplayHomeAsUpEnabled(true);
-        //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF0000")));
 
         resources = getResources();
         px7 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, resources.getDisplayMetrics());
@@ -130,9 +125,8 @@ public class MainActivity extends Activity
     }
 
     //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve son xmlID'sini donduruyor
-    public int xmlDosyasiKontrolEt()
+    public void xmlDosyasiKontrolEt()
     {
-        int xmlID;
         File xmlDosyasi = new File(xmlDosyaYolu);
         if (xmlKlasorYolu.exists())//klasör var
         {
@@ -156,8 +150,6 @@ public class MainActivity extends Activity
             xmlID = 0;
             xmlDosyasiOlustur();
         }
-
-        return xmlID;
     }
 
     //sdcard ın olup olmadığını kontrol ediyor
@@ -296,9 +288,6 @@ public class MainActivity extends Activity
     public static class PlaceholderFragment extends Fragment
     {
         private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
-        private int xmlID;//eklenen kategori ve kayıtlara id verebilmek için
-        //private String xmlEtiketID = "0";//içinde olunan parçanın id si
-        //private int xmlEtiketNesil = 2;//içinde olunan parcanın nesli
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
@@ -311,24 +300,28 @@ public class MainActivity extends Activity
 
         }
 
+        /*
         public PlaceholderFragment(int sonuc)
         {
-            xmlID = sonuc;
+            //xmlID = sonuc;
             //listSeciliYazi = new ArrayList<>();
             //listSeciliKategori = new ArrayList<>();
         }
+        */
 
-        public static PlaceholderFragment newInstance(int secim, int sonuc)
+        public static PlaceholderFragment newInstanceKategori(int secim, int kategoriID)
         {
-            PlaceholderFragment fragment = new PlaceholderFragment(sonuc);
+            PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(FRAGMENT_SECIM, secim);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
+            xmlEtiketID = String.valueOf(kategoriID);
+
             return fragment;
         }
 
-        public static PlaceholderFragment newInstance(int secim, String yazi)
+        public static PlaceholderFragment newInstanceKayit(int secim, String yazi)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -336,9 +329,11 @@ public class MainActivity extends Activity
             args.putString(FRAGMENT_YAZI, yazi);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
+
             return fragment;
         }
 
+        /*
         //new.xml dosyasını inputstream a dönüştürüyor
         public InputStream fileToIS()
         {
@@ -378,13 +373,12 @@ public class MainActivity extends Activity
                 return null;
             }
         }
+        */
 
         public void ekranaHataYazdir(String id, String hata)
         {
             Toast.makeText(getActivity(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
         }
-
-
 
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public boolean parseXml(String parcaID)
@@ -395,19 +389,17 @@ public class MainActivity extends Activity
                 dbf.setValidating(false);
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
-
                 Element element = doc.getElementById(parcaID);
-
                 NodeList nodeList = element.getChildNodes();
 
-                for(int i=0; i<nodeList.getLength();i++)
+                for (int i = 0; i < nodeList.getLength(); i++)
                 {
-                    if(nodeList.item(i).getNodeName().equals(XML_YAZILAR))
+                    if (nodeList.item(i).getNodeName().equals(XML_YAZILAR))
                     {
                         Node nodeKayit = nodeList.item(i);
                         NodeList nodeListYazilar = nodeKayit.getChildNodes();
 
-                        for(int j=0; j< nodeListYazilar.getLength(); j++)
+                        for (int j = 0; j < nodeListYazilar.getLength(); j++)
                         {
                             Node nodeYazi = nodeListYazilar.item(j);
                             String kayitYazi = nodeYazi.getTextContent();
@@ -417,12 +409,12 @@ public class MainActivity extends Activity
                             kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum);
                         }
                     }
-                    else if(nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
+                    else if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
                     {
                         Node nodeAltParca = nodeList.item(i);
                         NodeList nodeListParcalar = nodeAltParca.getChildNodes();
 
-                        for(int j = 0; j < nodeListParcalar.getLength(); j++)
+                        for (int j = 0; j < nodeListParcalar.getLength(); j++)
                         {
                             Node nodeParca = nodeListParcalar.item(j);
                             Node nodeBaslik = nodeParca.getFirstChild();
@@ -523,12 +515,9 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(FRAGMENT_KAYIT_EKRANI, yazi)).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi)).addToBackStack(null).commit();
                     actionBarKayit();
 
-                    //Log.d(TAG, "kayitlariAnaEkranaEkle xmlEtiketID : "+xmlEtiketID);
                      /*
                     if (crl.isCstSeciliMi())
                     {
@@ -602,7 +591,26 @@ public class MainActivity extends Activity
         //public void kategorileriAnaEkranaEkle(final String baslik, final String staticrenk, final String yazi, boolean cerceve, final int kategoriID)
         public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, String durum)
         {
-            final customRelativeLayout crl = kategoriAlaniOlustur(baslik, kategoriID);
+            customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+
+            /*
+            crl.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    anaLayout.removeAllViews();
+                    getActivity().getActionBar().setTitle(kategoriBaslik);
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    xmlEtiketID = String.valueOf(kategoriID);
+
+                    //seciliElemanListeleriniSifirla();
+
+                    parseXml(String.valueOf(kategoriID));
+                }
+            });
+            */
+
             crl.setCstID(kategoriID);
             crl.setId(kategoriID);
             if (durum.equals(DURUM_TAMAMLANDI))
@@ -618,8 +626,8 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    //fragment çağır
-
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID)).commit();
+                    getActivity().getActionBar().setTitle(baslik);
                     /*
                     if (crl.isCstSeciliMi())
                     {
@@ -823,81 +831,6 @@ public class MainActivity extends Activity
             */
         }
 
-        //ana ekrana eklenecek kategori alanini olusturuyor
-        public customRelativeLayout kategoriAlaniOlustur(final String kategoriBaslik, final int kategoriID)
-        {
-            /*
-            customRelativeLayout ll = new customRelativeLayout(getActivity());//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            //ll.setOrientation(LinearLayout.HORIZONTAL);
-            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            pa.setMargins(0, 10, 0, 10);
-            ll.setLayoutParams(pa);
-            ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
-
-            TextView tvTik = new TextView(getActivity());
-            tvTik.setTextSize(30);
-            tvTik.setId(View.generateViewId());
-            RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp3.addRule(RelativeLayout.CENTER_VERTICAL);
-            ll.addView(tvTik, lp3);
-
-            TextView tvIsaret = new TextView(getActivity());
-            tvIsaret.setTextSize(30);
-            tvIsaret.setId(View.generateViewId());
-            tvIsaret.setText("\u2192");
-            tvIsaret.setTextColor(Color.WHITE);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp.addRule(RelativeLayout.CENTER_VERTICAL);
-            ll.addView(tvIsaret, lp);
-
-            TextView tvBaslik = new TextView(getActivity());
-            tvBaslik.setTextSize(30);
-            tvBaslik.setText(kategoriBaslik);
-            tvBaslik.setTextColor(Color.WHITE);
-            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp2.addRule(RelativeLayout.LEFT_OF,tvIsaret.getId());
-            lp2.addRule(RelativeLayout.RIGHT_OF,tvTik.getId());
-            ll.addView(tvBaslik, lp2);
-            */
-
-            customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriBaslik, ELEMAN_TUR_KATEGORI);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            crl.getTvIsaret().setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    anaLayout.removeAllViews();
-                    getActivity().getActionBar().setTitle(kategoriBaslik);
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    xmlEtiketID = String.valueOf(kategoriID);
-
-                    //seciliElemanListeleriniSifirla();
-
-                    parseXml(String.valueOf(kategoriID));
-                }
-            });
-
-            return crl;
-
-            /*
-            LinearLayout ll = new LinearLayout(getActivity());//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            pa.setMargins(0, 10, 0, 10);
-            ll.setLayoutParams(pa);
-            ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
-
-            TextView tv = new TextView(getActivity());
-            tv.setTextSize(30);
-            tv.setText(yazi);
-            tv.setTextColor(Color.WHITE);
-            ll.addView(tv);
-
-            return ll;
-            */
-        }
-
         //ana ekrana ve xml'e kategori ekler(parca)
         public void kategoriKaydet()
         {
@@ -932,7 +865,7 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View v)
                 {
-                    String kategoriAdi = alertET.getText().toString();
+                    final String kategoriAdi = alertET.getText().toString();
                     if (kategoriAdi.isEmpty())//edittext boşken tamam'a tıklandı
                     {
                         Toast.makeText(getActivity(), "Kategori adı boş olamaz", Toast.LENGTH_LONG).show();
@@ -940,10 +873,20 @@ public class MainActivity extends Activity
                     else//anaLayout'a yeni alan ekliyor
                     {
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
                         alert.dismiss();
-                        RelativeLayout ll = kategoriAlaniOlustur(kategoriAdi, xmlID + 1);
-                        anaLayout.addView(ll);
+
+                        customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriAdi, ELEMAN_TUR_KATEGORI);
+                        crl.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlID)).commit();
+                                getActivity().getActionBar().setTitle(kategoriAdi);
+                            }
+                        });
+
+                        anaLayout.addView(crl);
                         xmlDosyasiniGuncelle(kategoriAdi, "");
                     }
                 }
@@ -954,7 +897,6 @@ public class MainActivity extends Activity
                 public void onClick(View view)
                 {
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
                     alert.dismiss();
                 }
             });
@@ -974,12 +916,19 @@ public class MainActivity extends Activity
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case FRAGMENT_KAYIT_EKRANI:
-                    anaLayout.removeAllViews();
-                    parseXml(xmlEtiketID);
-                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
-                    break;
+                {
+                    FragmentManager fm = getFragmentManager();
 
+                    if (fm.getBackStackEntryCount() > 0)
+                    {
+                        fm.popBackStackImmediate();
+                    }
+                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
+
+                    break;
+                }
                 case FRAGMENT_KATEGORI_EKRANI:
+                {
                     try
                     {
                         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -991,10 +940,7 @@ public class MainActivity extends Activity
                         String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
 
                         xmlEtiketID = ustSeviyeID;
-
-                        anaLayout.removeAllViews();
-                        parseXml(xmlEtiketID);
-
+                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlEtiketID))).commit();
                     }
                     catch (FileNotFoundException e)
                     {
@@ -1016,10 +962,11 @@ public class MainActivity extends Activity
                         Log.e("hata[23]", e.getMessage());
                         ekranaHataYazdir("23", e.getMessage());
                     }
-                    break;
 
+                    break;
+                }
                 default:
-                    Log.d(TAG, "default : xmlEtiketID : "+xmlEtiketID);
+                    Log.d(TAG, "default : xmlEtiketID : " + xmlEtiketID);
             }
         }
 
@@ -1656,8 +1603,16 @@ public class MainActivity extends Activity
                     anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
                     if (xmlID > 0)//xml de kayıt varsa ekrana eklesin
                     {
-                        parseXml("0");
-                        //parseIlkNesil();
+                        parseXml(xmlEtiketID);
+                        if (xmlEtiketID.equals("0"))
+                        {
+                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+                            getActivity().getActionBar().setTitle("");
+                        }
+                        else
+                        {
+                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                        }
                     }
                     return rootView;
 
@@ -1674,6 +1629,8 @@ public class MainActivity extends Activity
                     rl.addView(et, lp);
                     anaLayout.addView(rl);
 
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+
                     return rootView;
                 }
                 default:
@@ -1685,7 +1642,7 @@ public class MainActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        Log.d("TAG","back pressed ");
+        Log.d("TAG", "back pressed ");
 
         /*
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
@@ -1705,7 +1662,7 @@ public class MainActivity extends Activity
         private int cstID = -1;
         private boolean cstSeciliMi = false;
         private TextView tvTik;
-        private TextView tvIsaret;
+        //private TextView tvIsaret;
         private TextView tvBaslik;
         final static int ID0 = 10000;
         final static int ID1 = 10001;
@@ -1740,6 +1697,7 @@ public class MainActivity extends Activity
                     lp3.addRule(RelativeLayout.CENTER_VERTICAL);
                     this.addView(tvTik, lp3);
 
+                    /*
                     tvIsaret = new TextView(context);
                     tvIsaret.setTextSize(30);
                     tvIsaret.setId(ID1);
@@ -1749,14 +1707,15 @@ public class MainActivity extends Activity
                     lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                     lp.addRule(RelativeLayout.CENTER_VERTICAL);
                     this.addView(tvIsaret, lp);
+                    */
 
                     tvBaslik = new TextView(context);
                     tvBaslik.setTextSize(30);
                     tvBaslik.setText(baslik);
                     tvBaslik.setTextColor(Color.WHITE);
                     tvBaslik.setPadding(5, 0, 5, 0);
-                    RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp2.addRule(RelativeLayout.LEFT_OF, tvIsaret.getId());
+                    RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    //p2.addRule(RelativeLayout.LEFT_OF, tvIsaret.getId());
                     lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                     this.addView(tvBaslik, lp2);
 
@@ -1790,7 +1749,7 @@ public class MainActivity extends Activity
                     tvBaslik.setText(baslik);
                     tvBaslik.setTextColor(Color.WHITE);
                     tvBaslik.setPadding(5, 0, 5, 0);
-                    RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                     this.addView(tvBaslik, lp5);
 
@@ -1804,11 +1763,12 @@ public class MainActivity extends Activity
             return tvTik;
         }
 
-        public TextView getTvIsaret()
-        {
-            return tvIsaret;
-        }
-
+        /*
+                public TextView getTvIsaret()
+                {
+                    return tvIsaret;
+                }
+        */
         public TextView getTvBaslik()
         {
             return tvBaslik;
