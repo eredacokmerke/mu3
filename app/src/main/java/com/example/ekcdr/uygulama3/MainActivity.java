@@ -77,6 +77,10 @@ public class MainActivity extends Activity
     private static final int ELEMAN_TUR_KATEGORI = 1;
     private static final String FRAGMENT_SECIM = "fragment_secim";
     private static final String FRAGMENT_YAZI = "fragment_yazi";
+    private static final int ACTIONBAR_EKLE = 0;
+    private static final int ACTIONBAR_ONAY= 1;
+    private static final int ACTIONBAR_SECIM= 2;
+    private static int ACTIONBAR_TUR = ACTIONBAR_EKLE;
     private static final int FRAGMENT_KATEGORI_EKRANI = 0;
     private static final int FRAGMENT_KAYIT_EKRANI = 1;
     private static int FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
@@ -259,7 +263,7 @@ public class MainActivity extends Activity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_ekle, menu);
         return true;
     }
 
@@ -288,8 +292,8 @@ public class MainActivity extends Activity
     public static class PlaceholderFragment extends Fragment
     {
         private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
-        private MenuInflater inflaterActionBar;
-        private Menu menuActionBar;
+        //private MenuInflater inflaterActionBar;
+        //private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
         //private List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
         //private List<Integer> listSeciliYazi;//seçilen kayıtların listesi
@@ -317,6 +321,7 @@ public class MainActivity extends Activity
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
             xmlEtiketID = String.valueOf(kategoriID);
+            fragment.setHasOptionsMenu(true);
 
             return fragment;
         }
@@ -329,6 +334,7 @@ public class MainActivity extends Activity
             args.putString(FRAGMENT_YAZI, yazi);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
+            fragment.setHasOptionsMenu(true);
 
             return fragment;
         }
@@ -515,8 +521,10 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
+                    Log.d(TAG, "kayit a tıklandı");
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi)).addToBackStack(null).commit();
-                    actionBarKayit();
+                    //actionBarOnay();
+                    ACTIONBAR_TUR = ACTIONBAR_ONAY;
 
                      /*
                     if (crl.isCstSeciliMi())
@@ -904,7 +912,8 @@ public class MainActivity extends Activity
 
         public EditText yaziAlaniOlustur()
         {
-            actionBarOnay();
+            //actionBarOnay();
+            ACTIONBAR_TUR = ACTIONBAR_ONAY;
 
             EditText edittext = new EditText(getActivity());
             anaLayout.addView(edittext);
@@ -924,6 +933,7 @@ public class MainActivity extends Activity
                         fm.popBackStackImmediate();
                     }
                     FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
+                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
                 }
@@ -1494,6 +1504,7 @@ public class MainActivity extends Activity
             mgr.hideSoftInputFromWindow(windowToken, 0);
         }
 
+        /*
         //kayıt secildiği zaman actionBar'a menu_secim tuslarını cizer
         public void actionBarKayit()
         {
@@ -1501,19 +1512,22 @@ public class MainActivity extends Activity
             inflaterActionBar.inflate(R.menu.menu_secim, menuActionBar);
         }
 
-        //actionBar'a menu_main_onay tuslarını cizer
+        //actionBar'a menu_onay tuslarını cizer
         public void actionBarOnay()
         {
+            Log.d(TAG, "action onay");
             menuActionBar.clear();
-            inflaterActionBar.inflate(R.menu.menu_main_onay, menuActionBar);
+            inflaterActionBar.inflate(R.menu.menu_onay, menuActionBar);
         }
 
         //actionBarın ilk hali
         public void actionBarIlk()
         {
+            Log.d(TAG, "action ilk");
             menuActionBar.clear();
-            inflaterActionBar.inflate(R.menu.menu_main, menuActionBar);
+            inflaterActionBar.inflate(R.menu.menu_ekle, menuActionBar);
         }
+        */
 
         public void arkaplanSecili(customRelativeLayout crl)
         {
@@ -1546,9 +1560,24 @@ public class MainActivity extends Activity
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
         {
             super.onCreateOptionsMenu(menu, inflater);
+            /*
             inflaterActionBar = inflater;
             menuActionBar = menu;
-            inflaterActionBar.inflate(R.menu.menu_main, menuActionBar);
+            inflaterActionBar.inflate(R.menu.menu_ekle, menuActionBar);
+            */
+
+            switch (ACTIONBAR_TUR)
+            {
+                case ACTIONBAR_EKLE:
+                    inflater.inflate(R.menu.menu_ekle, menu);
+                    break;
+                case ACTIONBAR_SECIM:
+                    inflater.inflate(R.menu.menu_secim, menu);
+                    break;
+                case ACTIONBAR_ONAY:
+                    inflater.inflate(R.menu.menu_onay, menu);
+                    break;
+            }
         }
 
         @Override
@@ -1565,12 +1594,14 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_tamam:
                     yaziyiKaydet(etEklenecek);
-                    actionBarIlk();
+                    //actionBarIlk();
+                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
                     return true;
                 case R.id.action_iptal:
                     klavyeKapat(getActivity(), etEklenecek.getWindowToken());
                     anaLayout.removeView(etEklenecek);
-                    actionBarIlk();
+                    //actionBarIlk();
+                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
                     return true;
                 case R.id.action_sil:
                     seciliElemanlariSil();
