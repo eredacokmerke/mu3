@@ -626,7 +626,7 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID)).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID), FRAGMENT_TAG).commit();
                     getActivity().getActionBar().setTitle(baslik);
                     /*
                     if (crl.isCstSeciliMi())
@@ -881,7 +881,7 @@ public class MainActivity extends Activity
                             @Override
                             public void onClick(View view)
                             {
-                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlID)).commit();
+                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlID),FRAGMENT_TAG).commit();
                                 getActivity().getActionBar().setTitle(kategoriAdi);
                             }
                         });
@@ -940,7 +940,7 @@ public class MainActivity extends Activity
                         String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
 
                         xmlEtiketID = ustSeviyeID;
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlEtiketID))).commit();
+                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlEtiketID)),FRAGMENT_TAG).commit();
                     }
                     catch (FileNotFoundException e)
                     {
@@ -1642,11 +1642,8 @@ public class MainActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        Log.d("TAG", "back pressed ");
-
-        /*
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-        if (fr.xmlEtiketID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+        if (xmlEtiketID.equals("0"))//en ust seviyede ise uygulamadan çıksın
         {
             super.onBackPressed();
         }
@@ -1654,7 +1651,6 @@ public class MainActivity extends Activity
         {
             fr.ustSeviyeyiGetir();
         }
-        */
     }
 
     public static class customRelativeLayout extends RelativeLayout
@@ -1671,7 +1667,6 @@ public class MainActivity extends Activity
         public customRelativeLayout(Context context, String baslik, int elemanTur)
         {
             super(context);
-
             switch (elemanTur)
             {
                 case ELEMAN_TUR_KATEGORI:
@@ -1769,6 +1764,7 @@ public class MainActivity extends Activity
                     return tvIsaret;
                 }
         */
+
         public TextView getTvBaslik()
         {
             return tvBaslik;
