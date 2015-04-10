@@ -10,4 +10,9 @@
           android:icon="@drawable/iptal"
           android:orderInCategory="100"
           android:showAsAction="always"/>
+    <item android:id="@+id/action_sil"
+          android:title="Sil"
+          android:icon="@drawable/sil"
+          android:orderInCategory="100"
+          android:showAsAction="always"/>
 </menu>

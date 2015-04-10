@@ -87,8 +87,9 @@ public class MainActivity extends Activity
     static Resources resources;
     static float px7;
     static int px2;
-    private static String xmlEtiketID = "0";//içinde olunan parçanın id si
-    private static int xmlID;//eklenen kategori ve kayıtlara id verebilmek için
+    private static String xmlKayitID = "-1";//içine girilen kayit id si
+    private static String xmlParcaID = "0";//içinde olunan parçanın id si
+    private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -128,7 +129,7 @@ public class MainActivity extends Activity
         px2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, resources.getDisplayMetrics());
     }
 
-    //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve son xmlID'sini donduruyor
+    //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve en buyuk xml id sini buluyor
     public void xmlDosyasiKontrolEt()
     {
         File xmlDosyasi = new File(xmlDosyaYolu);
@@ -136,22 +137,22 @@ public class MainActivity extends Activity
         {
             if (xmlDosyasi.exists())//dosya sistemde mevcut
             {
-                xmlID = sonIDyiBul();
-                if (xmlID == -1)
+                xmlEnBuyukID = enBuyukIDyiBul();
+                if (xmlEnBuyukID == -1)
                 {
                     ekranaHataYazdir("1", "xml okunamadı");
                 }
             }
             else//dosya yok
             {
-                xmlID = 0;
+                xmlEnBuyukID = 0;
                 xmlDosyasiOlustur();
             }
         }
         else//klasör yok
         {
             xmlKlasorYolu.mkdirs();
-            xmlID = 0;
+            xmlEnBuyukID = 0;
             xmlDosyasiOlustur();
         }
     }
@@ -174,7 +175,7 @@ public class MainActivity extends Activity
     }
 
     //uygulama açıldığında xml dosyasındaki en büyük id yi buluyor ve id vermeye o sayıdan devam ediyor
-    public int sonIDyiBul()
+    public int enBuyukIDyiBul()
     {
         Log.d("proje32", "xmlDosyaYolu : " + xmlDosyaYolu);
         try
@@ -307,7 +308,7 @@ public class MainActivity extends Activity
         /*
         public PlaceholderFragment(int sonuc)
         {
-            //xmlID = sonuc;
+            //xmlEnBuyukID = sonuc;
             //listSeciliYazi = new ArrayList<>();
             //listSeciliKategori = new ArrayList<>();
         }
@@ -320,7 +321,7 @@ public class MainActivity extends Activity
             args.putInt(FRAGMENT_SECIM, secim);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
-            xmlEtiketID = String.valueOf(kategoriID);
+            xmlParcaID = String.valueOf(kategoriID);
             fragment.setHasOptionsMenu(true);
 
             return fragment;
@@ -521,10 +522,9 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    Log.d(TAG, "kayit a tıklandı");
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi)).addToBackStack(null).commit();
-                    //actionBarOnay();
                     ACTIONBAR_TUR = ACTIONBAR_ONAY;
+                    xmlKayitID = String.valueOf(eklenenID);
 
                      /*
                     if (crl.isCstSeciliMi())
@@ -610,7 +610,7 @@ public class MainActivity extends Activity
                     anaLayout.removeAllViews();
                     getActivity().getActionBar().setTitle(kategoriBaslik);
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    xmlEtiketID = String.valueOf(kategoriID);
+                    xmlParcaID = String.valueOf(kategoriID);
 
                     //seciliElemanListeleriniSifirla();
 
@@ -695,7 +695,7 @@ public class MainActivity extends Activity
                     anaLayout.removeAllViews();
                     getActivity().getActionBar().setTitle(baslik);
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    xmlEtiketID = String.valueOf(kategoriID);
+                    xmlParcaID = String.valueOf(kategoriID);
                     xmlEtiketNesil = xmlEtiketNesil + 2;
 
                     parseXml(String.valueOf(kategoriID));
@@ -744,7 +744,7 @@ public class MainActivity extends Activity
         //başta oluşturulan xml e yeni eklenecek kısımları ekliyor
         public void xmlDosyasiniGuncelle(String baslik, String renk)
         {
-            xmlID++;
+            xmlEnBuyukID++;
             try
             {
                 //if (txtIsaretci.getText().equals(XML_ROOT))
@@ -757,10 +757,10 @@ public class MainActivity extends Activity
 
                     Node nodeRoot = doc.getElementsByTagName(XML_ROOT).item(0);//ilk görülen root tagını alıyor
                     Element yeniNodeParca = doc.createElement(XML_PARCA);//parca isimli elemanı oluşturuyor
-                    yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlID));//parca icinde id isimli özellik oluşturuluyor
+                    yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca icinde id isimli özellik oluşturuluyor
                     nodeRoot.appendChild(yeniNodeParca);//root etiketine parca etiketi ekleniyor
 
-                    Node nodeParca = doc.getElementById(String.valueOf(xmlID));//xmlid id sine sahip eleman alınıyor. üstte oluşturulan parca etiketi
+                    Node nodeParca = doc.getElementById(String.valueOf(xmlEnBuyukID));//xmlid id sine sahip eleman alınıyor. üstte oluşturulan parca etiketi
                     Element yeniNodeBaslik = doc.createElement(XML_BASLIK);//baslik isimli etiket oluşturuluyor
                     yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri ekleniyor
                     Element yeniNodeRenk = doc.createElement(XML_RENK);//renk isimli etiket oluşturuluyor
@@ -782,7 +782,7 @@ public class MainActivity extends Activity
                     DocumentBuilder db = dbf.newDocumentBuilder();
                     Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-                    Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlEtiketID));//içinde bulunulan parcaya giriyor
+                    Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
                     NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
                     for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
                     {
@@ -790,11 +790,11 @@ public class MainActivity extends Activity
                         {
                             Node nodeAltparca = nodeParcaCocuklari.item(i);//altparcaya giriliyor
                             Element yeniNodeParca = doc.createElement(XML_PARCA);//parca isimli etiket olşuturuluyor
-                            yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlID));//parca ya id özelliği ekleniyor
+                            yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
                             yeniNodeParca.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
                             nodeAltparca.appendChild(yeniNodeParca);//altparca etiketine parca ekleniyor
 
-                            Node nodeParca = doc.getElementById(String.valueOf(xmlID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
+                            Node nodeParca = doc.getElementById(String.valueOf(xmlEnBuyukID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
                             Element yeniNodeBaslik = doc.createElement(XML_BASLIK);//baslik etiketi oluşturuluyor
                             yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
                             Element yeniNodeRenk = doc.createElement(XML_RENK);//renk etiketi oluşturuluyor
@@ -889,7 +889,7 @@ public class MainActivity extends Activity
                             @Override
                             public void onClick(View view)
                             {
-                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlID),FRAGMENT_TAG).commit();
+                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlEnBuyukID),FRAGMENT_TAG).commit();
                                 getActivity().getActionBar().setTitle(kategoriAdi);
                             }
                         });
@@ -946,11 +946,11 @@ public class MainActivity extends Activity
                         DocumentBuilder db = dbf.newDocumentBuilder();
                         Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-                        Element element = doc.getElementById(xmlEtiketID);
+                        Element element = doc.getElementById(xmlParcaID);
                         String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        xmlEtiketID = ustSeviyeID;
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlEtiketID)),FRAGMENT_TAG).commit();
+                        xmlParcaID = ustSeviyeID;
+                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)),FRAGMENT_TAG).commit();
                     }
                     catch (FileNotFoundException e)
                     {
@@ -976,14 +976,14 @@ public class MainActivity extends Activity
                     break;
                 }
                 default:
-                    Log.d(TAG, "default : xmlEtiketID : " + xmlEtiketID);
+                    Log.d(TAG, "default : xmlParcaID : " + xmlParcaID);
             }
         }
 
         //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
         public void yaziyiKaydet(EditText et)
         {
-            xmlID++;
+            xmlEnBuyukID++;
             try
             {
                 String alanYazi = et.getText().toString();
@@ -993,17 +993,17 @@ public class MainActivity extends Activity
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
 
-                kategoriDurumunuGuncelle(doc, xmlEtiketID, DURUM_YENI);
+                kategoriDurumunuGuncelle(doc, xmlParcaID, DURUM_YENI);
 
-                Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlEtiketID));//içinde bulunulan parcaya giriyor
+                Node nodeMevcutParca = doc.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
                 NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
                 for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
                 {
                     if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
                     {
-                        int eklenenID = xmlID;
+                        int eklenenID = xmlEnBuyukID;
                         Element yeniNodeKayit = doc.createElement(XML_KAYIT);//kayıt etiketi olusturuyor
-                        yeniNodeKayit.setAttribute(XML_ID, String.valueOf(xmlID));//parca ya id özelliği ekleniyor
+                        yeniNodeKayit.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
                         yeniNodeKayit.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
                         nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
 
@@ -1069,6 +1069,22 @@ public class MainActivity extends Activity
         //sil tusuna basıldığı zaman secili elemanları siler
         public void seciliElemanlariSil()
         {
+            switch (FRAGMENT_ETKIN_EKRAN)
+            {
+                case FRAGMENT_KAYIT_EKRANI:
+
+                    kayitSil();
+                    ustSeviyeyiGetir();
+
+                    break;
+
+                case FRAGMENT_KATEGORI_EKRANI:
+
+                    break;
+
+                default:
+            }
+
             /*
             if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
             {
@@ -1127,6 +1143,52 @@ public class MainActivity extends Activity
                 });
             }
             */
+        }
+
+        public void kayitSil()
+        {
+            if(!xmlKayitID.equals("-1"))
+            {
+                try
+                {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setValidating(false);
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                    Element element = doc.getElementById(xmlKayitID);
+                    element.getParentNode().removeChild(element);
+                    doc.normalize();
+                    documentToFile(doc);
+
+                    xmlKayitID = "-1";
+                }
+                catch (FileNotFoundException e)
+                {
+                    Log.e("hata[20]", e.getMessage());
+                    ekranaHataYazdir("20", e.getMessage());
+                }
+                catch (ParserConfigurationException e)
+                {
+                    Log.e("hata[21]", e.getMessage());
+                    ekranaHataYazdir("21", e.getMessage());
+                }
+                catch (IOException e)
+                {
+                    Log.e("hata[22]", e.getMessage());
+                    ekranaHataYazdir("22", e.getMessage());
+                }
+                catch (SAXException e)
+                {
+                    Log.e("hata[23]", e.getMessage());
+                    ekranaHataYazdir("23", e.getMessage());
+                }
+            }
+            else
+            {
+                Log.e("hata[23]", "kayıt id -1");
+                ekranaHataYazdir("23","kayıt id -1");
+            }
         }
 
         public void kategoriSil(List<Integer> listeSilinecek)
@@ -1632,10 +1694,10 @@ public class MainActivity extends Activity
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
-                    if (xmlID > 0)//xml de kayıt varsa ekrana eklesin
+                    if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
-                        parseXml(xmlEtiketID);
-                        if (xmlEtiketID.equals("0"))
+                        parseXml(xmlParcaID);
+                        if (xmlParcaID.equals("0"))
                         {
                             getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
                             getActivity().getActionBar().setTitle("");
@@ -1674,7 +1736,7 @@ public class MainActivity extends Activity
     public void onBackPressed()
     {
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-        if (xmlEtiketID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+        if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
         {
             super.onBackPressed();
         }
