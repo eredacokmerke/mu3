@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_tamamlandi"
+    <item android:id="@+id/action_secim_tamamlandi"
           android:title="Tamamlandı"
           android:icon="@drawable/tamam"
           android:orderInCategory="100"
           android:showAsAction="always"/>
-    <item android:id="@+id/action_sil"
+    <item android:id="@+id/action_secim_yeni"
+          android:title="Yeni"
+          android:icon="@drawable/yeni"
+          android:orderInCategory="100"
+          android:showAsAction="always"/>
+    <item android:id="@+id/action_secim_sil"
           android:title="Sil"
           android:icon="@drawable/sil"
           android:orderInCategory="100"
