@@ -134,8 +134,6 @@ public class MainActivity extends Activity
 
         if (savedInstanceState == null)
         {
-            //getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment(sonuc), FRAGMENT_TAG).commit();
-            //getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_ETKIN_EKRAN, 0), FRAGMENT_TAG).commit();
             getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
         }
 
@@ -515,74 +513,9 @@ public class MainActivity extends Activity
 
                         }
                     }
-
-                     /*
-                    if (crl.isCstSeciliMi())
-                    {
-                        listSeciliYazi.remove(listSeciliYazi.indexOf(eklenenID));
-                        crl.setCstSeciliMi(false);
-                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
-                        arkaplanKayit(crl);
-                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
-                        {
-                            actionBarIlk();
-                        }
-                    }
-                    else
-                    {
-                        listSeciliYazi.add(eklenenID);
-                        crl.setCstSeciliMi(true);
-                        actionBarKayit();
-                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
-                        arkaplanSecili(crl);
-
-                    }
-                     */
                 }
             });
             anaLayout.addView(crl);
-
-            /*
-            final customTextView tv = new customTextView(getActivity());
-            tv.setCstID(eklenenID);
-            tv.setId(eklenenID);
-            tv.setCstSeciliMi(false);
-            if(durum.equals(DURUM_TAMAMLANDI))
-            {
-             tv.setText("\u2714" + " " + yazi);
-            }
-            else
-            {
-                tv.setText(yazi);
-            }
-            //tv.setText(yazi);
-            tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
-            tv.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    if (tv.isCstSeciliMi())
-                    {
-                        listSeciliYazi.remove(listSeciliYazi.indexOf(eklenenID));
-                        tv.setCstSeciliMi(false);
-                        tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
-                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
-                        {
-                            actionBarIlk();
-                        }
-                    }
-                    else
-                    {
-                        listSeciliYazi.add(eklenenID);
-                        tv.setCstSeciliMi(true);
-                        actionBarKayit();
-                        tv.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
-                    }
-                }
-            });
-            anaLayout.addView(tv);
-            */
         }
 
         public String kategoriYolunuGetir(String kategoriID)
@@ -684,25 +617,6 @@ public class MainActivity extends Activity
         public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, String durum)
         {
             final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-
-            /*
-            crl.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    anaLayout.removeAllViews();
-                    getActivity().getActionBar().setTitle(kategoriBaslik);
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    xmlParcaID = String.valueOf(kategoriID);
-
-                    //seciliElemanListeleriniSifirla();
-
-                    parseXml(String.valueOf(kategoriID));
-                }
-            });
-            */
-
             crl.setCstID(kategoriID);
             crl.setId(kategoriID);
             if (durum.equals(DURUM_TAMAMLANDI))
@@ -749,28 +663,6 @@ public class MainActivity extends Activity
                             crl.setCstSeciliMi(true);
                         }
                     }
-                    //getActivity().getActionBar().setTitle(kategoriYolunuGetir(kategoriID));
-                    /*
-                    if (crl.isCstSeciliMi())
-                    {
-                        listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
-                        crl.setCstSeciliMi(false);
-                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
-                        arkaplanKategori(crl);
-                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
-                        {
-                            actionBarIlk();
-                        }
-                    }
-                    else
-                    {
-                        listSeciliKategori.add(kategoriID);
-                        crl.setCstSeciliMi(true);
-                        actionBarKayit();
-                        //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
-                        arkaplanSecili(crl);
-                    }
-                    */
                 }
             });
             anaLayout.addView(crl);
@@ -788,75 +680,9 @@ public class MainActivity extends Activity
                     ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
                     bar.setBackgroundDrawable(actionBarArkaPlan);
 
-                    /*
-                    if (crl.isCstSeciliMi())
-                    {
-                        listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
-                        crl.setCstSeciliMi(false);
-                        crl.arkaplanKategori();
-                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
-                        {
-                            //actionBarIlk();
-                            actionBarDegistir(ACTIONBAR_EKLE);
-                        }
-                    }
-                    else
-                    {
-                        listSeciliKategori.add(kategoriID);
-                        crl.setCstSeciliMi(true);
-                        crl.arkaplanSecili();
-                        //ACTIONBAR_TUR = ACTIONBAR_DEGISTIR;
-                        actionBarDegistir(ACTIONBAR_SECIM);
-                        //actionBarKayit();
-                    }
-                    */
                     return true;
                 }
             });
-
-
-            /*
-            ll.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View view)
-                {
-                    if (ll.isCstSeciliMi())
-                    {
-                        listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
-                        ll.setCstSeciliMi(false);
-                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
-                        if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
-                        {
-                            actionBarIlk();
-                        }
-                    }
-                    else
-                    {
-                        listSeciliKategori.add(kategoriID);
-                        ll.setCstSeciliMi(true);
-                        actionBarKayit();
-                        ll.setBackground(getResources().getDrawable(R.drawable.ana_ekran_secili));
-                    }
-                    return true;
-                }
-            });
-
-            ll.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    anaLayout.removeAllViews();
-                    getActivity().getActionBar().setTitle(baslik);
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    xmlParcaID = String.valueOf(kategoriID);
-                    xmlEtiketNesil = xmlEtiketNesil + 2;
-
-                    parseXml(String.valueOf(kategoriID));
-                }
-            });
-            */
         }
 
         //Document nesnesini dosyaya yazıyor
@@ -1478,7 +1304,7 @@ public class MainActivity extends Activity
             }
         }
 
-        //secili kayıtları ve kategorilerin altındaki kayıtları tamamalandı olarak isaretler
+        //secili kayıtları ve kategorilerin altındaki kayıtları tamamlandı olarak isaretler
         public void seciliElemanlariTamamla()
         {
             /*
@@ -2042,17 +1868,8 @@ public class MainActivity extends Activity
                     LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     pa.setMargins(0, 10, 0, 10);
                     this.setLayoutParams(pa);
-                    //this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
 
                     arkaplanKategori();
-                    /*
-                    GradientDrawable gd = new GradientDrawable();
-                    gd.setColor(0xFF00CED1);
-                    gd.setStroke(px2, 0xFF009095);
-                    gd.setCornerRadius(px7);
-                    this.setBackground(gd);
-                    this.setPadding(10, 20, 10, 20);
-                    */
 
                     tvTik = new TextView(context);
                     tvTik.setTextSize(30);
@@ -2062,18 +1879,6 @@ public class MainActivity extends Activity
                     lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                     lp3.addRule(RelativeLayout.CENTER_VERTICAL);
                     this.addView(tvTik, lp3);
-
-                    /*
-                    tvIsaret = new TextView(context);
-                    tvIsaret.setTextSize(30);
-                    tvIsaret.setId(ID1);
-                    tvIsaret.setText("\u2192");
-                    tvIsaret.setTextColor(Color.WHITE);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    lp.addRule(RelativeLayout.CENTER_VERTICAL);
-                    this.addView(tvIsaret, lp);
-                    */
 
                     tvBaslik = new TextView(context);
                     tvBaslik.setTextSize(30);
@@ -2092,17 +1897,8 @@ public class MainActivity extends Activity
                     LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     pa2.setMargins(0, 0, 0, 0);
                     this.setLayoutParams(pa2);
-                    //this.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
 
                     arkaplanKayit();
-                    /*
-                    GradientDrawable gd = new GradientDrawable();
-                    gd.setColor(0xFF009ED1);
-                    gd.setStroke(px2, 0xFF004095);
-                    gd.setCornerRadius(px7);
-                    this.setBackground(gd);
-                    this.setPadding(10, 20, 10, 20);
-                    */
 
                     tvTik = new TextView(context);
                     tvTik.setTextSize(15);
@@ -2158,18 +1954,10 @@ public class MainActivity extends Activity
             setPadding(10, 20, 10, 20);
         }
 
-
         public TextView getTvTik()
         {
             return tvTik;
         }
-
-        /*
-                public TextView getTvIsaret()
-                {
-                    return tvIsaret;
-                }
-        */
 
         public TextView getTvBaslik()
         {
