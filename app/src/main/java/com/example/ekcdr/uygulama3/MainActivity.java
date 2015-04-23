@@ -138,8 +138,7 @@ public class MainActivity extends Activity
         }
 
         bar = getActionBar();
-        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI));
-        bar.setBackgroundDrawable(actionBarArkaPlan);
+        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
 
         resources = getResources();
         px7 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, resources.getDisplayMetrics());
@@ -308,6 +307,12 @@ public class MainActivity extends Activity
         Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
+    public static void actionBarArkaPlanDegistir(String renk)
+    {
+        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
+        bar.setBackgroundDrawable(actionBarArkaPlan);
+    }
+
     public static class PlaceholderFragment extends Fragment
     {
         private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
@@ -315,7 +320,7 @@ public class MainActivity extends Activity
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
         private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
-        private static List<Integer> listSeciliYazi;//seçilen kayıtların listesi
+        private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
         private String TAG = "uyg3";
 
         public PlaceholderFragment()
@@ -335,7 +340,7 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            listSeciliYazi = new ArrayList<>();
+            listSeciliKayit = new ArrayList<>();
             listSeciliKategori = new ArrayList<>();
 
             return fragment;
@@ -356,7 +361,7 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            listSeciliYazi = new ArrayList<>();
+            listSeciliKayit = new ArrayList<>();
             listSeciliKategori = new ArrayList<>();
 
             KAYIT_DURUM_TUR = durum;
@@ -466,14 +471,13 @@ public class MainActivity extends Activity
                 {
                     if(!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
                     {
-                        listSeciliYazi.add(eklenenID);
+                        listSeciliKayit.add(eklenenID);
                         crl.arkaplanSecili();
                         crl.setCstSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
                         TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
-                        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
-                        bar.setBackgroundDrawable(actionBarArkaPlan);
+                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                     }
 
                     return true;
@@ -487,15 +491,13 @@ public class MainActivity extends Activity
                     if(TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
                         getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi, eklenenID, durum)).addToBackStack(null).commit();
-
-                        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KAYIT));
-                        bar.setBackgroundDrawable(actionBarArkaPlan);
+                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KAYIT);
                     }
                     else if(TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
                         if (crl.isCstSeciliMi())
                         {
-                            listSeciliYazi.remove(listSeciliYazi.indexOf(eklenenID));
+                            listSeciliKayit.remove(listSeciliKayit.indexOf(eklenenID));
                             crl.arkaplanKayit();
                             crl.setCstSeciliMi(false);
 
@@ -504,16 +506,14 @@ public class MainActivity extends Activity
                                 actionBarDegistir(ACTIONBAR_EKLE);
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-                                ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI));
-                                bar.setBackgroundDrawable(actionBarArkaPlan);
+                                actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                             }
                         }
                         else
                         {
-                            listSeciliYazi.add(eklenenID);
+                            listSeciliKayit.add(eklenenID);
                             crl.arkaplanSecili();
                             crl.setCstSeciliMi(true);
-
                         }
                     }
                 }
@@ -638,9 +638,7 @@ public class MainActivity extends Activity
                     if(TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
                         getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID), FRAGMENT_TAG).commit();
-
-                        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI));
-                        bar.setBackgroundDrawable(actionBarArkaPlan);
+                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                     }
                     else if(TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
@@ -655,8 +653,7 @@ public class MainActivity extends Activity
                                 actionBarDegistir(ACTIONBAR_EKLE);
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-                                ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI));
-                                bar.setBackgroundDrawable(actionBarArkaPlan);
+                                actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                             }
                         }
                         else
@@ -682,8 +679,7 @@ public class MainActivity extends Activity
                         actionBarDegistir(ACTIONBAR_SECIM);
                         TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
-                        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
-                        bar.setBackgroundDrawable(actionBarArkaPlan);
+                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                     }
 
                     return true;
@@ -826,12 +822,12 @@ public class MainActivity extends Activity
             }
         }
 
-        //listSeciliKategori ve listSeciliYazi'yi sıfırlar ve actionbar ı ilk haline döndürür
+        //listSeciliKategori ve listSeciliKayit'yi sıfırlar ve actionbar ı ilk haline döndürür
         public void seciliElemanListeleriniSifirla()
         {
             /*
             listSeciliKategori.clear();
-            listSeciliYazi.clear();
+            listSeciliKayit.clear();
             actionBarIlk();
             */
         }
@@ -890,9 +886,7 @@ public class MainActivity extends Activity
                                 if(TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                                 {
                                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlEnBuyukID), FRAGMENT_TAG).commit();
-
-                                    ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI));
-                                    bar.setBackgroundDrawable(actionBarArkaPlan);
+                                    actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                 }
                                 else if(TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                                 {
@@ -907,8 +901,7 @@ public class MainActivity extends Activity
                                             actionBarDegistir(ACTIONBAR_EKLE);
                                             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-                                            ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI));
-                                            bar.setBackgroundDrawable(actionBarArkaPlan);
+                                            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                         }
                                     }
                                     else
@@ -937,7 +930,7 @@ public class MainActivity extends Activity
 
         public int seciliElemanSayisi()
         {
-            return listSeciliKategori.size()+listSeciliYazi.size();
+            return listSeciliKategori.size()+ listSeciliKayit.size();
         }
 
         public EditText yaziAlaniOlustur()
@@ -952,6 +945,8 @@ public class MainActivity extends Activity
 
         public void ustSeviyeyiGetir()
         {
+            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case FRAGMENT_KAYIT_EKRANI:
@@ -1119,7 +1114,7 @@ public class MainActivity extends Activity
             */
 
             /*
-            if (listSeciliKategori.isEmpty() && listSeciliYazi.isEmpty())
+            if (listSeciliKategori.isEmpty() && listSeciliKayit.isEmpty())
             {
                 Toast.makeText(getActivity(), "Seçim yapılmadı", Toast.LENGTH_LONG).show();
             }
@@ -1158,7 +1153,7 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view)
                     {
-                        yaziSil(listSeciliYazi);
+                        yaziSil(listSeciliKayit);
                         kategoriSil(listSeciliKategori);
 
                         seciliElemanListeleriniSifirla();
@@ -1314,7 +1309,7 @@ public class MainActivity extends Activity
         public void seciliElemanlariTamamla()
         {
             /*
-            kayitTamamla(listSeciliYazi);
+            kayitTamamla(listSeciliKayit);
             kategoriTamamla(listSeciliKategori);
             seciliElemanListeleriniSifirla();
             */
