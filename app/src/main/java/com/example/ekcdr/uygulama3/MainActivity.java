@@ -464,14 +464,17 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    listSeciliYazi.add(eklenenID);
-                    crl.arkaplanSecili();
-                    crl.setCstSeciliMi(true);
-                    actionBarDegistir(ACTIONBAR_SECIM);
-                    TIKLAMA_OLAYI = OLAY_SECIM_YAP;
+                    if(!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
+                    {
+                        listSeciliYazi.add(eklenenID);
+                        crl.arkaplanSecili();
+                        crl.setCstSeciliMi(true);
+                        actionBarDegistir(ACTIONBAR_SECIM);
+                        TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
-                    ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
-                    bar.setBackgroundDrawable(actionBarArkaPlan);
+                        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
+                        bar.setBackgroundDrawable(actionBarArkaPlan);
+                    }
 
                     return true;
                 }
@@ -671,14 +674,17 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    listSeciliKategori.add(kategoriID);
-                    crl.arkaplanSecili();
-                    crl.setCstSeciliMi(true);
-                    actionBarDegistir(ACTIONBAR_SECIM);
-                    TIKLAMA_OLAYI = OLAY_SECIM_YAP;
+                    if(!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
+                    {
+                        listSeciliKategori.add(kategoriID);
+                        crl.arkaplanSecili();
+                        crl.setCstSeciliMi(true);
+                        actionBarDegistir(ACTIONBAR_SECIM);
+                        TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
-                    ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
-                    bar.setBackgroundDrawable(actionBarArkaPlan);
+                        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_SECILI));
+                        bar.setBackgroundDrawable(actionBarArkaPlan);
+                    }
 
                     return true;
                 }
@@ -1851,7 +1857,6 @@ public class MainActivity extends Activity
         private int cstID = -1;
         private boolean cstSeciliMi = false;
         private TextView tvTik;
-        //private TextView tvIsaret;
         private TextView tvBaslik;
         final static int ID0 = 10000;
         final static int ID1 = 10001;
@@ -1922,7 +1927,6 @@ public class MainActivity extends Activity
                 }
             }
         }
-
 
         public void arkaplanSecili()
         {
