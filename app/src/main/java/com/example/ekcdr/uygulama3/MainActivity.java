@@ -1173,49 +1173,94 @@ public class MainActivity extends Activity
             */
         }
 
-        public void kayitSil()
+        public void kayitSilDiyaloguOlustur()
         {
             if (!xmlKayitID.equals("-1"))
             {
-                try
-                {
-                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                    dbf.setValidating(false);
-                    DocumentBuilder db = dbf.newDocumentBuilder();
-                    Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+                LinearLayout alertLL = new LinearLayout(getActivity());
+                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                alertLL.setLayoutParams(pa);
+                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                alertLL.setWeightSum(1f);
 
-                    Element element = doc.getElementById(xmlKayitID);
-                    element.getParentNode().removeChild(element);
-                    doc.normalize();
-                    documentToFile(doc);
+                final TextView alertTV = new TextView(getActivity());
+                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+                alertTV.setLayoutParams(pa2);
+                alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                alertTV.setText("Kayıt silinsin mi ?");
+                alertLL.addView(alertTV);
 
-                    xmlKayitID = "-1";
-                }
-                catch (FileNotFoundException e)
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Onay");
+                builder.setView(alertLL);
+
+                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                builder.setNegativeButton("İptal", null);
+                final AlertDialog alert = builder.create();
+                alert.show();
+
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
                 {
-                    Log.e("hata[20]", e.getMessage());
-                    ekranaHataYazdir("20", e.getMessage());
-                }
-                catch (ParserConfigurationException e)
+                    @Override
+                    public void onClick(View view)
+                    {
+                        kayitSil();
+                        ustSeviyeyiGetir();
+
+                        alert.dismiss();
+                    }
+                });
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
                 {
-                    Log.e("hata[21]", e.getMessage());
-                    ekranaHataYazdir("21", e.getMessage());
-                }
-                catch (IOException e)
-                {
-                    Log.e("hata[22]", e.getMessage());
-                    ekranaHataYazdir("22", e.getMessage());
-                }
-                catch (SAXException e)
-                {
-                    Log.e("hata[23]", e.getMessage());
-                    ekranaHataYazdir("23", e.getMessage());
-                }
+                    @Override
+                    public void onClick(View view)
+                    {
+                        alert.dismiss();
+                    }
+                });
             }
             else
             {
                 Log.e("hata[23]", "kayıt id -1");
                 ekranaHataYazdir("23", "kayıt id -1");
+            }
+        }
+
+        public void kayitSil()
+        {
+            try
+            {
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                dbf.setValidating(false);
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                Element element = doc.getElementById(xmlKayitID);
+                element.getParentNode().removeChild(element);
+                doc.normalize();
+                documentToFile(doc);
+
+                xmlKayitID = "-1";
+            }
+            catch (FileNotFoundException e)
+            {
+                Log.e("hata[20]", e.getMessage());
+                ekranaHataYazdir("20", e.getMessage());
+            }
+            catch (ParserConfigurationException e)
+            {
+                Log.e("hata[21]", e.getMessage());
+                ekranaHataYazdir("21", e.getMessage());
+            }
+            catch (IOException e)
+            {
+                Log.e("hata[22]", e.getMessage());
+                ekranaHataYazdir("22", e.getMessage());
+            }
+            catch (SAXException e)
+            {
+                Log.e("hata[23]", e.getMessage());
+                ekranaHataYazdir("23", e.getMessage());
             }
         }
 
@@ -1494,7 +1539,7 @@ public class MainActivity extends Activity
         }
 
         //parcanın yazilarini ve altparcalarını kontrol eder. hepsi tamamlanmiş ise parcayı tamamlandı olarak işaretler
-        public boolean parcayiIsaretleTamamlandi(Node nodeParca)
+        public boolean parcayiIsaretleTamamlandi(Node nodeParca, Document doc)
         {
             String idKategori = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
@@ -1539,6 +1584,10 @@ public class MainActivity extends Activity
                 if (sonucYazilar && sonucAltParcalar)//butun kayitlar ve kategoriler tamamlandı olarak işaretlenmiş. parca da tamamlandı olarak işaretlenecek
                 {
                     nodeParca.getAttributes().getNamedItem(XML_DURUM).setNodeValue(DURUM_TAMAMLANDI);
+
+                    doc.normalize();
+                    documentToFile(doc);
+
                     return true;
                 }
                 else
@@ -1549,7 +1598,7 @@ public class MainActivity extends Activity
         }
 
         //yeni olarak işaretlenen kaydin ust parcalarını da yeni olarak işaretler
-        public boolean parcayiIsaretleYeni(Node nodeParca)
+        public boolean parcayiIsaretleYeni(Node nodeParca, Document doc)
         {
             String idKategori = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
             if (idKategori.equals("0"))
@@ -1559,6 +1608,10 @@ public class MainActivity extends Activity
             else
             {
                 nodeParca.getAttributes().getNamedItem(XML_DURUM).setNodeValue(DURUM_YENI);
+
+                doc.normalize();
+                documentToFile(doc);
+
                 return true;
             }
         }
@@ -1617,17 +1670,17 @@ public class MainActivity extends Activity
                     Element elementKayit = doc.getElementById(String.valueOf(xmlKayitID));
                     elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
 
+                    doc.normalize();
+                    documentToFile(doc);
+
                     boolean sonuc;
                     Node nodeParca = elementKayit.getParentNode().getParentNode();
-                    sonuc = parcayiIsaretleYeni(nodeParca);
+                    sonuc = parcayiIsaretleYeni(nodeParca, doc);
 
                     while (sonuc)
                     {
                         nodeParca = nodeParca.getParentNode().getParentNode();
-                        sonuc = parcayiIsaretleYeni(nodeParca);
-
-                        doc.normalize();
-                        documentToFile(doc);
+                        sonuc = parcayiIsaretleYeni(nodeParca, doc);
                     }
 
                     /*
@@ -1681,17 +1734,17 @@ public class MainActivity extends Activity
                     Element elementKayit = doc.getElementById(String.valueOf(xmlKayitID));
                     elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
 
+                    doc.normalize();
+                    documentToFile(doc);
+
                     boolean sonuc;
                     Node nodeParca = elementKayit.getParentNode().getParentNode();
-                    sonuc = parcayiIsaretleTamamlandi(nodeParca);
+                    sonuc = parcayiIsaretleTamamlandi(nodeParca, doc);
 
                     while (sonuc)
                     {
                         nodeParca = nodeParca.getParentNode().getParentNode();
-                        sonuc = parcayiIsaretleTamamlandi(nodeParca);
-
-                        doc.normalize();
-                        documentToFile(doc);
+                        sonuc = parcayiIsaretleTamamlandi(nodeParca, doc);
                     }
 
                     /*
@@ -1863,8 +1916,7 @@ public class MainActivity extends Activity
                     seciliElemanlariTamamla();
                     return true;
                 case R.id.action_degistir_sil:
-                    kayitSil();
-                    ustSeviyeyiGetir();
+                    kayitSilDiyaloguOlustur();
                     return true;
                 case R.id.action_degistir_tamamlandi:
                     kayitTamamla();
