@@ -90,8 +90,8 @@ public class MainActivity extends Activity
     private static final int FRAGMENT_KATEGORI_EKRANI = 0;
     private static final int FRAGMENT_KAYIT_EKRANI = 1;
     private static int FRAGMENT_ETKIN_EKRAN;
-    private static final int OLAY_ICINE_GIR=0;
-    private static final int OLAY_SECIM_YAP=1;
+    private static final int OLAY_ICINE_GIR = 0;
+    private static final int OLAY_SECIM_YAP = 1;
     private static int TIKLAMA_OLAYI;
     private static final String ACTIONBAR_ARKAPLAN_KATEGORI = "#00CED1";
     private static final String ACTIONBAR_ARKAPLAN_KAYIT = "#009ED1";
@@ -469,7 +469,7 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if(!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
+                    if (!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
                     {
                         listSeciliKayit.add(eklenenID);
                         crl.arkaplanSecili();
@@ -488,12 +488,12 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    if(TIKLAMA_OLAYI == OLAY_ICINE_GIR)
+                    if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
                         getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi, eklenenID, durum)).addToBackStack(null).commit();
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KAYIT);
                     }
-                    else if(TIKLAMA_OLAYI == OLAY_SECIM_YAP)
+                    else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
                         if (crl.isCstSeciliMi())
                         {
@@ -501,7 +501,7 @@ public class MainActivity extends Activity
                             crl.arkaplanKayit();
                             crl.setCstSeciliMi(false);
 
-                            if(seciliElemanSayisi() == 0)
+                            if (seciliElemanSayisi() == 0)
                             {
                                 actionBarDegistir(ACTIONBAR_EKLE);
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
@@ -635,12 +635,12 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    if(TIKLAMA_OLAYI == OLAY_ICINE_GIR)
+                    if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
                         getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID), FRAGMENT_TAG).commit();
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                     }
-                    else if(TIKLAMA_OLAYI == OLAY_SECIM_YAP)
+                    else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
                         if (crl.isCstSeciliMi())
                         {
@@ -648,7 +648,7 @@ public class MainActivity extends Activity
                             crl.arkaplanKategori();
                             crl.setCstSeciliMi(false);
 
-                            if(seciliElemanSayisi() == 0)
+                            if (seciliElemanSayisi() == 0)
                             {
                                 actionBarDegistir(ACTIONBAR_EKLE);
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
@@ -671,7 +671,7 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if(!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
+                    if (!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
                     {
                         listSeciliKategori.add(kategoriID);
                         crl.arkaplanSecili();
@@ -883,12 +883,12 @@ public class MainActivity extends Activity
                             @Override
                             public void onClick(View view)
                             {
-                                if(TIKLAMA_OLAYI == OLAY_ICINE_GIR)
+                                if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                                 {
                                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlEnBuyukID), FRAGMENT_TAG).commit();
                                     actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                 }
-                                else if(TIKLAMA_OLAYI == OLAY_SECIM_YAP)
+                                else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                                 {
                                     if (crl.isCstSeciliMi())
                                     {
@@ -896,7 +896,7 @@ public class MainActivity extends Activity
                                         crl.arkaplanKategori();
                                         crl.setCstSeciliMi(false);
 
-                                        if(seciliElemanSayisi() == 0)
+                                        if (seciliElemanSayisi() == 0)
                                         {
                                             actionBarDegistir(ACTIONBAR_EKLE);
                                             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
@@ -930,7 +930,7 @@ public class MainActivity extends Activity
 
         public int seciliElemanSayisi()
         {
-            return listSeciliKategori.size()+ listSeciliKayit.size();
+            return listSeciliKategori.size() + listSeciliKayit.size();
         }
 
         public EditText yaziAlaniOlustur()
@@ -1493,6 +1493,77 @@ public class MainActivity extends Activity
             }
         }
 
+        //parcanın yazilarini ve altparcalarını kontrol eder. hepsi tamamlanmiş ise parcayı tamamlandı olarak işaretler
+        public boolean parcayiIsaretleTamamlandi(Node nodeParca)
+        {
+            String idKategori = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
+
+            boolean sonucYazilar = true;
+            boolean sonucAltParcalar = true;
+            NodeList nodeListParca = nodeParca.getChildNodes();//parcanın alt etiketlerini tarıyor. yazılar etiketini bulmak için
+            for (int i = 0; i < nodeListParca.getLength(); i++)
+            {
+                if (nodeListParca.item(i).getNodeName().equals(XML_YAZILAR))
+                {
+                    Node nodeYazilar = nodeListParca.item(i);
+
+                    NodeList nodeListKayit = nodeYazilar.getChildNodes();
+                    for (int j = 0; j < nodeListKayit.getLength(); j++)
+                    {
+                        if (nodeListKayit.item(j).getAttributes().getNamedItem(XML_DURUM).getNodeValue().equals(DURUM_YENI))
+                        {
+                            sonucYazilar = false;
+                            break;
+                        }
+                    }
+                }
+                if (nodeListParca.item(i).getNodeName().equals(XML_ALTPARCA))
+                {
+                    NodeList nodeListAltParca = nodeListParca.item(i).getChildNodes();
+                    for (int j = 0; j < nodeListAltParca.getLength(); j++)
+                    {
+                        if (nodeListAltParca.item(j).getAttributes().getNamedItem(XML_DURUM).getNodeValue().equals(DURUM_YENI))
+                        {
+                            sonucAltParcalar = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (idKategori.equals("0"))
+            {
+                return false;
+            }
+            else
+            {
+                if (sonucYazilar && sonucAltParcalar)//butun kayitlar ve kategoriler tamamlandı olarak işaretlenmiş. parca da tamamlandı olarak işaretlenecek
+                {
+                    nodeParca.getAttributes().getNamedItem(XML_DURUM).setNodeValue(DURUM_TAMAMLANDI);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        //yeni olarak işaretlenen kaydin ust parcalarını da yeni olarak işaretler
+        public boolean parcayiIsaretleYeni(Node nodeParca)
+        {
+            String idKategori = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
+            if (idKategori.equals("0"))
+            {
+                return false;
+            }
+            else
+            {
+                nodeParca.getAttributes().getNamedItem(XML_DURUM).setNodeValue(DURUM_YENI);
+                return true;
+            }
+        }
+
+        /*
         //yazilar altındaki kayitların durum degerlerini kontrol eder
         public boolean kayitDurumunuKontrolEt(Node nodeYazilar, String durum)
         {
@@ -1529,6 +1600,7 @@ public class MainActivity extends Activity
             }
             return true;
         }
+        */
 
         //secilen kaydin durumunu yeni olarak değiştirir
         public void kayitYeni()
@@ -1545,6 +1617,20 @@ public class MainActivity extends Activity
                     Element elementKayit = doc.getElementById(String.valueOf(xmlKayitID));
                     elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
 
+                    boolean sonuc;
+                    Node nodeParca = elementKayit.getParentNode().getParentNode();
+                    sonuc = parcayiIsaretleYeni(nodeParca);
+
+                    while (sonuc)
+                    {
+                        nodeParca = nodeParca.getParentNode().getParentNode();
+                        sonuc = parcayiIsaretleYeni(nodeParca);
+
+                        doc.normalize();
+                        documentToFile(doc);
+                    }
+
+                    /*
                     //bütün kayıtlar tamamlandi olarak isaretlenmis ise kategorinin içindeki kategorilere baksın
                     if (kayitDurumunuKontrolEt(elementKayit.getParentNode(), DURUM_TAMAMLANDI))
                     {
@@ -1556,9 +1642,9 @@ public class MainActivity extends Activity
                             kategoriDurumunuGuncelle(doc, idKategori, DURUM_YENI);
                         }
                     }
-
                     doc.normalize();
                     documentToFile(doc);
+                    */
 
                     Toast.makeText(getActivity(), "yeni olarak isaretlendi", Toast.LENGTH_SHORT).show();
 
@@ -1595,6 +1681,20 @@ public class MainActivity extends Activity
                     Element elementKayit = doc.getElementById(String.valueOf(xmlKayitID));
                     elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
 
+                    boolean sonuc;
+                    Node nodeParca = elementKayit.getParentNode().getParentNode();
+                    sonuc = parcayiIsaretleTamamlandi(nodeParca);
+
+                    while (sonuc)
+                    {
+                        nodeParca = nodeParca.getParentNode().getParentNode();
+                        sonuc = parcayiIsaretleTamamlandi(nodeParca);
+
+                        doc.normalize();
+                        documentToFile(doc);
+                    }
+
+                    /*
                     //bütün kayıtlar tamamlandi olarak isaretlenmis ise kategorinin içindeki kategorilere baksın
                     if (kayitDurumunuKontrolEt(elementKayit.getParentNode(), DURUM_YENI))
                     {
@@ -1609,6 +1709,7 @@ public class MainActivity extends Activity
 
                     doc.normalize();
                     documentToFile(doc);
+*/
 
                     Toast.makeText(getActivity(), "tamamlandi olarak isaretlendi", Toast.LENGTH_SHORT).show();
 
