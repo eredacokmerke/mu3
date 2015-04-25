@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_onay_tamamlandi"
+    <item android:id="@+id/action_onay_tamam"
           android:title="Tamam"
           android:icon="@drawable/tamam"
           android:orderInCategory="100"
           android:showAsAction="always"/>
-    <item android:id="@+id/action_onay_tamamlanmadi"
-          android:title="Tamamlanmadi"
+    <item android:id="@+id/action_onay_iptal"
+          android:title="İptal"
           android:icon="@drawable/iptal"
           android:orderInCategory="100"
           android:showAsAction="always"/>

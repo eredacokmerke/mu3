@@ -1893,21 +1893,18 @@ public class MainActivity extends Activity
                     kategoriKaydet();
                     return true;
                 case R.id.action_kayit_ekle:
-                    //ACTIONBAR_TUR = ACTIONBAR_ONAY;
                     actionBarDegistir(ACTIONBAR_ONAY);
-                    //menuActionBar.clear();
-                    //onCreateOptionsMenu(menuActionBar, inflaterActionBar);
                     etEklenecek = yaziAlaniOlustur();
                     klavyeAc(getActivity(), etEklenecek);
                     return true;
-                case R.id.action_onay_tamamlandi:
+                case R.id.action_onay_tamam:
                     yaziyiKaydet(etEklenecek);
-                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
+                    actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
-                case R.id.action_onay_tamamlanmadi:
+                case R.id.action_onay_iptal:
                     klavyeKapat(getActivity(), etEklenecek.getWindowToken());
                     anaLayout.removeView(etEklenecek);
-                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
+                    actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
                 //case R.id.action_onay_sil:
                 //seciliElemanlariSil();
