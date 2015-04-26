@@ -319,9 +319,11 @@ public class MainActivity extends Activity
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
+        private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
         private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
         private String TAG = "uyg3";
+        private Activity fAct;
 
         public PlaceholderFragment()
         {
@@ -1719,6 +1721,38 @@ public class MainActivity extends Activity
             }
         }
 
+        public void kayitDegistir()
+        {
+            if (!xmlKayitID.equals("-1"))
+            {
+                try
+                {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setValidating(false);
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+                    Element elementKayit = doc.getElementById(String.valueOf(xmlKayitID));
+                    elementKayit.setTextContent(etDegisecek.getText().toString());
+
+                    doc.normalize();
+                    documentToFile(doc);
+                }
+                catch (ParserConfigurationException e)
+                {
+                }
+                catch (FileNotFoundException e)
+                {
+                }
+                catch (IOException e)
+                {
+                }
+                catch (SAXException e)
+                {
+                }
+            }
+        }
+
         //secilen kaydin durumunu tamamlandı olarak değiştirir
         public void kayitTamamla()
         {
@@ -1824,17 +1858,42 @@ public class MainActivity extends Activity
             }
         }
 
-        public static void klavyeAc(Context c, EditText et)
+        public void klavyeAc(Context c, EditText et)
         {
             et.requestFocus();
             InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
+
+            if (getActivity().getCurrentFocus() == null)
+            {
+                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+            }
+            else
+            {
+                imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
+            }
+
+            //InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+            //imm.showSoftInput(et, InputMethodManager.SHOW_FORCED);
+            //imm.showSoftInput(et, 0);
+            //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
 
-        public static void klavyeKapat(Context c, IBinder windowToken)
+        public void klavyeKapat(Context c, IBinder windowToken)
         {
-            InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-            mgr.hideSoftInputFromWindow(windowToken, 0);
+            InputMethodManager mgr = (InputMethodManager) fAct.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (getActivity() == null)
+            {
+                mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+            }
+            else
+            {
+                mgr.hideSoftInputFromWindow(windowToken, 0);
+            }
+
+            //InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            //mgr.hideSoftInputFromWindow(windowToken, 0);
+            //mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
 
         public void actionBarDegistir(int actionBarTur)
@@ -1842,6 +1901,13 @@ public class MainActivity extends Activity
             ACTIONBAR_TUR = actionBarTur;
             menuActionBar.clear();
             onCreateOptionsMenu(menuActionBar, inflaterActionBar);
+        }
+
+        @Override
+        public void onAttach(Activity activity)
+        {
+            super.onAttach(activity);
+            fAct = activity;
         }
 
         @Override
@@ -1895,14 +1961,14 @@ public class MainActivity extends Activity
                 case R.id.action_kayit_ekle:
                     actionBarDegistir(ACTIONBAR_ONAY);
                     etEklenecek = yaziAlaniOlustur();
-                    klavyeAc(getActivity(), etEklenecek);
+                    klavyeAc(getActivity().getApplicationContext(), etEklenecek);
                     return true;
-                case R.id.action_onay_tamam:
+                case R.id.action_onay_kaydet:
                     yaziyiKaydet(etEklenecek);
                     actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
                 case R.id.action_onay_iptal:
-                    klavyeKapat(getActivity(), etEklenecek.getWindowToken());
+                    klavyeKapat(getActivity().getApplicationContext(), etEklenecek.getWindowToken());
                     anaLayout.removeView(etEklenecek);
                     actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
@@ -1921,8 +1987,12 @@ public class MainActivity extends Activity
                 case R.id.action_degistir_yeni:
                     kayitYeni();
                     return true;
+                case R.id.action_degistir_kaydet:
+                    kayitDegistir();
+                    return true;
                 case android.R.id.home:
                     ustSeviyeyiGetir();
+                    klavyeKapat(fAct, null);
                     break;
             }
             return super.onOptionsItemSelected(item);
@@ -1968,12 +2038,15 @@ public class MainActivity extends Activity
 
                     RelativeLayout rl = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    EditText et = new EditText(getActivity());
-                    et.setText(getArguments().getString(FRAGMENT_YAZI));
-                    rl.addView(et, lp);
+                    //EditText et = new EditText(getActivity());
+                    etDegisecek = new EditText(getActivity());
+                    etDegisecek.setText(getArguments().getString(FRAGMENT_YAZI));
+                    etDegisecek.requestFocus();
+                    rl.addView(etDegisecek, lp);
                     anaLayout.addView(rl);
 
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    klavyeAc(getActivity().getApplicationContext(), etDegisecek);
 
                     return rootView;
                 }
