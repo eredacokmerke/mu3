@@ -108,12 +108,15 @@ public class MainActivity extends Activity
     private static final double ORAN_YATAY = 0.6;
     private static DisplayMetrics displayMetrics;
     private static ActionBar bar;
+    static View activityRootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        activityRootView = findViewById(R.id.container);
 
         String UYGULAMA_ADI = "uygulama3";
 
@@ -1884,7 +1887,10 @@ public class MainActivity extends Activity
 
             if (getActivity() == null)
             {
-                mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                if (activityRootView.getRootView().getHeight() / 2 > activityRootView.getHeight())//kullanıcı klavyeyi kapatmıs mi diye kontrol
+                {
+                    mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                }
             }
             else
             {
