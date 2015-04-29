@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -457,10 +458,8 @@ public class MainActivity extends Activity
         //xml parse edildikten sonra kayitları ana ekrana ekler
         public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum)
         {
-            final customRelativeLayout crl = new customRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT);
-            crl.setCstID(eklenenID);
-            crl.setId(eklenenID);
-            //crl.setCstSeciliMi(false);
+            final customRelativeLayout crl = new customRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID);
+            //crl.setId(eklenenID);
             if (durum.equals(DURUM_TAMAMLANDI))
             {
                 crl.getTvTik().setText("\u2714");
@@ -474,11 +473,11 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
+                    if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                     {
                         listSeciliKayit.add(eklenenID);
                         crl.arkaplanSecili();
-                        crl.setCstSeciliMi(true);
+                        crl.setCrlSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
                         TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
@@ -500,11 +499,11 @@ public class MainActivity extends Activity
                     }
                     else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
-                        if (crl.isCstSeciliMi())
+                        if (crl.isCrlSeciliMi())
                         {
                             listSeciliKayit.remove(listSeciliKayit.indexOf(eklenenID));
                             crl.arkaplanKayit();
-                            crl.setCstSeciliMi(false);
+                            crl.setCrlSeciliMi(false);
 
                             if (seciliElemanSayisi() == 0)
                             {
@@ -518,7 +517,7 @@ public class MainActivity extends Activity
                         {
                             listSeciliKayit.add(eklenenID);
                             crl.arkaplanSecili();
-                            crl.setCstSeciliMi(true);
+                            crl.setCrlSeciliMi(true);
                         }
                     }
                 }
@@ -624,9 +623,8 @@ public class MainActivity extends Activity
         //public void kategorileriAnaEkranaEkle(final String baslik, final String staticrenk, final String yazi, boolean cerceve, final int kategoriID)
         public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, String durum)
         {
-            final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            crl.setCstID(kategoriID);
-            crl.setId(kategoriID);
+            final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            //crl.setId(kategoriID);
             if (durum.equals(DURUM_TAMAMLANDI))
             {
                 crl.getTvTik().setText("\u2714");
@@ -647,11 +645,11 @@ public class MainActivity extends Activity
                     }
                     else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
-                        if (crl.isCstSeciliMi())
+                        if (crl.isCrlSeciliMi())
                         {
                             listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
                             crl.arkaplanKategori();
-                            crl.setCstSeciliMi(false);
+                            crl.setCrlSeciliMi(false);
 
                             if (seciliElemanSayisi() == 0)
                             {
@@ -659,37 +657,55 @@ public class MainActivity extends Activity
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
                                 actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+
+                                duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
                             }
                         }
                         else
                         {
                             listSeciliKategori.add(kategoriID);
                             crl.arkaplanSecili();
-                            crl.setCstSeciliMi(true);
+                            crl.setCrlSeciliMi(true);
                         }
                     }
                 }
             });
-            anaLayout.addView(crl);
             crl.setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (!crl.isCstSeciliMi())//secili eleman tekrar secilemesin
+                    if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                     {
                         listSeciliKategori.add(kategoriID);
                         crl.arkaplanSecili();
-                        crl.setCstSeciliMi(true);
+                        crl.setCrlSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
                         TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+
+                        duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
                     }
 
                     return true;
                 }
             });
+            anaLayout.addView(crl);
+        }
+
+        //kategori layout'undaki duzenle simgesini gösterir ve gizler
+        public void duzenleSimgesininGorunumunuDegistir(int gorunum)
+        {
+            int childcount = anaLayout.getChildCount();
+            for (int i = 0; i < childcount; i++)
+            {
+                customRelativeLayout crl = (customRelativeLayout) anaLayout.getChildAt(i);
+                if (crl.getCrlTur() == ELEMAN_TUR_KATEGORI)
+                {
+                    crl.getTvDuzenle().setVisibility(gorunum);
+                }
+            }
         }
 
         //Document nesnesini dosyaya yazıyor
@@ -882,7 +898,7 @@ public class MainActivity extends Activity
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
-                        final customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriAdi, ELEMAN_TUR_KATEGORI);
+                        final customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriAdi, ELEMAN_TUR_KATEGORI, eklenenID);
                         crl.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -895,11 +911,11 @@ public class MainActivity extends Activity
                                 }
                                 else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                                 {
-                                    if (crl.isCstSeciliMi())
+                                    if (crl.isCrlSeciliMi())
                                     {
                                         listSeciliKategori.remove(listSeciliKategori.indexOf(xmlEnBuyukID));
                                         crl.arkaplanKategori();
-                                        crl.setCstSeciliMi(false);
+                                        crl.setCrlSeciliMi(false);
 
                                         if (seciliElemanSayisi() == 0)
                                         {
@@ -913,7 +929,7 @@ public class MainActivity extends Activity
                                     {
                                         listSeciliKategori.add(xmlEnBuyukID);
                                         crl.arkaplanSecili();
-                                        crl.setCstSeciliMi(true);
+                                        crl.setCrlSeciliMi(true);
                                     }
                                 }
                             }
@@ -1490,7 +1506,7 @@ public class MainActivity extends Activity
                     crl.getTvTik().setText("\u2714");
                     //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kategori));
                     arkaplanKategori(crl);
-                    crl.setCstSeciliMi(false);
+                    crl.setCrlSeciliMi(false);
                 }
             }
 
@@ -1810,7 +1826,7 @@ public class MainActivity extends Activity
                     //crl.getTvTik().setText("\u2714");
                     //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
                     //arkaplanKayit(crl);
-                    //crl.setCstSeciliMi(false);
+                    //crl.setCrlSeciliMi(false);
 
                 /*
                 for (int i = 0; i < listeSilinecek.size(); i++)
@@ -1842,7 +1858,7 @@ public class MainActivity extends Activity
                     crl.getTvTik().setText("\u2714");
                     //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
                     arkaplanKayit(crl);
-                    crl.setCstSeciliMi(false);
+                    crl.setCrlSeciliMi(false);
                 }
                 */
                 }
@@ -2060,6 +2076,253 @@ public class MainActivity extends Activity
                     return null;
             }
         }
+
+        //kategori seciliyken duzenleye tıklanıldığı zaman girilen ismi xml'e kaydeder
+        public void kategoriBaslikGuncelle(String baslik, int kategoriID)
+        {
+            try
+            {
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                dbf.setValidating(false);
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+                Element element = doc.getElementById(String.valueOf(kategoriID));
+
+                Node nodeBaslik = element.getFirstChild();
+                nodeBaslik.setTextContent(baslik);
+
+                doc.normalize();
+                documentToFile(doc);
+            }
+            catch (ParserConfigurationException e)
+            {}
+            catch (FileNotFoundException e)
+            {}
+            catch (SAXException e)
+            {}
+            catch (IOException e)
+            {}
+        }
+
+        public class customRelativeLayout extends RelativeLayout
+        {
+            //private int crlID = -1;
+            private boolean crlSeciliMi = false;
+            private TextView tvTik;
+            private TextView tvBaslik;
+            private ImageView tvDuzenle;
+            private int crlTur;
+            final static int ID0 = 10000;
+            final static int ID1 = 10001;
+            final static int ID2 = 10002;
+
+            public customRelativeLayout(Context context, String baslik, int elemanTur, final int crlID)
+            {
+                super(context);
+                setCrlSeciliMi(false);
+                //setCrlID(crlID);
+                switch (elemanTur)
+                {
+                    case ELEMAN_TUR_KATEGORI:
+                    {
+                        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        pa.setMargins(0, 10, 0, 10);
+                        this.setLayoutParams(pa);
+
+                        arkaplanKategori();
+
+                        crlTur = ELEMAN_TUR_KATEGORI;
+
+                        tvTik = new TextView(context);
+                        tvTik.setTextSize(30);
+                        tvTik.setId(ID0);
+                        tvTik.setTextColor(Color.WHITE);
+                        RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                        lp3.addRule(RelativeLayout.CENTER_VERTICAL);
+                        this.addView(tvTik, lp3);
+
+                        tvDuzenle = new ImageView(context);
+                        tvDuzenle.setImageResource(R.drawable.duzenle);
+                        tvDuzenle.setId(ID1);
+                        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lp1.addRule(RelativeLayout.CENTER_VERTICAL);
+                        this.addView(tvDuzenle, lp1);
+                        tvDuzenle.setVisibility(INVISIBLE);
+                        tvDuzenle.setOnClickListener(new OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                //alertdialog un içindeki ana LinearLayout
+                                LinearLayout alertLL = new LinearLayout(getContext());
+                                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                                alertLL.setLayoutParams(pa);
+                                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                                alertLL.setWeightSum(1f);
+
+                                //yazının yazılacagı EditText
+                                final EditText alertET = new EditText(getContext());
+                                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+                                alertET.setLayoutParams(pa2);
+                                alertET.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                                alertLL.addView(alertET);
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Kategori Adı");
+                                builder.setView(alertLL);
+
+                                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                                builder.setNegativeButton("İptal", null);
+                                final AlertDialog alert = builder.create();
+                                alert.show();
+
+                                final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+                                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(View view)
+                                    {
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        alert.dismiss();
+
+                                        String yeniBaslik =  alertET.getText().toString();
+
+                                        tvBaslik.setText(yeniBaslik);
+
+                                        kategoriBaslikGuncelle(yeniBaslik, crlID);
+                                    }
+                                });
+                                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(View view)
+                                    {
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        alert.dismiss();
+                                    }
+                                });
+                            }
+                        });
+
+                        tvBaslik = new TextView(context);
+                        tvBaslik.setTextSize(30);
+                        tvBaslik.setText(baslik);
+                        tvBaslik.setTextColor(Color.WHITE);
+                        tvBaslik.setPadding(5, 0, 5, 0);
+                        RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                        lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
+                        lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
+                        this.addView(tvBaslik, lp2);
+
+                        break;
+                    }
+                    case ELEMAN_TUR_KAYIT:
+                    {
+                        LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        pa2.setMargins(0, 0, 0, 0);
+                        this.setLayoutParams(pa2);
+
+                        arkaplanKayit();
+
+                        crlTur = ELEMAN_TUR_KAYIT;
+
+                        tvTik = new TextView(context);
+                        tvTik.setTextSize(15);
+                        tvTik.setId(ID2);
+                        tvTik.setTextColor(Color.WHITE);
+                        RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        lp4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                        lp4.addRule(RelativeLayout.CENTER_VERTICAL);
+                        this.addView(tvTik, lp4);
+
+                        tvBaslik = new TextView(context);
+                        tvBaslik.setTextSize(15);
+                        tvBaslik.setText(baslik);
+                        tvBaslik.setTextColor(Color.WHITE);
+                        tvBaslik.setPadding(5, 0, 5, 0);
+                        RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                        lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
+                        this.addView(tvBaslik, lp5);
+
+                        break;
+                    }
+                }
+            }
+
+            public void arkaplanSecili()
+            {
+                GradientDrawable gd = new GradientDrawable();
+                gd.setColor(0xFFFF2222);
+                gd.setStroke(px2, 0xFF880000);
+                gd.setCornerRadius(px7);
+                setBackground(gd);
+                setPadding(10, 20, 10, 20);
+            }
+
+            public void arkaplanKategori()
+            {
+                GradientDrawable gd = new GradientDrawable();
+                gd.setColor(0xFF00CED1);
+                gd.setStroke(px2, 0xFF009095);
+                gd.setCornerRadius(px7);
+                setBackground(gd);
+                setPadding(10, 20, 10, 20);
+            }
+
+            public void arkaplanKayit()
+            {
+                GradientDrawable gd = new GradientDrawable();
+                gd.setColor(0xFF009ED1);
+                gd.setStroke(px2, 0xFF004095);
+                gd.setCornerRadius(px7);
+                setBackground(gd);
+                setPadding(10, 20, 10, 20);
+            }
+
+            public TextView getTvTik()
+            {
+                return tvTik;
+            }
+
+            public TextView getTvBaslik()
+            {
+                return tvBaslik;
+            }
+/*
+            public int getCrlID()
+            {
+                return crlID;
+            }
+
+            public void setCrlID(int crlID)
+            {
+                this.crlID = crlID;
+            }
+*/
+            public boolean isCrlSeciliMi()
+            {
+                return crlSeciliMi;
+            }
+
+            public void setCrlSeciliMi(boolean crlSeciliMi)
+            {
+                this.crlSeciliMi = crlSeciliMi;
+            }
+
+            public ImageView getTvDuzenle()
+            {
+                return tvDuzenle;
+            }
+
+            public int getCrlTur()
+            {
+                return crlTur;
+            }
+        }
     }
 
     @Override
@@ -2073,143 +2336,6 @@ public class MainActivity extends Activity
         else
         {
             fr.ustSeviyeyiGetir();
-        }
-    }
-
-    public static class customRelativeLayout extends RelativeLayout
-    {
-        private int cstID = -1;
-        private boolean cstSeciliMi = false;
-        private TextView tvTik;
-        private TextView tvBaslik;
-        final static int ID0 = 10000;
-        final static int ID1 = 10001;
-        final static int ID2 = 10002;
-
-        public customRelativeLayout(Context context, String baslik, int elemanTur)
-        {
-            super(context);
-            setCstSeciliMi(false);
-            switch (elemanTur)
-            {
-                case ELEMAN_TUR_KATEGORI:
-                {
-                    LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    pa.setMargins(0, 10, 0, 10);
-                    this.setLayoutParams(pa);
-
-                    arkaplanKategori();
-
-                    tvTik = new TextView(context);
-                    tvTik.setTextSize(30);
-                    tvTik.setId(ID0);
-                    tvTik.setTextColor(Color.WHITE);
-                    RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    lp3.addRule(RelativeLayout.CENTER_VERTICAL);
-                    this.addView(tvTik, lp3);
-
-                    tvBaslik = new TextView(context);
-                    tvBaslik.setTextSize(30);
-                    tvBaslik.setText(baslik);
-                    tvBaslik.setTextColor(Color.WHITE);
-                    tvBaslik.setPadding(5, 0, 5, 0);
-                    RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    //p2.addRule(RelativeLayout.LEFT_OF, tvIsaret.getId());
-                    lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
-                    this.addView(tvBaslik, lp2);
-
-                    break;
-                }
-                case ELEMAN_TUR_KAYIT:
-                {
-                    LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    pa2.setMargins(0, 0, 0, 0);
-                    this.setLayoutParams(pa2);
-
-                    arkaplanKayit();
-
-                    tvTik = new TextView(context);
-                    tvTik.setTextSize(15);
-                    tvTik.setId(ID2);
-                    tvTik.setTextColor(Color.WHITE);
-                    RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    lp4.addRule(RelativeLayout.CENTER_VERTICAL);
-                    this.addView(tvTik, lp4);
-
-                    tvBaslik = new TextView(context);
-                    tvBaslik.setTextSize(15);
-                    tvBaslik.setText(baslik);
-                    tvBaslik.setTextColor(Color.WHITE);
-                    tvBaslik.setPadding(5, 0, 5, 0);
-                    RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
-                    this.addView(tvBaslik, lp5);
-
-                    break;
-                }
-            }
-        }
-
-        public void arkaplanSecili()
-        {
-            GradientDrawable gd = new GradientDrawable();
-            gd.setColor(0xFFFF2222);
-            gd.setStroke(px2, 0xFF880000);
-            gd.setCornerRadius(px7);
-            setBackground(gd);
-            setPadding(10, 20, 10, 20);
-        }
-
-        public void arkaplanKategori()
-        {
-            GradientDrawable gd = new GradientDrawable();
-            gd.setColor(0xFF00CED1);
-            gd.setStroke(px2, 0xFF009095);
-            gd.setCornerRadius(px7);
-            setBackground(gd);
-            setPadding(10, 20, 10, 20);
-        }
-
-        public void arkaplanKayit()
-        {
-            GradientDrawable gd = new GradientDrawable();
-            gd.setColor(0xFF009ED1);
-            gd.setStroke(px2, 0xFF004095);
-            gd.setCornerRadius(px7);
-            setBackground(gd);
-            setPadding(10, 20, 10, 20);
-        }
-
-        public TextView getTvTik()
-        {
-            return tvTik;
-        }
-
-        public TextView getTvBaslik()
-        {
-            return tvBaslik;
-        }
-
-        public int getCstID()
-        {
-            return cstID;
-        }
-
-        public void setCstID(int cstID)
-        {
-            this.cstID = cstID;
-        }
-
-        public boolean isCstSeciliMi()
-        {
-            return cstSeciliMi;
-        }
-
-        public void setCstSeciliMi(boolean cstSeciliMi)
-        {
-            this.cstSeciliMi = cstSeciliMi;
         }
     }
 }
