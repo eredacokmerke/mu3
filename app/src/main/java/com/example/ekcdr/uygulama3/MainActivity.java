@@ -487,7 +487,7 @@ public class MainActivity extends Activity
         public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum)
         {
             final customRelativeLayout crl = new customRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID);
-            //crl.setId(eklenenID);
+            crl.setId(eklenenID);
             if (durum.equals(DURUM_TAMAMLANDI))
             {
                 crl.getTvTik().setText("\u2714");
@@ -628,7 +628,7 @@ public class MainActivity extends Activity
         public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, String durum)
         {
             final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            //crl.setId(kategoriID);
+            crl.setId(kategoriID);
             if (durum.equals(DURUM_TAMAMLANDI))
             {
                 crl.getTvTik().setText("\u2714");
@@ -788,11 +788,11 @@ public class MainActivity extends Activity
         //listSeciliKategori ve listSeciliKayit'yi sıfırlar ve actionbar ı ilk haline döndürür
         public void seciliElemanListeleriniSifirla()
         {
-            /*
             listSeciliKategori.clear();
             listSeciliKayit.clear();
-            actionBarIlk();
-            */
+            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+            actionBarDegistir(ACTIONBAR_EKLE);
+            TIKLAMA_OLAYI = OLAY_ICINE_GIR;
         }
 
         //ana ekrana ve xml'e kategori ekler(parca)
@@ -841,6 +841,7 @@ public class MainActivity extends Activity
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
                         final customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriAdi, ELEMAN_TUR_KATEGORI, eklenenID);
+                        crl.setId(eklenenID);
                         crl.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -1004,82 +1005,51 @@ public class MainActivity extends Activity
         //sil tusuna basıldığı zaman secili elemanları siler
         public void seciliElemanlariSil()
         {
-            /*
-            switch (FRAGMENT_ETKIN_EKRAN)
+            String soru = "Seçilen kayıtlar silinsin mi ?";
+
+            LinearLayout alertLL = new LinearLayout(getActivity());
+            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            alertLL.setLayoutParams(pa);
+            alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+            alertLL.setWeightSum(1f);
+
+            final TextView alertTV = new TextView(getActivity());
+            LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+            alertTV.setLayoutParams(pa2);
+            alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+            alertTV.setText(soru);
+            alertLL.addView(alertTV);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Onay");
+            builder.setView(alertLL);
+
+            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+            builder.setNegativeButton("İptal", null);
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
-                case FRAGMENT_KAYIT_EKRANI:
-
-                    kayitSil();
-                    ustSeviyeyiGetir();
-
-                    break;
-
-                case FRAGMENT_KATEGORI_EKRANI:
-
-                    break;
-
-                default:
-            }
-            */
-
-            /*
-            if (listSeciliKategori.isEmpty() && listSeciliKayit.isEmpty())
-            {
-                Toast.makeText(getActivity(), "Seçim yapılmadı", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
-                String soru = "Kayıtlar silinsin mi ?";
-                if (!listSeciliKategori.isEmpty())
+                @Override
+                public void onClick(View view)
                 {
-                    soru = "Kategori içindeki bütün kayıtlar silinsin mi ?";
+                    kayitlariSil(listSeciliKayit);
+                    kategoriSil(listSeciliKategori);
+
+                    seciliElemanListeleriniSifirla();
+
+                    alert.dismiss();
                 }
-
-                LinearLayout alertLL = new LinearLayout(getActivity());
-                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-                alertLL.setLayoutParams(pa);
-                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-                alertLL.setWeightSum(1f);
-
-                final TextView alertTV = new TextView(getActivity());
-                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-                alertTV.setLayoutParams(pa2);
-                alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-                alertTV.setText(soru);
-                alertLL.addView(alertTV);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Onay");
-                builder.setView(alertLL);
-
-                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-                builder.setNegativeButton("İptal", null);
-                final AlertDialog alert = builder.create();
-                alert.show();
-
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+            });
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
                 {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        yaziSil(listSeciliKayit);
-                        kategoriSil(listSeciliKategori);
-
-                        seciliElemanListeleriniSifirla();
-
-                        alert.dismiss();
-                    }
-                });
-                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        alert.dismiss();
-                    }
-                });
-            }
-            */
+                    alert.dismiss();
+                }
+            });
         }
 
         public void kayitSilDiyaloguOlustur()
@@ -1135,6 +1105,7 @@ public class MainActivity extends Activity
             }
         }
 
+        //kayit ekranındayken sile tıklandı. bir kayıt siliyor
         public void kayitSil()
         {
             Element element = document.getElementById(xmlKayitID);
@@ -1144,6 +1115,7 @@ public class MainActivity extends Activity
             xmlKayitID = "-1";
         }
 
+        //secili kategorileri siler
         public void kategoriSil(List<Integer> listeSilinecek)
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
@@ -1157,7 +1129,8 @@ public class MainActivity extends Activity
             }
         }
 
-        public void yaziSil(List<Integer> listeSilinecek)
+        //secili kayıtları siler
+        public void kayitlariSil(List<Integer> listeSilinecek)
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
             {
@@ -1704,6 +1677,9 @@ public class MainActivity extends Activity
                 case R.id.action_secim_tamamlandi:
                     seciliElemanlariTamamla();
                     return true;
+                case R.id.action_secim_sil:
+                    seciliElemanlariSil();
+                    return true;
                 case R.id.action_degistir_sil:
                     kayitSilDiyaloguOlustur();
                     return true;
@@ -1764,7 +1740,6 @@ public class MainActivity extends Activity
 
                     RelativeLayout rl = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    //EditText et = new EditText(getActivity());
                     etDegisecek = new EditText(getActivity());
                     etDegisecek.setText(getArguments().getString(FRAGMENT_YAZI));
                     etDegisecek.requestFocus();
@@ -1785,16 +1760,13 @@ public class MainActivity extends Activity
         public void kategoriBaslikGuncelle(String baslik, int kategoriID)
         {
             Element element = document.getElementById(String.valueOf(kategoriID));
-
             Node nodeBaslik = element.getFirstChild();
             nodeBaslik.setTextContent(baslik);
-
             documentToFile();
         }
 
         public class customRelativeLayout extends RelativeLayout
         {
-            //private int crlID = -1;
             private boolean crlSeciliMi = false;
             private TextView tvTik;
             private TextView tvBaslik;
@@ -1808,7 +1780,6 @@ public class MainActivity extends Activity
             {
                 super(context);
                 setCrlSeciliMi(false);
-                //setCrlID(crlID);
                 switch (elemanTur)
                 {
                     case ELEMAN_TUR_KATEGORI:
