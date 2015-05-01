@@ -65,7 +65,6 @@ import javax.xml.transform.stream.StreamResult;
 
 public class MainActivity extends Activity
 {
-    //private static File xmlKlasorYolu;
     private static String xmlDosyaYolu;
     private static final String XML_PARCA = "parca";
     private static final String XML_RENK = "renk";
@@ -75,9 +74,9 @@ public class MainActivity extends Activity
     private static final String XML_KAYIT = "kayit";
     private static final String XML_ALTPARCA = "altparca";
     private static final String XML_ID = "id";
+    private static final String XML_DURUM = "durum";
     private static final String DURUM_YENI = "0";
     private static final String DURUM_TAMAMLANDI = "1";
-    private static final String XML_DURUM = "durum";
     private static final String FRAGMENT_TAG = "fragment_tag";
     private static final int ELEMAN_TUR_KAYIT = 0;
     private static final int ELEMAN_TUR_KATEGORI = 1;
@@ -87,6 +86,8 @@ public class MainActivity extends Activity
     private static final int ACTIONBAR_ONAY = 1;
     private static final int ACTIONBAR_SECIM = 2;
     private static final int ACTIONBAR_DEGISTIR = 3;
+    private static final int SECIM_YAPILDI = 1;
+    private static final int SECIM_IPTAL_EDILDI = 0;
     private static int ACTIONBAR_TUR = ACTIONBAR_EKLE;
     private static final int FRAGMENT_KATEGORI_EKRANI = 0;
     private static final int FRAGMENT_KAYIT_EKRANI = 1;
@@ -387,6 +388,7 @@ public class MainActivity extends Activity
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
         private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
+        private static List<String> listSeciliElemanDurumu;//seçilen kayıtların listesi
         private String TAG = "uyg3";
         private Activity fAct;
 
@@ -409,6 +411,7 @@ public class MainActivity extends Activity
 
             listSeciliKayit = new ArrayList<>();
             listSeciliKategori = new ArrayList<>();
+            listSeciliElemanDurumu = new ArrayList<>();
 
             return fragment;
         }
@@ -430,6 +433,7 @@ public class MainActivity extends Activity
 
             listSeciliKayit = new ArrayList<>();
             listSeciliKategori = new ArrayList<>();
+            listSeciliElemanDurumu = new ArrayList<>();
 
             KAYIT_DURUM_TUR = durum;
 
@@ -483,6 +487,41 @@ public class MainActivity extends Activity
             }
         }
 
+        //secilen elemanların durum bilgilerine göre actionBar daki simgeleri gizler, gösterir
+        public void secimEkranindaDurumuKontrolEt(String durum, int eylem)
+        {
+            switch (eylem)
+            {
+                case SECIM_YAPILDI:
+                    listSeciliElemanDurumu.add(durum);
+                    break;
+
+                case SECIM_IPTAL_EDILDI:
+                    listSeciliElemanDurumu.remove(listSeciliElemanDurumu.indexOf(durum));
+                    break;
+
+                default:
+                    Log.d(TAG, "hata");
+            }
+
+            if (listSeciliElemanDurumu.contains(DURUM_YENI))
+            {
+                menuActionBar.findItem(R.id.action_secim_tamam).setVisible(true);
+            }
+            else
+            {
+                menuActionBar.findItem(R.id.action_secim_tamam).setVisible(false);
+            }
+            if (listSeciliElemanDurumu.contains(DURUM_TAMAMLANDI))
+            {
+                menuActionBar.findItem(R.id.action_secim_yeni).setVisible(true);
+            }
+            else
+            {
+                menuActionBar.findItem(R.id.action_secim_yeni).setVisible(false);
+            }
+        }
+
         //xml parse edildikten sonra kayitları ana ekrana ekler
         public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum)
         {
@@ -510,6 +549,8 @@ public class MainActivity extends Activity
                         TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+
+                        secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                     }
 
                     return true;
@@ -540,6 +581,12 @@ public class MainActivity extends Activity
 
                                 actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                 duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
+
+                                listSeciliElemanDurumu.clear();
+                            }
+                            else
+                            {
+                                secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
                             }
                         }
                         else
@@ -547,6 +594,8 @@ public class MainActivity extends Activity
                             listSeciliKayit.add(eklenenID);
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
+
+                            secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                         }
                     }
                 }
@@ -554,6 +603,7 @@ public class MainActivity extends Activity
             anaLayout.addView(crl);
         }
 
+        //actionBar a yazılacak olan kategorinin yolunu getiriyor
         public String kategoriYolunuGetir(String kategoriID)
         {
             String baslik = "";
@@ -625,8 +675,7 @@ public class MainActivity extends Activity
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        //public void kategorileriAnaEkranaEkle(final String baslik, final String staticrenk, final String yazi, boolean cerceve, final int kategoriID)
-        public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, String durum)
+        public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, final String durum)
         {
             final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
             crl.setId(kategoriID);
@@ -663,6 +712,12 @@ public class MainActivity extends Activity
 
                                 actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                 duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
+
+                                listSeciliElemanDurumu.clear();
+                            }
+                            else
+                            {
+                                secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
                             }
                         }
                         else
@@ -670,6 +725,8 @@ public class MainActivity extends Activity
                             listSeciliKategori.add(kategoriID);
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
+
+                            secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                         }
                     }
                 }
@@ -689,6 +746,8 @@ public class MainActivity extends Activity
 
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                         duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+
+                        secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                     }
 
                     return true;
@@ -841,6 +900,9 @@ public class MainActivity extends Activity
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
+                        kategorileriAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI);
+
+                        /*
                         final customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriAdi, ELEMAN_TUR_KATEGORI, eklenenID);
                         crl.setId(eklenenID);
                         crl.setOnClickListener(new View.OnClickListener()
@@ -868,6 +930,13 @@ public class MainActivity extends Activity
 
                                             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                             duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
+
+                                            DURUM_SECILEN_ELEMANLAR="-1";
+                                            listSeciliElemanDurumu.clear();
+                                        }
+                                        else
+                                        {
+                                            //secimEkranindaDurumuKontrolEt(String.valueOf(kategoriID),0);
                                         }
                                     }
                                     else
@@ -875,11 +944,14 @@ public class MainActivity extends Activity
                                         listSeciliKategori.add(xmlEnBuyukID);
                                         crl.arkaplanSecili();
                                         crl.setCrlSeciliMi(true);
+
+                                        //secimEkranindaDurumuKontrolEt(String.valueOf(kategoriID),0);
                                     }
                                 }
                             }
                         });
                         anaLayout.addView(crl);
+                        */
                     }
                 }
             });
@@ -1678,7 +1750,7 @@ public class MainActivity extends Activity
                 //case R.id.action_onay_sil:
                 //seciliElemanlariSil();
                 //return true;
-                case R.id.action_secim_tamamlandi:
+                case R.id.action_secim_tamam:
                     seciliElemanlariTamamla();
                     return true;
                 case R.id.action_secim_sil:
