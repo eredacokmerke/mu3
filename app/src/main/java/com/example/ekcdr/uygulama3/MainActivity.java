@@ -481,7 +481,7 @@ public class MainActivity extends Activity
                         String kategoriDurum = nodeParca.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kategoriID = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        kategorileriAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum);
+                        kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum);
                     }
                 }
             }
@@ -675,7 +675,7 @@ public class MainActivity extends Activity
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        public void kategorileriAnaEkranaEkle(final String baslik, final int kategoriID, final String durum)
+        public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum)
         {
             final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
             crl.setId(kategoriID);
@@ -853,6 +853,7 @@ public class MainActivity extends Activity
             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
             actionBarDegistir(ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
+            duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
         }
 
         //ana ekrana ve xml'e kategori ekler(parca)
@@ -900,58 +901,7 @@ public class MainActivity extends Activity
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
-                        kategorileriAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI);
-
-                        /*
-                        final customRelativeLayout crl = new customRelativeLayout(getActivity(), kategoriAdi, ELEMAN_TUR_KATEGORI, eklenenID);
-                        crl.setId(eklenenID);
-                        crl.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
-                                {
-                                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, xmlEnBuyukID), FRAGMENT_TAG).commit();
-                                    actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
-                                }
-                                else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
-                                {
-                                    if (crl.isCrlSeciliMi())
-                                    {
-                                        listSeciliKategori.remove(listSeciliKategori.indexOf(xmlEnBuyukID));
-                                        crl.arkaplanKategori();
-                                        crl.setCrlSeciliMi(false);
-
-                                        if (seciliElemanSayisi() == 0)
-                                        {
-                                            actionBarDegistir(ACTIONBAR_EKLE);
-                                            TIKLAMA_OLAYI = OLAY_ICINE_GIR;
-
-                                            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
-                                            duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
-
-                                            DURUM_SECILEN_ELEMANLAR="-1";
-                                            listSeciliElemanDurumu.clear();
-                                        }
-                                        else
-                                        {
-                                            //secimEkranindaDurumuKontrolEt(String.valueOf(kategoriID),0);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        listSeciliKategori.add(xmlEnBuyukID);
-                                        crl.arkaplanSecili();
-                                        crl.setCrlSeciliMi(true);
-
-                                        //secimEkranindaDurumuKontrolEt(String.valueOf(kategoriID),0);
-                                    }
-                                }
-                            }
-                        });
-                        anaLayout.addView(crl);
-                        */
+                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI);
                     }
                 }
             });
