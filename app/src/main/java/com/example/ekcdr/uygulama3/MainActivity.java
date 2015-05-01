@@ -539,6 +539,7 @@ public class MainActivity extends Activity
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
                                 actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+                                duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
                             }
                         }
                         else
@@ -866,6 +867,7 @@ public class MainActivity extends Activity
                                             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
                                             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+                                            duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
                                         }
                                     }
                                     else
@@ -1455,7 +1457,6 @@ public class MainActivity extends Activity
 
                 menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(true);
                 menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(false);
-
             }
         }
 
@@ -1597,9 +1598,12 @@ public class MainActivity extends Activity
 
         public void actionBarDegistir(int actionBarTur)
         {
-            ACTIONBAR_TUR = actionBarTur;
-            menuActionBar.clear();
-            onCreateOptionsMenu(menuActionBar, inflaterActionBar);
+            if (ACTIONBAR_TUR != actionBarTur)
+            {
+                ACTIONBAR_TUR = actionBarTur;
+                menuActionBar.clear();
+                onCreateOptionsMenu(menuActionBar, inflaterActionBar);
+            }
         }
 
         @Override
