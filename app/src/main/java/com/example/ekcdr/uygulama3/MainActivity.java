@@ -95,6 +95,7 @@ public class MainActivity extends Activity
     private static final int OLAY_ICINE_GIR = 0;
     private static final int OLAY_SECIM_YAP = 1;
     private static int TIKLAMA_OLAYI;
+    private static final String TIK_UNICODE = "\u2714";
     private static final String ACTIONBAR_ARKAPLAN_KATEGORI = "#00CED1";
     private static final String ACTIONBAR_ARKAPLAN_KAYIT = "#009ED1";
     private static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
@@ -529,7 +530,7 @@ public class MainActivity extends Activity
             crl.setId(eklenenID);
             if (durum.equals(DURUM_TAMAMLANDI))
             {
-                crl.getTvTik().setText("\u2714");
+                crl.getTvTik().setText(TIK_UNICODE);
             }
             else
             {
@@ -681,7 +682,7 @@ public class MainActivity extends Activity
             crl.setId(kategoriID);
             if (durum.equals(DURUM_TAMAMLANDI))
             {
-                crl.getTvTik().setText("\u2714");
+                crl.getTvTik().setText(TIK_UNICODE);
             }
             else
             {
@@ -1169,14 +1170,112 @@ public class MainActivity extends Activity
             }
         }
 
+        //secili elemanların durumunu yeni olarak isaretler
+        public void seciliElemanlarYeni()
+        {
+            for (int i = 0; i < listSeciliKayit.size(); i++)
+            {
+                Element element = kayitYeni(String.valueOf(listSeciliKayit.get(i)));
+                if (element != null)
+                {
+                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
+                    crl.getTvTik().setText("");
+                    crl.arkaplanKayit();
+                }
+            }
+            for (int i = 0; i < listSeciliKategori.size(); i++)
+            {
+                Element element = kayitYeni(String.valueOf(listSeciliKategori.get(i)));
+                if (element != null)
+                {
+                    kategoriCocuklarDurum(element, DURUM_YENI);
+                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
+                    crl.getTvTik().setText("");
+                    crl.arkaplanKategori();
+                }
+            }
+
+            if (!listSeciliKayit.isEmpty())
+            {
+                Element elementKayit = document.getElementById(String.valueOf(listSeciliKayit.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                ustParcaDurumunuKontrolEtYeni(elementKayit);
+            }
+            else
+            {
+                Element elementKayit = document.getElementById(String.valueOf(listSeciliKategori.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                ustParcaDurumunuKontrolEtYeni(elementKayit);
+            }
+
+            seciliElemanListeleriniSifirla();
+
+            documentToFile();
+        }
+
         //secili kayıtları ve kategorilerin altındaki kayıtları tamamlandı olarak isaretler
         public void seciliElemanlariTamamla()
         {
-            /*
-            kayitTamamla(listSeciliKayit);
-            kategoriTamamla(listSeciliKategori);
+            for (int i = 0; i < listSeciliKayit.size(); i++)
+            {
+                Element element = kayitTamamla(String.valueOf(listSeciliKayit.get(i)));
+                if (element != null)
+                {
+                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
+                    crl.getTvTik().setText(TIK_UNICODE);
+                    crl.arkaplanKayit();
+                }
+            }
+            for (int i = 0; i < listSeciliKategori.size(); i++)
+            {
+                Element element = kayitTamamla(String.valueOf(listSeciliKategori.get(i)));
+                if (element != null)
+                {
+                    kategoriCocuklarDurum(element, DURUM_TAMAMLANDI);
+                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
+                    crl.getTvTik().setText(TIK_UNICODE);
+                    crl.arkaplanKategori();
+                }
+            }
+
+            if (!listSeciliKayit.isEmpty())
+            {
+                Element elementKayit = document.getElementById(String.valueOf(listSeciliKayit.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                ustParcaDurumunuKontrolEtTamamla(elementKayit);
+            }
+            else
+            {
+                Element elementKayit = document.getElementById(String.valueOf(listSeciliKategori.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                ustParcaDurumunuKontrolEtTamamla(elementKayit);
+            }
+
             seciliElemanListeleriniSifirla();
-            */
+
+            documentToFile();
+        }
+
+        public void kategoriCocuklarDurum(Element elementKategori, String durum)
+        {
+            NodeList nodeList = elementKategori.getChildNodes();
+
+            for (int i = 0; i < nodeList.getLength(); i++)
+            {
+                if (nodeList.item(i).getNodeName().equals(XML_YAZILAR))
+                {
+                    NodeList nodeListKayitlar = nodeList.item(i).getChildNodes();
+                    for (int j = 0; j < nodeListKayitlar.getLength(); j++)
+                    {
+                        nodeListKayitlar.item(j).getAttributes().getNamedItem(XML_DURUM).setNodeValue(durum);
+                    }
+                }
+                else if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
+                {
+                    NodeList nodeListAltParca = nodeList.item(i).getChildNodes();
+                    for (int j = 0; j < nodeListAltParca.getLength(); j++)
+                    {
+                        nodeListAltParca.item(j).getAttributes().getNamedItem(XML_DURUM).setNodeValue(durum);
+                        kategoriCocuklarDurum((Element) nodeListAltParca.item(j), durum);
+                    }
+                }
+            }
         }
 
         public void kategorininButunCocuklariniGetir(XmlPullParser parser, int xmlEtiketNesil2)
@@ -1350,7 +1449,7 @@ public class MainActivity extends Activity
                         }
                     }
                 }
-                if (nodeListParca.item(i).getNodeName().equals(XML_ALTPARCA))
+                else if (nodeListParca.item(i).getNodeName().equals(XML_ALTPARCA))
                 {
                     NodeList nodeListAltParca = nodeListParca.item(i).getChildNodes();
                     for (int j = 0; j < nodeListAltParca.getLength(); j++)
@@ -1439,16 +1538,31 @@ public class MainActivity extends Activity
         }
         */
 
-        //secilen kaydin durumunu yeni olarak değiştirir
-        public void kayitYeni()
+        public void ustParcaDurumunuKontrolEtYeni(Element element)
         {
-            if (!xmlKayitID.equals("-1"))
+            boolean sonuc;
+            Node nodeParca = element.getParentNode().getParentNode();
+            sonuc = parcayiIsaretleYeni(nodeParca);
+
+            while (sonuc)
             {
-                Element elementKayit = document.getElementById(String.valueOf(xmlKayitID));
+                nodeParca = nodeParca.getParentNode().getParentNode();
+                sonuc = parcayiIsaretleYeni(nodeParca);
+            }
+        }
+
+        //secilen kaydin durumunu yeni olarak değiştirir
+        public Element kayitYeni(String kayitID)
+        {
+            if (!kayitID.equals("-1"))
+            {
+                Element elementKayit = document.getElementById(String.valueOf(kayitID));
                 elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
 
                 documentToFile();
 
+
+                /*
                 boolean sonuc;
                 Node nodeParca = elementKayit.getParentNode().getParentNode();
                 sonuc = parcayiIsaretleYeni(nodeParca);
@@ -1458,6 +1572,7 @@ public class MainActivity extends Activity
                     nodeParca = nodeParca.getParentNode().getParentNode();
                     sonuc = parcayiIsaretleYeni(nodeParca);
                 }
+                */
 
                     /*
                     //bütün kayıtlar tamamlandi olarak isaretlenmis ise kategorinin içindeki kategorilere baksın
@@ -1477,8 +1592,14 @@ public class MainActivity extends Activity
 
                 Toast.makeText(getActivity(), "yeni olarak isaretlendi", Toast.LENGTH_SHORT).show();
 
-                menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(true);
-                menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(false);
+                //menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(true);
+                //menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(false);
+
+                return elementKayit;
+            }
+            else
+            {
+                return null;
             }
         }
 
@@ -1493,16 +1614,33 @@ public class MainActivity extends Activity
             }
         }
 
-        //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public void kayitTamamla()
+        //ust parcaların kayıt ve kategorilerine bakar hepsi tamalandi durumunda ise parcayı tamamlandı olarak isaretler
+        public void ustParcaDurumunuKontrolEtTamamla(Element element)
         {
-            if (!xmlKayitID.equals("-1"))
+            boolean sonuc;
+            Node nodeParca = element.getParentNode().getParentNode();
+            sonuc = parcayiIsaretleTamamlandi(nodeParca);
+
+            while (sonuc)
             {
-                Element elementKayit = document.getElementById(String.valueOf(xmlKayitID));
+                nodeParca = nodeParca.getParentNode().getParentNode();
+                sonuc = parcayiIsaretleTamamlandi(nodeParca);
+            }
+        }
+
+        //secilen kaydin durumunu tamamlandı olarak değiştirir
+        public Element kayitTamamla(String kayitID)
+        {
+            if (!kayitID.equals("-1"))
+            {
+                Element elementKayit = document.getElementById(String.valueOf(kayitID));
                 elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
 
                 documentToFile();
 
+                //ustParcaDurumunuKontrolEtTamamla(elementKayit);
+
+                /*
                 boolean sonuc;
                 Node nodeParca = elementKayit.getParentNode().getParentNode();
                 sonuc = parcayiIsaretleTamamlandi(nodeParca);
@@ -1512,28 +1650,12 @@ public class MainActivity extends Activity
                     nodeParca = nodeParca.getParentNode().getParentNode();
                     sonuc = parcayiIsaretleTamamlandi(nodeParca);
                 }
-
-                    /*
-                    //bütün kayıtlar tamamlandi olarak isaretlenmis ise kategorinin içindeki kategorilere baksın
-                    if (kayitDurumunuKontrolEt(elementKayit.getParentNode(), DURUM_YENI))
-                    {
-                        //altparca içindeki kategoriler tamamlandi olarak isaretlenmis ise içinde bulunulan kategori de tamamlandi olarak isaretlensi
-                        if (altParcaDurumunuKontrolEt(elementKayit.getParentNode().getParentNode(), DURUM_YENI))
-                        {
-                            Node nodeKategori = elementKayit.getParentNode().getParentNode();
-                            String idKategori = nodeKategori.getAttributes().getNamedItem(XML_ID).getNodeValue();
-                            kategoriDurumunuGuncelle(document, idKategori, DURUM_TAMAMLANDI);
-                        }
-                    }
-
-                    document.normalize();
-                    documentToFile(document);
-*/
+                */
 
                 Toast.makeText(getActivity(), "tamamlandi olarak isaretlendi", Toast.LENGTH_SHORT).show();
 
-                menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(false);
-                menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(true);
+                //menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(false);
+                //menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(true);
 
                 //customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                 //crl.getTvTik().setText("\u2714");
@@ -1541,39 +1663,43 @@ public class MainActivity extends Activity
                 //arkaplanKayit(crl);
                 //crl.setCrlSeciliMi(false);
 
-                /*
-                for (int i = 0; i < listeSilinecek.size(); i++)
-                {
-                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                    dbf.setValidating(false);
-                    DocumentBuilder db = dbf.newDocumentBuilder();
-                    Document document = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+                return elementKayit;
+            }
+            else
+            {
+                Log.d(TAG, "hata");
+                return null;
+            }
+        }
 
-                    Element elementKayit = document.getElementById(String.valueOf(listeSilinecek.get(i)));
-                    elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
+        //duruma göre actionbarDegistirdeki simgeleri gösterir, gizler
+        public void actionBarDegistirSimgeDurumu(String durum)
+        {
+            switch (durum)
+            {
+                case DURUM_TAMAMLANDI:
+                    menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(false);
+                    menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(true);
+                    break;
 
-                    //bütün kayıtlar tamamlandi olarak isaretlenmis ise kategorinin içindeki kategorilere baksın
-                    if (kayitDurumunuKontrolEt(elementKayit.getParentNode()))
-                    {
-                        //altparca içindeki kategoriler tamamlandi olarak isaretlenmis ise içinde bulunulan kategori de tamamlandi olarak isaretlensi
-                        if (altParcaDurumunuKontrolEt(elementKayit.getParentNode().getParentNode()))
-                        {
-                            Node nodeKategori = elementKayit.getParentNode().getParentNode();
-                            String idKategori = nodeKategori.getAttributes().getNamedItem(XML_ID).getNodeValue();
-                            kategoriDurumunuGuncelle(document, idKategori, DURUM_TAMAMLANDI);
-                        }
-                    }
+                case DURUM_YENI:
+                    menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(true);
+                    menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(false);
+                    break;
 
-                    document.normalize();
-                    documentToFile(document);
+                default:
+                    Log.d(TAG, "hata");
+            }
+        }
 
-                    customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
-                    crl.getTvTik().setText("\u2714");
-                    //crl.setBackground(getResources().getDrawable(R.drawable.ana_ekran_kayit));
-                    arkaplanKayit(crl);
-                    crl.setCrlSeciliMi(false);
-                }
-                */
+        public void kategoriTamamla(String kategoriID)
+        {
+            if (!kategoriID.equals("-1"))
+            {
+                Element elementKategori = document.getElementById(String.valueOf(kategoriID));
+                elementKategori.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
+
+                documentToFile();
             }
         }
 
@@ -1703,6 +1829,9 @@ public class MainActivity extends Activity
                 case R.id.action_secim_tamam:
                     seciliElemanlariTamamla();
                     return true;
+                case R.id.action_secim_yeni:
+                    seciliElemanlarYeni();
+                    return true;
                 case R.id.action_secim_sil:
                     seciliElemanlariSil();
                     return true;
@@ -1710,10 +1839,20 @@ public class MainActivity extends Activity
                     kayitSilDiyaloguOlustur();
                     return true;
                 case R.id.action_degistir_tamamlandi:
-                    kayitTamamla();
+                    Element elementKayitTamam = kayitTamamla(xmlKayitID);
+                    if (elementKayitTamam != null)
+                    {
+                        ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
+                        actionBarDegistirSimgeDurumu(DURUM_TAMAMLANDI);
+                    }
                     return true;
                 case R.id.action_degistir_yeni:
-                    kayitYeni();
+                    Element elementKayitYeni = kayitYeni(xmlKayitID);
+                    if (elementKayitYeni != null)
+                    {
+                        ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
+                        actionBarDegistirSimgeDurumu(DURUM_YENI);
+                    }
                     return true;
                 case R.id.action_degistir_kaydet:
                     kayitDegistir();
