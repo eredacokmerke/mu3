@@ -151,7 +151,6 @@ public class MainActivity extends Activity
             bar = getActionBar();
             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
 
-
             xmlDosyaYolu = xmlDosyasi;
         }
         else

@@ -25,24 +25,18 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int ID0 = 10000;
     final static int ID1 = 10001;
     final static int ID2 = 10002;
-    private static float px7;
-    private static int px2;
-
 
     public CustomRelativeLayout(Context context, String baslik, int elemanTur, final int crlID, final MainActivity.PlaceholderFragment frag)
     {
         super(context);
         setCrlSeciliMi(false);
 
-        px7 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, getResources().getDisplayMetrics());
-        px2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
-
         switch (elemanTur)
         {
             case MainActivity.ELEMAN_TUR_KATEGORI:
             {
                 LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                pa.setMargins(0, 10, 0, 10);
+                pa.setMargins(0, (int) dpGetir(3), 0, (int) dpGetir(3));
                 this.setLayoutParams(pa);
 
                 arkaplanKategori();
@@ -173,30 +167,36 @@ public class CustomRelativeLayout extends RelativeLayout
     {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(0xFFFF2222);
-        gd.setStroke(px2, 0xFF880000);
-        gd.setCornerRadius(px7);
+        gd.setStroke((int) dpGetir(2), 0xFF880000);
+        gd.setCornerRadius(dpGetir(7));
         setBackground(gd);
-        setPadding(10, 20, 10, 20);
+        setPadding((int) dpGetir(3), (int) dpGetir(7), (int) dpGetir(3), (int) dpGetir(7));
     }
 
     public void arkaplanKategori()
     {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(0xFF00CED1);
-        gd.setStroke(px2, 0xFF009095);
-        gd.setCornerRadius(px7);
+        gd.setStroke((int) dpGetir(2), 0xFF009095);
+        gd.setCornerRadius(dpGetir(7));
         setBackground(gd);
-        setPadding(10, 20, 10, 20);
+        setPadding((int) dpGetir(3), (int) dpGetir(7), (int) dpGetir(3), (int) dpGetir(7));
     }
 
     public void arkaplanKayit()
     {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(0xFF009ED1);
-        gd.setStroke(px2, 0xFF004095);
-        gd.setCornerRadius(px7);
+        gd.setStroke((int) dpGetir(2), 0xFF004095);
+        gd.setCornerRadius(dpGetir(7));
         setBackground(gd);
-        setPadding(10, 20, 10, 20);
+        setPadding((int) dpGetir(3), (int) dpGetir(7), (int) dpGetir(3), (int) dpGetir(7));
+    }
+
+    //px birimini dp ye cevirir
+    public float dpGetir(int px)
+    {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
     }
 
     public TextView getTvTik()
