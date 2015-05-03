@@ -99,7 +99,6 @@ public class MainActivity extends Activity
     private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
     private static final double ORAN_DIKEY = 0.3;
     private static final double ORAN_YATAY = 0.6;
-    private static ActionBar bar;
     private static View activityRootView;
     private static Document document;
 
@@ -148,8 +147,9 @@ public class MainActivity extends Activity
                 getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
             }
 
-            bar = getActionBar();
-            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+            getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI)));
+            getActionBar().setDisplayUseLogoEnabled(false);
+            getActionBar().setDisplayShowHomeEnabled(false);
 
             xmlDosyaYolu = xmlDosyasi;
         }
@@ -326,12 +326,6 @@ public class MainActivity extends Activity
         Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
-    public static void actionBarArkaPlanDegistir(String renk)
-    {
-        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
-        bar.setBackgroundDrawable(actionBarArkaPlan);
-    }
-
     public static class PlaceholderFragment extends Fragment
     {
         private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
@@ -391,6 +385,12 @@ public class MainActivity extends Activity
             KAYIT_DURUM_TUR = durum;
 
             return fragment;
+        }
+
+        public void actionBarArkaPlanDegistir(String renk)
+        {
+            ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
+            getActivity().getActionBar().setBackgroundDrawable(actionBarArkaPlan);
         }
 
         public void ekranaHataYazdir(String id, String hata)
@@ -1610,7 +1610,6 @@ public class MainActivity extends Activity
                         }
                     }
                     return rootView;
-
                 }
                 case FRAGMENT_KAYIT_EKRANI:
                 {
