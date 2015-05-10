@@ -1,6 +1,5 @@
 package com.example.ekcdr.uygulama3;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -39,10 +38,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -59,11 +63,14 @@ import javax.xml.transform.stream.StreamResult;
 public class MainActivity extends Activity
 {
     private static String xmlDosyaYolu;
+    private static String xmlYedekKlasorYolu;
+    private static final String UYGULAMA_ADI = "uygulama3";
+    private static final String YEDEK_KLASORU_ADI = "backup";
     private static final String XML_PARCA = "parca";
     private static final String XML_RENK = "renk";
     private static final String XML_BASLIK = "baslik";
     private static final String XML_YAZILAR = "yazilar";
-    private static final String XML_ROOT = "root";
+    //private static final String XML_ROOT = "root";
     private static final String XML_KAYIT = "kayit";
     private static final String XML_ALTPARCA = "altparca";
     private static final String XML_ID = "id";
@@ -109,53 +116,61 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
 
         File xmlKlasoru;
+        File xmlYedekKlasoru;
         String xmlDosyasi;
 
         activityRootView = findViewById(R.id.container);
         xmlKlasoru = xmlKlasoruKontrolEt();
-        if (xmlKlasoru.exists())
+        xmlYedekKlasoru = xmlYedekKlasoruKontrolEt();
+        if(xmlKlasoru != null && xmlYedekKlasoru != null)
         {
-            xmlDosyasi = xmlKlasoru + "/" + "new.xml";
+            xmlYedekKlasorYolu = xmlYedekKlasoru.getAbsolutePath();
 
-            if (xmlDosyasiKontrolEt(xmlDosyasi))
+            if (xmlKlasoru.exists())
             {
-                document = xmlDocumentNesnesiOlustur(xmlDosyasi);
-                if (document == null)
+                xmlDosyasi = xmlKlasoru + "/" + "new.xml";
+
+                if (xmlDosyasiKontrolEt(xmlDosyasi))
                 {
-                    ekranaHataYazdir("1", "document olusamadı");
-                    finish();
+                    document = xmlDocumentNesnesiOlustur(xmlDosyasi);
+                    if (document == null)
+                    {
+                        ekranaHataYazdir("1", "document olusamadı");
+                        finish();
+                    }
+                    else
+                    {
+                        xmlEnBuyukID = enBuyukIDyiBul();
+                        if (xmlEnBuyukID == -1)
+                        {
+                            ekranaHataYazdir("1", "xml okunamadı");
+                            finish();
+                        }
+                    }
                 }
                 else
                 {
-                    xmlEnBuyukID = enBuyukIDyiBul();
-                    if (xmlEnBuyukID == -1)
-                    {
-                        ekranaHataYazdir("1", "xml okunamadı");
-                        finish();
-                    }
+                    xmlDosyasiOlustur(xmlDosyasi);
+                    xmlEnBuyukID = 0;
+                    document = xmlDocumentNesnesiOlustur(xmlDosyasi);
                 }
+
+                if (savedInstanceState == null)
+                {
+                    getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
+                }
+
+                getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI)));
+                getActionBar().setDisplayUseLogoEnabled(false);
+                getActionBar().setDisplayShowHomeEnabled(false);
+
+                xmlDosyaYolu = xmlDosyasi;
             }
             else
             {
-                xmlDosyasiOlustur(xmlDosyasi);
-                xmlEnBuyukID = 0;
-                document = xmlDocumentNesnesiOlustur(xmlDosyasi);
+                ekranaHataYazdir("2", "xml klasoru olusurken hata");
+                finish();
             }
-
-            if (savedInstanceState == null)
-            {
-                getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
-            }
-
-            getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI)));
-            getActionBar().setDisplayUseLogoEnabled(false);
-            getActionBar().setDisplayShowHomeEnabled(false);
-
-            xmlDosyaYolu = xmlDosyasi;
-        }
-        else
-        {
-            ekranaHataYazdir("2", "xml klasoru olusurken hata");
         }
     }
 
@@ -192,7 +207,6 @@ public class MainActivity extends Activity
     //xml in duracagı klasoru olusturur
     public File xmlKlasoruKontrolEt()
     {
-        String UYGULAMA_ADI = "uygulama3";
         File xmlKlasoru;
 
         if (hariciAlanVarMi())//sdcard var
@@ -205,10 +219,38 @@ public class MainActivity extends Activity
         }
         if (!xmlKlasoru.exists())
         {
-            xmlKlasoru.mkdirs();
+            if(!xmlKlasoru.mkdirs())
+            {
+                ekranaHataYazdir("2", "xml klasoru olusurken hata");
+                return null;
+            }
         }
 
         return xmlKlasoru;
+    }
+
+    public File xmlYedekKlasoruKontrolEt()
+    {
+        File xmlYedekKlasoru;
+
+        if (hariciAlanVarMi())//sdcard var
+        {
+            xmlYedekKlasoru = new File(Environment.getExternalStorageDirectory().getPath() + "/" + UYGULAMA_ADI + "/" + YEDEK_KLASORU_ADI);
+        }
+        else//sdcard yok
+        {
+            xmlYedekKlasoru = getDir(UYGULAMA_ADI, Context.MODE_PRIVATE);
+        }
+        if (!xmlYedekKlasoru.exists())
+        {
+            if(!xmlYedekKlasoru.mkdirs())
+            {
+                ekranaHataYazdir("2", "xml yedek klasoru olusurken hata");
+                return null;
+            }
+        }
+
+        return xmlYedekKlasoru;
     }
 
     //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve en buyuk xml id sini buluyor
@@ -238,8 +280,6 @@ public class MainActivity extends Activity
     //uygulama açıldığında xml dosyasındaki en büyük id yi buluyor ve id vermeye o sayıdan devam ediyor
     public int enBuyukIDyiBul()
     {
-        //Log.d("proje32", "xmlDosyaYolu : " + xmlDosyaYolu);
-
         int sonIDParca = 0;
         int sonIDKayit = 0;
 
@@ -1461,6 +1501,88 @@ public class MainActivity extends Activity
             //mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
 
+        public void xmlYedekle()
+        {
+            String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+            //alertdialog un içindeki ana LinearLayout
+            LinearLayout alertLL = new LinearLayout(getActivity());
+            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            alertLL.setLayoutParams(pa);
+            alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+            alertLL.setWeightSum(1f);
+
+            //yazının yazılacagı EditText
+            final EditText alertET = new EditText(getActivity());
+            LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+            alertET.setLayoutParams(pa2);
+            alertET.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+            alertET.setText(zaman);
+            alertLL.addView(alertET);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Yedek Adı");
+            builder.setView(alertLL);
+
+            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+            builder.setNegativeButton("İptal", null);
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+            final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    final String kategoriAdi = alertET.getText().toString();
+                    if (kategoriAdi.isEmpty())//edittext boşken tamam'a tıklandı
+                    {
+                        Toast.makeText(getActivity(), "Yedek adı boş olamaz", Toast.LENGTH_LONG).show();
+                    }
+                    else//anaLayout'a yeni alan ekliyor
+                    {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        alert.dismiss();
+
+                        try
+                        {
+                            InputStream in = new FileInputStream(xmlDosyaYolu);
+                            OutputStream out = new FileOutputStream(xmlYedekKlasorYolu + "/"+alertET.getText() + ".xml");
+
+                            // Copy the bits from instream to outstream
+                            byte[] buf = new byte[1024];
+                            int len;
+
+                            while ((len = in.read(buf)) > 0)
+                            {
+                                out.write(buf, 0, len);
+                            }
+
+                            in.close();
+                            out.close();
+                        }
+                        catch (FileNotFoundException e)
+                        {}
+                        catch (IOException e)
+                        {}
+                    }
+                }
+            });
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    alert.dismiss();
+                }
+            });
+
+        }
+
         public void actionBarDegistir(int actionBarTur)
         {
             if (ACTIONBAR_TUR != actionBarTur)
@@ -1570,6 +1692,9 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_degistir_kaydet:
                     kayitDegistir();
+                    return true;
+                case R.id.action_yedekle:
+                    xmlYedekle();
                     return true;
                 case android.R.id.home:
                     ustSeviyeyiGetir();
