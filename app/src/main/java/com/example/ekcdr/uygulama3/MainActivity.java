@@ -22,8 +22,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -175,7 +179,7 @@ public class MainActivity extends Activity
     }
 
     //xml i okumank için Document nesnesi olusturur
-    public Document xmlDocumentNesnesiOlustur(String xmlDosyaYolu)
+    public static Document xmlDocumentNesnesiOlustur(String xmlDosyaYolu)
     {
         try
         {
@@ -1501,6 +1505,33 @@ public class MainActivity extends Activity
             //mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
 
+        public void dosyaKopyala(String kaynak, String hedef)
+        {
+            try
+            {
+                InputStream in = new FileInputStream(kaynak);
+                OutputStream out = new FileOutputStream(hedef);
+
+                // Copy the bits from instream to outstream
+                byte[] buf = new byte[1024];
+                int len;
+
+                while ((len = in.read(buf)) > 0)
+                {
+                    out.write(buf, 0, len);
+                }
+
+                in.close();
+                out.close();
+            }
+            catch (FileNotFoundException e)
+            {
+            }
+            catch (IOException e)
+            {
+            }
+        }
+
         public void xmlYedekle()
         {
             String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -1537,8 +1568,8 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View v)
                 {
-                    final String kategoriAdi = alertET.getText().toString();
-                    if (kategoriAdi.isEmpty())//edittext boşken tamam'a tıklandı
+                    final String yedekAdi = alertET.getText().toString();
+                    if (yedekAdi.isEmpty())//edittext boşken tamam'a tıklandı
                     {
                         Toast.makeText(getActivity(), "Yedek adı boş olamaz", Toast.LENGTH_LONG).show();
                     }
@@ -1547,27 +1578,7 @@ public class MainActivity extends Activity
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         alert.dismiss();
 
-                        try
-                        {
-                            InputStream in = new FileInputStream(xmlDosyaYolu);
-                            OutputStream out = new FileOutputStream(xmlYedekKlasorYolu + "/"+alertET.getText() + ".xml");
-
-                            // Copy the bits from instream to outstream
-                            byte[] buf = new byte[1024];
-                            int len;
-
-                            while ((len = in.read(buf)) > 0)
-                            {
-                                out.write(buf, 0, len);
-                            }
-
-                            in.close();
-                            out.close();
-                        }
-                        catch (FileNotFoundException e)
-                        {}
-                        catch (IOException e)
-                        {}
+                        dosyaKopyala(xmlDosyaYolu, xmlYedekKlasorYolu + "/" + alertET.getText() + ".xml");
                     }
                 }
             });
@@ -1580,7 +1591,117 @@ public class MainActivity extends Activity
                     alert.dismiss();
                 }
             });
+        }
 
+        public void xmlYedektenYukle()
+        {
+            //alertdialog un içindeki ana LinearLayout
+            LinearLayout alertLL = new LinearLayout(getActivity());
+            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            alertLL.setLayoutParams(pa);
+            alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+            alertLL.setWeightSum(1f);
+
+            ListView lv = new ListView(getActivity());
+            ListView.LayoutParams paa = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT);
+            lv.setLayoutParams(paa);
+            alertLL.addView(lv);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Yedek Adı");
+            builder.setView(alertLL);
+            builder.setNegativeButton("İptal", null);
+            final AlertDialog alert = builder.create();
+
+            List<String> yedekler = new ArrayList<>();
+            File f = new File(xmlYedekKlasorYolu);
+            File file[] = f.listFiles();
+            for (int i=0; i < file.length; i++)
+            {
+                String a = file[i].getName().substring(file[i].getName().length()-4);
+                if(a.equals(".xml"))
+                {
+                    String b = file[i].getName().substring(0, file[i].getName().length()-4);
+                    yedekler.add(b);
+                }
+                else
+                {
+                    ekranaHataYazdir("11","yedek dosyası uzantı hatası");
+                }
+            }
+
+            ArrayAdapter<String> veriAdaptoru=new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, yedekler);
+            lv.setAdapter(veriAdaptoru);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+                {
+                    final TextView vv = (TextView) view;
+
+                    LinearLayout alertLL2 = new LinearLayout(getActivity());
+                    LinearLayout.LayoutParams pa22 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                    alertLL2.setLayoutParams(pa22);
+                    alertLL2.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                    alertLL2.setWeightSum(1f);
+
+                    final TextView alertTV2 = new TextView(getActivity());
+                    LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+                    alertTV2.setLayoutParams(pa2);
+                    alertTV2.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                    alertTV2.setText(vv.getText() +" Yedek dosyası yüklensin mi ?");
+                    alertLL2.addView(alertTV2);
+
+                    AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                    builder2.setTitle("Onay");
+                    builder2.setView(alertLL2);
+
+                    builder2.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                    builder2.setNegativeButton("İptal", null);
+
+                    final AlertDialog alert2 = builder2.create();
+                    alert2.show();
+
+                    alert2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            File xmlDosyasi = new File(xmlDosyaYolu);
+                            xmlDosyasi.delete();
+
+                            dosyaKopyala(xmlYedekKlasorYolu+"/"+vv.getText()+".xml", xmlDosyaYolu);
+
+                            anaLayout.removeAllViews();
+                            document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
+                            parseXml("0");
+
+                            alert2.dismiss();
+                            alert.dismiss();
+                        }
+                    });
+                    alert2.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            alert2.dismiss();
+                            alert.dismiss();
+                        }
+                    });
+                }
+            });
+
+            alert.show();
+
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    alert.dismiss();
+                }
+            });
         }
 
         public void actionBarDegistir(int actionBarTur)
@@ -1695,6 +1816,9 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_yedekle:
                     xmlYedekle();
+                    return true;
+                case R.id.action_yedekten_yukle:
+                    xmlYedektenYukle();
                     return true;
                 case android.R.id.home:
                     ustSeviyeyiGetir();

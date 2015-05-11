@@ -18,4 +18,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Yedekle"/>
+    <item
+        android:id="@+id/action_yedekten_yukle"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Yedekten Yükle"/>
 </menu>
