@@ -126,7 +126,7 @@ public class MainActivity extends Activity
         activityRootView = findViewById(R.id.container);
         xmlKlasoru = xmlKlasoruKontrolEt();
         xmlYedekKlasoru = xmlYedekKlasoruKontrolEt();
-        if(xmlKlasoru != null && xmlYedekKlasoru != null)
+        if (xmlKlasoru != null && xmlYedekKlasoru != null)
         {
             xmlYedekKlasorYolu = xmlYedekKlasoru.getAbsolutePath();
 
@@ -223,7 +223,7 @@ public class MainActivity extends Activity
         }
         if (!xmlKlasoru.exists())
         {
-            if(!xmlKlasoru.mkdirs())
+            if (!xmlKlasoru.mkdirs())
             {
                 ekranaHataYazdir("2", "xml klasoru olusurken hata");
                 return null;
@@ -247,7 +247,7 @@ public class MainActivity extends Activity
         }
         if (!xmlYedekKlasoru.exists())
         {
-            if(!xmlYedekKlasoru.mkdirs())
+            if (!xmlYedekKlasoru.mkdirs())
             {
                 ekranaHataYazdir("2", "xml yedek klasoru olusurken hata");
                 return null;
@@ -1532,6 +1532,7 @@ public class MainActivity extends Activity
             }
         }
 
+        //xml dosyasını yedek klasörüne kopyalar
         public void xmlYedekle()
         {
             String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -1593,6 +1594,7 @@ public class MainActivity extends Activity
             });
         }
 
+        //yedek xml dosyasını ana xml dosyası yapar
         public void xmlYedektenYukle()
         {
             //alertdialog un içindeki ana LinearLayout
@@ -1616,21 +1618,21 @@ public class MainActivity extends Activity
             List<String> yedekler = new ArrayList<>();
             File f = new File(xmlYedekKlasorYolu);
             File file[] = f.listFiles();
-            for (int i=0; i < file.length; i++)
+            for (int i = 0; i < file.length; i++)
             {
-                String a = file[i].getName().substring(file[i].getName().length()-4);
-                if(a.equals(".xml"))
+                String a = file[i].getName().substring(file[i].getName().length() - 4);
+                if (a.equals(".xml"))//yedek dosyalarının uzantıları xml olmalı
                 {
-                    String b = file[i].getName().substring(0, file[i].getName().length()-4);
+                    String b = file[i].getName().substring(0, file[i].getName().length() - 4);
                     yedekler.add(b);
                 }
                 else
                 {
-                    ekranaHataYazdir("11","yedek dosyası uzantı hatası");
+                    ekranaHataYazdir("11", "yedek dosyası uzantı hatası");
                 }
             }
 
-            ArrayAdapter<String> veriAdaptoru=new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, yedekler);
+            ArrayAdapter<String> veriAdaptoru = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, yedekler);
             lv.setAdapter(veriAdaptoru);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
@@ -1649,13 +1651,12 @@ public class MainActivity extends Activity
                     LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
                     alertTV2.setLayoutParams(pa2);
                     alertTV2.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-                    alertTV2.setText(vv.getText() +" Yedek dosyası yüklensin mi ?");
+                    alertTV2.setText(vv.getText() + " Yedek dosyası yüklensin mi ?");
                     alertLL2.addView(alertTV2);
 
                     AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
                     builder2.setTitle("Onay");
                     builder2.setView(alertLL2);
-
                     builder2.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
                     builder2.setNegativeButton("İptal", null);
 
@@ -1670,11 +1671,14 @@ public class MainActivity extends Activity
                             File xmlDosyasi = new File(xmlDosyaYolu);
                             xmlDosyasi.delete();
 
-                            dosyaKopyala(xmlYedekKlasorYolu+"/"+vv.getText()+".xml", xmlDosyaYolu);
+                            dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + ".xml", xmlDosyaYolu);
 
                             anaLayout.removeAllViews();
                             document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-                            parseXml("0");
+                            xmlParcaID = "0";
+                            parseXml(xmlParcaID);
+                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+                            getActivity().getActionBar().setTitle("/");
 
                             alert2.dismiss();
                             alert.dismiss();
@@ -1691,9 +1695,7 @@ public class MainActivity extends Activity
                     });
                 }
             });
-
             alert.show();
-
             alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
             {
                 @Override
