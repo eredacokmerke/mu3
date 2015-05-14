@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
@@ -25,6 +26,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -90,11 +93,13 @@ public class MainActivity extends Activity
     private static final int ACTIONBAR_ONAY = 1;
     private static final int ACTIONBAR_SECIM = 2;
     private static final int ACTIONBAR_DEGISTIR = 3;
+    private static final int ACTIONBAR_YEDEK = 4;
     private static final int SECIM_YAPILDI = 1;
     private static final int SECIM_IPTAL_EDILDI = 0;
     private static int ACTIONBAR_TUR = ACTIONBAR_EKLE;
     private static final int FRAGMENT_KATEGORI_EKRANI = 0;
     private static final int FRAGMENT_KAYIT_EKRANI = 1;
+    private static final int FRAGMENT_YEDEK_EKRANI = 2;
     private static int FRAGMENT_ETKIN_EKRAN;
     private static final int OLAY_ICINE_GIR = 0;
     private static final int OLAY_SECIM_YAP = 1;
@@ -379,7 +384,8 @@ public class MainActivity extends Activity
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
         private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
-        private static List<String> listSeciliElemanDurumu;//seçilen kayıtların listesi
+        private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
+        private static List<yedekRelativeLayout> listSeciliYedek;//seçilen kategorilerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
 
@@ -403,6 +409,7 @@ public class MainActivity extends Activity
             listSeciliKayit = new ArrayList<>();
             listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
+            listSeciliYedek = new ArrayList<>();
 
             return fragment;
         }
@@ -425,8 +432,28 @@ public class MainActivity extends Activity
             listSeciliKayit = new ArrayList<>();
             listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
+            listSeciliYedek = new ArrayList<>();
 
             KAYIT_DURUM_TUR = durum;
+
+            return fragment;
+        }
+
+        public static PlaceholderFragment newInstanceYedek(int secim)
+        {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(FRAGMENT_SECIM, secim);
+            FRAGMENT_ETKIN_EKRAN = secim;
+            fragment.setArguments(args);
+            fragment.setHasOptionsMenu(true);
+
+            TIKLAMA_OLAYI = OLAY_ICINE_GIR;
+
+            listSeciliKayit = new ArrayList<>();
+            listSeciliKategori = new ArrayList<>();
+            listSeciliElemanDurumu = new ArrayList<>();
+            listSeciliYedek = new ArrayList<>();
 
             return fragment;
         }
@@ -938,7 +965,7 @@ public class MainActivity extends Activity
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case FRAGMENT_KAYIT_EKRANI:
-                {
+
                     FragmentManager fm = getFragmentManager();
 
                     if (fm.getBackStackEntryCount() > 0)
@@ -950,19 +977,23 @@ public class MainActivity extends Activity
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
-                }
                 case FRAGMENT_KATEGORI_EKRANI:
-                {
+
                     Element element = document.getElementById(xmlParcaID);
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
-
                     xmlParcaID = ustSeviyeID;
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
 
                     break;
-                }
+                case FRAGMENT_YEDEK_EKRANI:
+
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
+                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
+
+                    break;
                 default:
-                    Log.d(TAG, "default : xmlParcaID : " + xmlParcaID);
+                    ekranaHataYazdir("1", "geri giderken hata");
             }
         }
 
@@ -1594,6 +1625,29 @@ public class MainActivity extends Activity
             });
         }
 
+        //xml yedeklerinin isinlerini liste olarak getirir
+        public List<String> yedekDosyalariniGetir()
+        {
+            List<String> yedekler = new ArrayList<>();
+            File f = new File(xmlYedekKlasorYolu);
+            File file[] = f.listFiles();
+            for (int i = 0; i < file.length; i++)
+            {
+                String a = file[i].getName().substring(file[i].getName().length() - 4);
+                if (a.equals(".xml"))//yedek dosyalarının uzantıları xml olmalı
+                {
+                    String b = file[i].getName().substring(0, file[i].getName().length() - 4);
+                    yedekler.add(b);
+                }
+                else
+                {
+                    ekranaHataYazdir("11", "yedek dosyası uzantı hatası");
+                }
+            }
+
+            return yedekler;
+        }
+
         //yedek xml dosyasını ana xml dosyası yapar
         public void xmlYedektenYukle()
         {
@@ -1614,23 +1668,8 @@ public class MainActivity extends Activity
             builder.setView(alertLL);
             builder.setNegativeButton("İptal", null);
             final AlertDialog alert = builder.create();
-
-            List<String> yedekler = new ArrayList<>();
-            File f = new File(xmlYedekKlasorYolu);
-            File file[] = f.listFiles();
-            for (int i = 0; i < file.length; i++)
-            {
-                String a = file[i].getName().substring(file[i].getName().length() - 4);
-                if (a.equals(".xml"))//yedek dosyalarının uzantıları xml olmalı
-                {
-                    String b = file[i].getName().substring(0, file[i].getName().length() - 4);
-                    yedekler.add(b);
-                }
-                else
-                {
-                    ekranaHataYazdir("11", "yedek dosyası uzantı hatası");
-                }
-            }
+            
+            List<String> yedekler = yedekDosyalariniGetir();
 
             ArrayAdapter<String> veriAdaptoru = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, yedekler);
             lv.setAdapter(veriAdaptoru);
@@ -1706,6 +1745,28 @@ public class MainActivity extends Activity
             });
         }
 
+        //sistemdeki xml yedeklerini gosterir
+        public void yedekDosyalariGoster()
+        {
+            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceYedek(FRAGMENT_YEDEK_EKRANI), FRAGMENT_TAG).commit();
+        }
+
+        public void seciliYedekDosylariniSil()
+        {
+            for (int i = 0; i < listSeciliYedek.size(); i++)
+            {
+                String dosya = xmlYedekKlasorYolu + "/" + listSeciliYedek.get(i).getIsim() + ".xml";
+                File yedekDosya = new File(dosya);
+
+                if (!yedekDosya.delete())
+                {
+                    ekranaHataYazdir("1", "dosya silinirken hata");
+                }
+                anaLayout.removeView(listSeciliYedek.get(i));
+            }
+            listSeciliYedek.clear();
+        }
+
         public void actionBarDegistir(int actionBarTur)
         {
             if (ACTIONBAR_TUR != actionBarTur)
@@ -1756,6 +1817,9 @@ public class MainActivity extends Activity
                             Log.e("hata[141]", "KAYIT_DURUM_TUR hatalı : " + KAYIT_DURUM_TUR);
                             ekranaHataYazdir("141", "KAYIT_DURUM_TUR hatalı : " + KAYIT_DURUM_TUR);
                     }
+                    break;
+                case ACTIONBAR_YEDEK:
+                    inflater.inflate(R.menu.menu_yedek, menu);
                     break;
                 default:
                     Log.e("hata[142]", "ACTIONBAR_TUR hatalı : " + ACTIONBAR_TUR);
@@ -1822,6 +1886,13 @@ public class MainActivity extends Activity
                 case R.id.action_yedekten_yukle:
                     xmlYedektenYukle();
                     return true;
+                case R.id.action_yedekleri_goster:
+                    actionBarDegistir(ACTIONBAR_YEDEK);
+                    yedekDosyalariGoster();
+                    return true;
+                case R.id.action_yedek_sil:
+                    seciliYedekDosylariniSil();
+                    return true;
                 case android.R.id.home:
                     ustSeviyeyiGetir();
                     klavyeKapat(fAct, null);
@@ -1880,6 +1951,24 @@ public class MainActivity extends Activity
 
                     return rootView;
                 }
+                case FRAGMENT_YEDEK_EKRANI:
+                {
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    getActivity().getActionBar().setTitle("yedek dosyaları");
+
+                    List<String> yedekler = yedekDosyalariniGetir();
+                    View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                    anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+
+                    for (int i = 0; i < yedekler.size(); i++)
+                    {
+                        final String yedekIsmi = yedekler.get(i);
+
+                        yedekRelativeLayout yrl = new yedekRelativeLayout(getActivity(), yedekIsmi);
+                        anaLayout.addView(yrl);
+                    }
+                    return rootView;
+                }
                 default:
                     return null;
             }
@@ -1893,19 +1982,135 @@ public class MainActivity extends Activity
             nodeBaslik.setTextContent(baslik);
             documentToFile();
         }
+
+        public class yedekRelativeLayout extends RelativeLayout
+        {
+            private String isim;
+
+            public yedekRelativeLayout(Context context, String isim)
+            {
+                super(context);
+                this.isim = isim;
+
+                layoutOlustur();
+            }
+
+            public void layoutOlustur()
+            {
+                int ID0 = 10000;
+                final String yedekIsmi = this.getIsim();
+                final RelativeLayout rl = this;
+
+                CheckBox cb = new CheckBox(getActivity());
+                cb.setId(ID0);
+                RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                lp1.addRule(RelativeLayout.CENTER_VERTICAL);
+                rl.addView(cb, lp1);
+                cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+                {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                    {
+
+                        if (b)
+                        {
+                            GradientDrawable gd = new GradientDrawable();
+                            gd.setColor(0xFF00CED1);
+                            rl.setBackground(gd);
+                            listSeciliYedek.add((yedekRelativeLayout) rl);
+                        }
+                        else
+                        {
+                            GradientDrawable gd = new GradientDrawable();
+                            gd.setColor(0x00000000);
+                            rl.setBackground(gd);
+                            listSeciliYedek.remove(listSeciliYedek.indexOf(rl));
+                        }
+
+                    }
+                });
+
+                final TextView tv = new TextView(getActivity());
+                tv.setText(yedekIsmi);
+                tv.setTextSize(20);
+                RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                lp2.addRule(RelativeLayout.LEFT_OF, cb.getId());
+                lp2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                lp2.addRule(RelativeLayout.CENTER_VERTICAL);
+                rl.addView(tv, lp2);
+                tv.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        //alertdialog un içindeki ana LinearLayout
+                        LinearLayout alertLL = new LinearLayout(getActivity());
+                        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                        alertLL.setLayoutParams(pa);
+                        alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                        alertLL.setWeightSum(1f);
+
+                        File xmlDosyasi = new File(xmlYedekKlasorYolu + "/" + yedekIsmi + ".xml");
+                        long olusturma = xmlDosyasi.lastModified();
+                        Date date = new Date(olusturma);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String formattedDate = sdf.format(date);
+
+                        //yazının yazılacagı EditText
+                        TextView alertTV = new TextView(getActivity());
+                        LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.9f);
+                        alertTV.setLayoutParams(pa2);
+                        alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                        alertTV.setText("\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length());
+                        alertLL.addView(alertTV);
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(yedekIsmi);
+                        builder.setView(alertLL);
+
+                        builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                        final AlertDialog alert = builder.create();
+                        alert.show();
+
+                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                alert.dismiss();
+                            }
+                        });
+                    }
+                });
+            }
+
+            public String getIsim()
+            {
+                return isim;
+            }
+        }
     }
 
     @Override
     public void onBackPressed()
     {
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-        if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+
+        if (FRAGMENT_ETKIN_EKRAN == FRAGMENT_YEDEK_EKRANI)//yedek ekranında ise kategori ekranına dönsün
         {
-            super.onBackPressed();
+            fr.parseXml(xmlParcaID);
         }
         else
         {
-            fr.ustSeviyeyiGetir();
+            if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+            {
+                super.onBackPressed();
+            }
+            else
+            {
+                fr.ustSeviyeyiGetir();
+            }
         }
     }
 }

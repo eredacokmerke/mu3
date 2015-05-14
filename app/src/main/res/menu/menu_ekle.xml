@@ -23,4 +23,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Yedekten Yükle"/>
+    <item
+        android:id="@+id/action_yedekleri_goster"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Yedekler"/>
 </menu>
