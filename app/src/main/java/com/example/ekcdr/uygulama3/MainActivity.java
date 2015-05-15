@@ -109,6 +109,8 @@ public class MainActivity extends Activity
     private static final String ACTIONBAR_ARKAPLAN_KAYIT = "#009ED1";
     private static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
     private static final String UC_NOKTA = "/.../";
+    public static final int ALERTDIALOG_EDITTEXT = 0;
+    public static final int ALERTDIALOG_TEXTVIEW = 1;
     private static String KAYIT_DURUM_TUR;
     private static String xmlKayitID = "-1";//içine girilen kayit id si
     private static String xmlParcaID = "0";//içinde olunan parçanın id si
@@ -886,26 +888,7 @@ public class MainActivity extends Activity
         //ana ekrana ve xml'e kategori ekler(parca)
         public void kategoriKaydet()
         {
-            //alertdialog un içindeki ana LinearLayout
-            LinearLayout alertLL = new LinearLayout(getActivity());
-            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-            alertLL.setLayoutParams(pa);
-            alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-            alertLL.setWeightSum(1f);
-
-            //yazının yazılacagı EditText
-            final EditText alertET = new EditText(getActivity());
-            LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-            alertET.setLayoutParams(pa2);
-            alertET.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-            alertLL.addView(alertET);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Kategori Adı");
-            builder.setView(alertLL);
-
-            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-            builder.setNegativeButton("İptal", null);
+            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Kategori Adı", "İptal", "Tamam","" ,ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -917,7 +900,8 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View v)
                 {
-                    final String kategoriAdi = alertET.getText().toString();
+                    //final String kategoriAdi = alertET.getText().toString();
+                    final String kategoriAdi = builder.getAlertET().getText().toString();
                     if (kategoriAdi.isEmpty())//edittext boşken tamam'a tıklandı
                     {
                         Toast.makeText(getActivity(), "Kategori adı boş olamaz", Toast.LENGTH_LONG).show();
@@ -941,6 +925,7 @@ public class MainActivity extends Activity
                     alert.dismiss();
                 }
             });
+
         }
 
         public int seciliElemanSayisi()
@@ -1060,27 +1045,7 @@ public class MainActivity extends Activity
         //sil tusuna basıldığı zaman secili elemanları siler
         public void seciliElemanlariSil()
         {
-            String soru = "Seçilen kayıtlar silinsin mi ?";
-
-            LinearLayout alertLL = new LinearLayout(getActivity());
-            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-            alertLL.setLayoutParams(pa);
-            alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-            alertLL.setWeightSum(1f);
-
-            final TextView alertTV = new TextView(getActivity());
-            LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-            alertTV.setLayoutParams(pa2);
-            alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-            alertTV.setText(soru);
-            alertLL.addView(alertTV);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Onay");
-            builder.setView(alertLL);
-
-            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-            builder.setNegativeButton("İptal", null);
+            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Seçilen kayıtlar silinsin mi ?", ALERTDIALOG_TEXTVIEW);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -1111,25 +1076,7 @@ public class MainActivity extends Activity
         {
             if (!xmlKayitID.equals("-1"))
             {
-                LinearLayout alertLL = new LinearLayout(getActivity());
-                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-                alertLL.setLayoutParams(pa);
-                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-                alertLL.setWeightSum(1f);
-
-                final TextView alertTV = new TextView(getActivity());
-                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-                alertTV.setLayoutParams(pa2);
-                alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-                alertTV.setText("Kayıt silinsin mi ?");
-                alertLL.addView(alertTV);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Onay");
-                builder.setView(alertLL);
-
-                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-                builder.setNegativeButton("İptal", null);
+                final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Kayıt silinsin mi ?", ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 
@@ -1442,7 +1389,7 @@ public class MainActivity extends Activity
             }
             else
             {
-                ekranaHataYazdir("1","kayit id hatali");
+                ekranaHataYazdir("1", "kayit id hatali");
             }
         }
 
@@ -1574,27 +1521,7 @@ public class MainActivity extends Activity
         {
             String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-            //alertdialog un içindeki ana LinearLayout
-            LinearLayout alertLL = new LinearLayout(getActivity());
-            LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-            alertLL.setLayoutParams(pa);
-            alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-            alertLL.setWeightSum(1f);
-
-            //yazının yazılacagı EditText
-            final EditText alertET = new EditText(getActivity());
-            LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-            alertET.setLayoutParams(pa2);
-            alertET.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-            alertET.setText(zaman);
-            alertLL.addView(alertET);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Yedek Adı");
-            builder.setView(alertLL);
-
-            builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-            builder.setNegativeButton("İptal", null);
+            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", zaman,ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -1606,17 +1533,17 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View v)
                 {
-                    final String yedekAdi = alertET.getText().toString();
+                    final String yedekAdi = builder.getAlertET().getText().toString();
                     if (yedekAdi.isEmpty())//edittext boşken tamam'a tıklandı
                     {
                         Toast.makeText(getActivity(), "Yedek adı boş olamaz", Toast.LENGTH_LONG).show();
                     }
-                    else//anaLayout'a yeni alan ekliyor
+                    else
                     {
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         alert.dismiss();
 
-                        dosyaKopyala(xmlDosyaYolu, xmlYedekKlasorYolu + "/" + alertET.getText() + ".xml");
+                        dosyaKopyala(xmlDosyaYolu, xmlYedekKlasorYolu + "/" + builder.getAlertET().getText() + ".xml");
                     }
                 }
             });
@@ -1674,7 +1601,7 @@ public class MainActivity extends Activity
             builder.setView(alertLL);
             builder.setNegativeButton("İptal", null);
             final AlertDialog alert = builder.create();
-            
+
             List<String> yedekler = yedekDosyalariniGetir();
             ArrayAdapter<String> veriAdaptoru = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, yedekler);
             lv.setAdapter(veriAdaptoru);
@@ -1684,27 +1611,8 @@ public class MainActivity extends Activity
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                 {
                     final TextView vv = (TextView) view;
-
-                    LinearLayout alertLL2 = new LinearLayout(getActivity());
-                    LinearLayout.LayoutParams pa22 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-                    alertLL2.setLayoutParams(pa22);
-                    alertLL2.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-                    alertLL2.setWeightSum(1f);
-
-                    final TextView alertTV2 = new TextView(getActivity());
-                    LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-                    alertTV2.setLayoutParams(pa2);
-                    alertTV2.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-                    alertTV2.setText(vv.getText() + " Yedek dosyası yüklensin mi ?");
-                    alertLL2.addView(alertTV2);
-
-                    AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-                    builder2.setTitle("Onay");
-                    builder2.setView(alertLL2);
-                    builder2.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-                    builder2.setNegativeButton("İptal", null);
-
-                    final AlertDialog alert2 = builder2.create();
+                    final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", vv.getText() + " Yedek dosyası yüklensin mi ?",ALERTDIALOG_TEXTVIEW);
+                    final AlertDialog alert2 = builder.create();
                     alert2.show();
 
                     alert2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
@@ -1713,17 +1621,21 @@ public class MainActivity extends Activity
                         public void onClick(View view)
                         {
                             File xmlDosyasi = new File(xmlDosyaYolu);
-                            xmlDosyasi.delete();
+                            if (!xmlDosyasi.delete())
+                            {
+                                dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + ".xml", xmlDosyaYolu);
 
-                            dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + ".xml", xmlDosyaYolu);
-
-                            anaLayout.removeAllViews();
-                            document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-                            xmlParcaID = "0";
-                            parseXml(xmlParcaID);
-                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-                            getActivity().getActionBar().setTitle("/");
-
+                                anaLayout.removeAllViews();
+                                document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
+                                xmlParcaID = "0";
+                                parseXml(xmlParcaID);
+                                getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+                                getActivity().getActionBar().setTitle("/");
+                            }
+                            else
+                            {
+                                ekranaHataYazdir("1", "dosya silinirken hata");
+                            }
                             alert2.dismiss();
                             alert.dismiss();
                         }
@@ -1758,31 +1670,15 @@ public class MainActivity extends Activity
 
         public void seciliYedekDosyalariniSil()
         {
-            if(!listSeciliYedek.isEmpty())
+            if (!listSeciliYedek.isEmpty())
             {
-                LinearLayout alertLL = new LinearLayout(getActivity());
-                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-                alertLL.setLayoutParams(pa);
-                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-                alertLL.setWeightSum(1f);
-
-                final TextView alertTV = new TextView(getActivity());
-                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
-                alertTV.setLayoutParams(pa2);
-                alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-                alertTV.setText("Yedek dosyaları silinsin mi ?\n");
+                String soru = "Yedek dosyaları silinsin mi ?\n";
                 for (int i = 0; i < listSeciliYedek.size(); i++)
                 {
-                    alertTV.append("\n"+listSeciliYedek.get(i).getIsim());
+                    soru = soru +"\n" + listSeciliYedek.get(i).getIsim();
                 }
-                alertLL.addView(alertTV);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Onay");
-                builder.setView(alertLL);
-                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-                builder.setNegativeButton("İptal", null);
-
+                final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", soru,ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 
@@ -2068,7 +1964,6 @@ public class MainActivity extends Activity
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b)
                     {
-
                         if (b)
                         {
                             GradientDrawable gd = new GradientDrawable();
@@ -2083,7 +1978,6 @@ public class MainActivity extends Activity
                             rl.setBackground(gd);
                             listSeciliYedek.remove(listSeciliYedek.indexOf(rl));
                         }
-
                     }
                 });
 
@@ -2100,32 +1994,13 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view)
                     {
-                        //alertdialog un içindeki ana LinearLayout
-                        LinearLayout alertLL = new LinearLayout(getActivity());
-                        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-                        alertLL.setLayoutParams(pa);
-                        alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-                        alertLL.setWeightSum(1f);
-
                         File xmlDosyasi = new File(xmlYedekKlasorYolu + "/" + yedekIsmi + ".xml");
                         long olusturma = xmlDosyasi.lastModified();
                         Date date = new Date(olusturma);
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String formattedDate = sdf.format(date);
 
-                        //yazının yazılacagı EditText
-                        TextView alertTV = new TextView(getActivity());
-                        LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.9f);
-                        alertTV.setLayoutParams(pa2);
-                        alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
-                        alertTV.setText("\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length());
-                        alertLL.addView(alertTV);
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(yedekIsmi);
-                        builder.setView(alertLL);
-
-                        builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                        final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(),ALERTDIALOG_TEXTVIEW);
                         final AlertDialog alert = builder.create();
                         alert.show();
 
