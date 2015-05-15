@@ -1437,6 +1437,12 @@ public class MainActivity extends Activity
                 elementKayit.setTextContent(etDegisecek.getText().toString());
 
                 documentToFile();
+                ustSeviyeyiGetir();
+                klavyeKapat(fAct, null);
+            }
+            else
+            {
+                ekranaHataYazdir("1","kayit id hatali");
             }
         }
 
