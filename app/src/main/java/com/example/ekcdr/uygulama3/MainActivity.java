@@ -1676,7 +1676,6 @@ public class MainActivity extends Activity
             final AlertDialog alert = builder.create();
             
             List<String> yedekler = yedekDosyalariniGetir();
-
             ArrayAdapter<String> veriAdaptoru = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, yedekler);
             lv.setAdapter(veriAdaptoru);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -1757,20 +1756,70 @@ public class MainActivity extends Activity
             getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceYedek(FRAGMENT_YEDEK_EKRANI), FRAGMENT_TAG).commit();
         }
 
-        public void seciliYedekDosylariniSil()
+        public void seciliYedekDosyalariniSil()
         {
-            for (int i = 0; i < listSeciliYedek.size(); i++)
+            if(!listSeciliYedek.isEmpty())
             {
-                String dosya = xmlYedekKlasorYolu + "/" + listSeciliYedek.get(i).getIsim() + ".xml";
-                File yedekDosya = new File(dosya);
+                LinearLayout alertLL = new LinearLayout(getActivity());
+                LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                alertLL.setLayoutParams(pa);
+                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                alertLL.setWeightSum(1f);
 
-                if (!yedekDosya.delete())
+                final TextView alertTV = new TextView(getActivity());
+                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+                alertTV.setLayoutParams(pa2);
+                alertTV.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                alertTV.setText("Yedek dosyaları silinsin mi ?\n");
+                for (int i = 0; i < listSeciliYedek.size(); i++)
                 {
-                    ekranaHataYazdir("1", "dosya silinirken hata");
+                    alertTV.append("\n"+listSeciliYedek.get(i).getIsim());
                 }
-                anaLayout.removeView(listSeciliYedek.get(i));
+                alertLL.addView(alertTV);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Onay");
+                builder.setView(alertLL);
+                builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                builder.setNegativeButton("İptal", null);
+
+                final AlertDialog alert = builder.create();
+                alert.show();
+
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        for (int i = 0; i < listSeciliYedek.size(); i++)
+                        {
+                            String dosya = xmlYedekKlasorYolu + "/" + listSeciliYedek.get(i).getIsim() + ".xml";
+                            File yedekDosya = new File(dosya);
+
+                            if (!yedekDosya.delete())
+                            {
+                                ekranaHataYazdir("1", "dosya silinirken hata");
+                            }
+                            anaLayout.removeView(listSeciliYedek.get(i));
+                            listSeciliYedek.clear();
+                            alert.dismiss();
+                        }
+                    }
+                });
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        for (int i = 0; i < listSeciliYedek.size(); i++)
+                        {
+                            listSeciliYedek.get(i).getCb().setChecked(false);
+                        }
+                        listSeciliYedek.clear();
+                        alert.dismiss();
+                    }
+                });
             }
-            listSeciliYedek.clear();
         }
 
         public void actionBarDegistir(int actionBarTur)
@@ -1897,7 +1946,7 @@ public class MainActivity extends Activity
                     yedekDosyalariGoster();
                     return true;
                 case R.id.action_yedek_sil:
-                    seciliYedekDosylariniSil();
+                    seciliYedekDosyalariniSil();
                     return true;
                 case android.R.id.home:
                     ustSeviyeyiGetir();
@@ -1992,6 +2041,7 @@ public class MainActivity extends Activity
         public class yedekRelativeLayout extends RelativeLayout
         {
             private String isim;
+            private CheckBox cb;
 
             public yedekRelativeLayout(Context context, String isim)
             {
@@ -2007,7 +2057,7 @@ public class MainActivity extends Activity
                 final String yedekIsmi = this.getIsim();
                 final RelativeLayout rl = this;
 
-                CheckBox cb = new CheckBox(getActivity());
+                cb = new CheckBox(getActivity());
                 cb.setId(ID0);
                 RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -2094,6 +2144,11 @@ public class MainActivity extends Activity
             public String getIsim()
             {
                 return isim;
+            }
+
+            public CheckBox getCb()
+            {
+                return cb;
             }
         }
     }
