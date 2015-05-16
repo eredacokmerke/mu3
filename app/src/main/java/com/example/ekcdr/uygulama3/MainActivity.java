@@ -888,7 +888,7 @@ public class MainActivity extends Activity
         //ana ekrana ve xml'e kategori ekler(parca)
         public void kategoriKaydet()
         {
-            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Kategori Adı", "İptal", "Tamam","" ,ALERTDIALOG_EDITTEXT);
+            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Kategori Adı", "İptal", "Tamam", "", ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -925,7 +925,6 @@ public class MainActivity extends Activity
                     alert.dismiss();
                 }
             });
-
         }
 
         public int seciliElemanSayisi()
@@ -1521,7 +1520,7 @@ public class MainActivity extends Activity
         {
             String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", zaman,ALERTDIALOG_EDITTEXT);
+            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", zaman, ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -1611,7 +1610,7 @@ public class MainActivity extends Activity
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                 {
                     final TextView vv = (TextView) view;
-                    final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", vv.getText() + " Yedek dosyası yüklensin mi ?",ALERTDIALOG_TEXTVIEW);
+                    final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", vv.getText() + " Yedek dosyası yüklensin mi ?", ALERTDIALOG_TEXTVIEW);
                     final AlertDialog alert2 = builder.create();
                     alert2.show();
 
@@ -1621,7 +1620,7 @@ public class MainActivity extends Activity
                         public void onClick(View view)
                         {
                             File xmlDosyasi = new File(xmlDosyaYolu);
-                            if (!xmlDosyasi.delete())
+                            if (xmlDosyasi.delete())
                             {
                                 dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + ".xml", xmlDosyaYolu);
 
@@ -1675,10 +1674,10 @@ public class MainActivity extends Activity
                 String soru = "Yedek dosyaları silinsin mi ?\n";
                 for (int i = 0; i < listSeciliYedek.size(); i++)
                 {
-                    soru = soru +"\n" + listSeciliYedek.get(i).getIsim();
+                    soru = soru + "\n" + listSeciliYedek.get(i).getIsim();
                 }
 
-                final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", soru,ALERTDIALOG_TEXTVIEW);
+                final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", soru, ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 
@@ -1697,9 +1696,9 @@ public class MainActivity extends Activity
                                 ekranaHataYazdir("1", "dosya silinirken hata");
                             }
                             anaLayout.removeView(listSeciliYedek.get(i));
-                            listSeciliYedek.clear();
-                            alert.dismiss();
                         }
+                        listSeciliYedek.clear();
+                        alert.dismiss();
                     }
                 });
                 alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
@@ -1707,10 +1706,18 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view)
                     {
+                        List<CheckBox> listeYedekCheckBox = new ArrayList<>();
+
                         for (int i = 0; i < listSeciliYedek.size(); i++)
                         {
-                            listSeciliYedek.get(i).getCb().setChecked(false);
+                            listeYedekCheckBox.add(listSeciliYedek.get(i).getCb());
                         }
+
+                        for (int i = 0; i < listeYedekCheckBox.size(); i++)
+                        {
+                            listeYedekCheckBox.get(i).setChecked(false);
+                        }
+
                         listSeciliYedek.clear();
                         alert.dismiss();
                     }
@@ -2000,7 +2007,7 @@ public class MainActivity extends Activity
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String formattedDate = sdf.format(date);
 
-                        final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(),ALERTDIALOG_TEXTVIEW);
+                        final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), ALERTDIALOG_TEXTVIEW);
                         final AlertDialog alert = builder.create();
                         alert.show();
 

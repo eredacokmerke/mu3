@@ -35,14 +35,13 @@ public class customAlertDialogBuilder extends AlertDialog.Builder
         alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
         alertLL.setWeightSum(1f);
 
-        LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
+        LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.8f);
         //yazının yazılacagı kısım
         switch (tur)
         {
             case MainActivity.ALERTDIALOG_EDITTEXT:
 
                 alertET = new EditText(getContext());
-                //LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
                 alertET.setLayoutParams(pa2);
                 alertET.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
                 alertET.setText(yazi);
@@ -51,7 +50,6 @@ public class customAlertDialogBuilder extends AlertDialog.Builder
 
             case MainActivity.ALERTDIALOG_TEXTVIEW:
                 TextView alertTV = new TextView(getContext());
-                //LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
                 alertTV.setLayoutParams(pa2);
                 alertTV.setGravity(Gravity.CENTER);//yazı TextView in ortasında yazılsın
                 alertTV.setText(yazi);
