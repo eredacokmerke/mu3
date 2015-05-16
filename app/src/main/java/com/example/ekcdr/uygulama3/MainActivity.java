@@ -1540,9 +1540,34 @@ public class MainActivity extends Activity
                     else
                     {
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                        alert.dismiss();
+                        
+                        final String hedefDosya = xmlYedekKlasorYolu + "/" + builder.getAlertET().getText() + ".xml";
+                        File fileHedef = new File(hedefDosya);
+                        if (fileHedef.exists())
+                        {
+                            customAlertDialogBuilder builder2 = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Bu isme sahip dosya var. Üzerine yazılsın mı ?", ALERTDIALOG_TEXTVIEW);
+                            final AlertDialog alert2 = builder2.create();
+                            alert2.show();
 
-                        dosyaKopyala(xmlDosyaYolu, xmlYedekKlasorYolu + "/" + builder.getAlertET().getText() + ".xml");
+                            alert2.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View view)
+                                {
+                                    alert2.dismiss();
+                                    alert.dismiss();
+                                    dosyaKopyala(xmlDosyaYolu, hedefDosya);
+                                }
+                            });
+                            alert2.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View view)
+                                {
+                                    alert2.dismiss();
+                                }
+                            });
+                        }
                     }
                 }
             });
