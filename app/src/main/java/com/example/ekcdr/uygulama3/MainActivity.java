@@ -614,7 +614,6 @@ public class MainActivity extends Activity
                         else
                         {
                             listSeciliCRL.add(crl);
-                            //listSeciliKayit.add(eklenenID);
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
 
@@ -1046,11 +1045,8 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    kayitlariSil(listSeciliCRL);
-                    kategoriSil(listSeciliCRL);
-
+                    seciliElemanlariSil(listSeciliCRL);
                     seciliElemanListeleriniSifirla();
-
                     alert.dismiss();
                 }
             });
@@ -1109,22 +1105,8 @@ public class MainActivity extends Activity
             xmlKayitID = "-1";
         }
 
-        //secili kategorileri siler
-        public void kategoriSil(List<CustomRelativeLayout> listeSilinecek)
-        {
-            for (int i = 0; i < listeSilinecek.size(); i++)
-            {
-                Element element = document.getElementById(String.valueOf(listeSilinecek.get(i).getId()));
-                element.getParentNode().removeChild(element);
-                documentToFile();
-
-                CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
-                anaLayout.removeView(crl);
-            }
-        }
-
-        //secili kayıtları siler
-        public void kayitlariSil(List<CustomRelativeLayout> listeSilinecek)
+        //secili elemanlari siler
+        public void seciliElemanlariSil(List<CustomRelativeLayout> listeSilinecek)
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
             {
