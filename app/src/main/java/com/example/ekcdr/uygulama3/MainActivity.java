@@ -384,8 +384,6 @@ public class MainActivity extends Activity
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
-        //private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
-        //private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
         private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
         private static List<CustomRelativeLayout> listSeciliCRL;//seçilen elemanların listesi
         private static List<yedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
@@ -409,8 +407,6 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            //listSeciliKayit = new ArrayList<>();
-            //listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
@@ -433,8 +429,6 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            //listSeciliKayit = new ArrayList<>();
-            //listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
@@ -455,8 +449,6 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            //listSeciliKayit = new ArrayList<>();
-            //listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
@@ -573,7 +565,6 @@ public class MainActivity extends Activity
                     if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                     {
                         listSeciliCRL.add(crl);
-                        //listSeciliKayit.add(eklenenID);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
@@ -581,7 +572,6 @@ public class MainActivity extends Activity
 
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
 
-                        //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                         secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                     }
 
@@ -603,7 +593,6 @@ public class MainActivity extends Activity
                         if (crl.isCrlSeciliMi())
                         {
                             listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
-                            //listSeciliKayit.remove(listSeciliKayit.indexOf(eklenenID));
                             crl.arkaplanKayit();
                             crl.setCrlSeciliMi(false);
 
@@ -619,7 +608,6 @@ public class MainActivity extends Activity
                             }
                             else
                             {
-                                //secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
                                 secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_IPTAL_EDILDI);
                             }
                         }
@@ -630,7 +618,6 @@ public class MainActivity extends Activity
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
 
-                            //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                             secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                         }
                     }
@@ -738,7 +725,6 @@ public class MainActivity extends Activity
                         if (crl.isCrlSeciliMi())
                         {
                             listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
-                            //listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
                             crl.arkaplanKategori();
                             crl.setCrlSeciliMi(false);
 
@@ -754,18 +740,15 @@ public class MainActivity extends Activity
                             }
                             else
                             {
-                                //secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
                                 secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_IPTAL_EDILDI);
                             }
                         }
                         else
                         {
                             listSeciliCRL.add(crl);
-                            //listSeciliKategori.add(kategoriID);
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
 
-                            //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                             secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                         }
                     }
@@ -779,7 +762,6 @@ public class MainActivity extends Activity
                     if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                     {
                         listSeciliCRL.add(crl);
-                        //listSeciliKategori.add(kategoriID);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
@@ -788,7 +770,6 @@ public class MainActivity extends Activity
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                         duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
 
-                        //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
                         secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                     }
 
@@ -890,8 +871,6 @@ public class MainActivity extends Activity
         //listSeciliKategori ve listSeciliKayit'yi sıfırlar ve actionbar ı ilk haline döndürür
         public void seciliElemanListeleriniSifirla()
         {
-            //listSeciliKategori.clear();
-            //listSeciliKayit.clear();
             listSeciliCRL.clear();
             listSeciliElemanDurumu.clear();
             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
@@ -915,7 +894,6 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View v)
                 {
-                    //final String kategoriAdi = alertET.getText().toString();
                     final String kategoriAdi = builder.getAlertET().getText().toString();
                     if (kategoriAdi.isEmpty())//edittext boşken tamam'a tıklandı
                     {
@@ -945,7 +923,6 @@ public class MainActivity extends Activity
         public int seciliElemanSayisi()
         {
             return listSeciliCRL.size();
-            //return listSeciliKategori.size() + listSeciliKayit.size();
         }
 
         public EditText yaziAlaniOlustur()
@@ -1071,8 +1048,6 @@ public class MainActivity extends Activity
                 {
                     kayitlariSil(listSeciliCRL);
                     kategoriSil(listSeciliCRL);
-                    //kayitlariSil(listSeciliKayit);
-                    //kategoriSil(listSeciliKategori);
 
                     seciliElemanListeleriniSifirla();
 
@@ -1135,7 +1110,6 @@ public class MainActivity extends Activity
         }
 
         //secili kategorileri siler
-        //public void kategoriSil(List<Integer> listeSilinecek)
         public void kategoriSil(List<CustomRelativeLayout> listeSilinecek)
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
@@ -1147,21 +1121,9 @@ public class MainActivity extends Activity
                 CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
                 anaLayout.removeView(crl);
             }
-            /*
-            for (int i = 0; i < listeSilinecek.size(); i++)
-            {
-                Element element = document.getElementById(String.valueOf(listeSilinecek.get(i)));
-                element.getParentNode().removeChild(element);
-                documentToFile();
-
-                CustomRelativeLayout view = (CustomRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
-                anaLayout.removeView(view);
-            }
-            */
         }
 
         //secili kayıtları siler
-        //public void kayitlariSil(List<Integer> listeSilinecek)
         public void kayitlariSil(List<CustomRelativeLayout> listeSilinecek)
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
@@ -1170,30 +1132,14 @@ public class MainActivity extends Activity
                 element.getParentNode().removeChild(element);
                 documentToFile();
 
-                //CustomRelativeLayout view = (CustomRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i).getId());
                 CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
                 anaLayout.removeView(crl);
             }
-
-        /*
-            for (int i = 0; i < listeSilinecek.size(); i++)
-            {
-
-                Element element = document.getElementById(String.valueOf(listeSilinecek.get(i)));
-                element.getParentNode().removeChild(element);
-                documentToFile();
-
-                CustomRelativeLayout view = (CustomRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
-                anaLayout.removeView(view);
-
-            }
-            */
         }
 
         //secili elemanların durumunu yeni olarak isaretler
         public void seciliElemanlarYeni()
         {
-
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
@@ -1218,52 +1164,11 @@ public class MainActivity extends Activity
                     crl.setCrlSeciliMi(false);
                 }
             }
-
-
             if (!listSeciliCRL.isEmpty())
             {
                 Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
                 ustParcaDurumunuKontrolEtYeni(elementKayit);
             }
-
-
-            /*
-            for (int i = 0; i < listSeciliKayit.size(); i++)
-            {
-                Element element = kayitYeni(String.valueOf(listSeciliKayit.get(i)));
-                if (element != null)
-                {
-                    CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
-                    crl.getTvTik().setText("");
-                    crl.arkaplanKayit();
-                    crl.setCrlSeciliMi(false);
-                }
-            }
-            for (int i = 0; i < listSeciliKategori.size(); i++)
-            {
-                Element element = kayitYeni(String.valueOf(listSeciliKategori.get(i)));
-                if (element != null)
-                {
-                    kategoriCocuklarDurum(element, DURUM_YENI);
-                    //customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
-                    CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
-                    crl.getTvTik().setText("");
-                    crl.arkaplanKategori();
-                    crl.setCrlSeciliMi(false);
-                }
-            }
-
-            if (!listSeciliKayit.isEmpty())
-            {
-                Element elementKayit = document.getElementById(String.valueOf(listSeciliKayit.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
-                ustParcaDurumunuKontrolEtYeni(elementKayit);
-            }
-            else
-            {
-                Element elementKayit = document.getElementById(String.valueOf(listSeciliKategori.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
-                ustParcaDurumunuKontrolEtYeni(elementKayit);
-            }
-            */
 
             seciliElemanListeleriniSifirla();
             documentToFile();
@@ -1305,47 +1210,6 @@ public class MainActivity extends Activity
 
             seciliElemanListeleriniSifirla();
             documentToFile();
-
-
-            /*
-            for (int i = 0; i < listSeciliKayit.size(); i++)
-            {
-                Element element = kayitTamamla(String.valueOf(listSeciliKayit.get(i)));
-                if (element != null)
-                {
-                    CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
-                    crl.getTvTik().setText(TIK_UNICODE);
-                    crl.arkaplanKayit();
-                    crl.setCrlSeciliMi(false);
-                }
-            }
-            for (int i = 0; i < listSeciliKategori.size(); i++)
-            {
-                Element element = kayitTamamla(String.valueOf(listSeciliKategori.get(i)));
-                if (element != null)
-                {
-                    kategoriCocuklarDurum(element, DURUM_TAMAMLANDI);
-                    CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
-                    crl.getTvTik().setText(TIK_UNICODE);
-                    crl.arkaplanKategori();
-                    crl.setCrlSeciliMi(false);
-                }
-            }
-
-            if (!listSeciliKayit.isEmpty())
-            {
-                Element elementKayit = document.getElementById(String.valueOf(listSeciliKayit.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
-                ustParcaDurumunuKontrolEtTamamla(elementKayit);
-            }
-            else
-            {
-                Element elementKayit = document.getElementById(String.valueOf(listSeciliKategori.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
-                ustParcaDurumunuKontrolEtTamamla(elementKayit);
-            }
-
-            seciliElemanListeleriniSifirla();
-            documentToFile();
-            */
         }
 
         public void kategoriCocuklarDurum(Element elementKategori, String durum)
@@ -1484,21 +1348,6 @@ public class MainActivity extends Activity
             {
                 return null;
             }
-
-            /*
-            if (!kayitID.equals("-1"))
-            {
-                Element elementKayit = document.getElementById(String.valueOf(kayitID));
-                elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
-                documentToFile();
-
-                return elementKayit;
-            }
-            else
-            {
-                return null;
-            }
-            */
         }
 
         public void kayitDegistir()
@@ -1556,21 +1405,6 @@ public class MainActivity extends Activity
                 Log.d(TAG, "hata");
                 return null;
             }
-            /*
-            if (!kayitID.equals("-1"))
-            {
-                Element elementKayit = document.getElementById(String.valueOf(kayitID));
-                elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
-                documentToFile();
-
-                return elementKayit;
-            }
-            else
-            {
-                Log.d(TAG, "hata");
-                return null;
-            }
-            */
         }
 
         //duruma göre actionbarDegistirdeki simgeleri gösterir, gizler

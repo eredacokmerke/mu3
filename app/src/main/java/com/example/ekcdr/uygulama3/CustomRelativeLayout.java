@@ -23,7 +23,6 @@ public class CustomRelativeLayout extends RelativeLayout
     private ImageView tvDuzenle;
     private int crlTur;
     private String durum;
-    //private int id;
     final static int ID0 = 10000;
     final static int ID1 = 10001;
     final static int ID2 = 10002;
@@ -33,7 +32,6 @@ public class CustomRelativeLayout extends RelativeLayout
         super(context);
         setCrlSeciliMi(false);
         setDurum(durum);
-        //setId(crlID);
         this.setId(crlID);
 
         switch (elemanTur)
@@ -238,19 +236,5 @@ public class CustomRelativeLayout extends RelativeLayout
     {
         this.durum = durum;
     }
-
-    /*
-    @Override
-    public int getId()
-    {
-        return id;
-    }
-
-    @Override
-    public void setId(int id)
-    {
-        this.id = id;
-    }
-    */
 }
 
