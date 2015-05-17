@@ -384,10 +384,11 @@ public class MainActivity extends Activity
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
-        private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
-        private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
+        //private static List<Integer> listSeciliKategori;//seçilen kategorilerin listesi
+        //private static List<Integer> listSeciliKayit;//seçilen kayıtların listesi
         private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
-        private static List<yedekRelativeLayout> listSeciliYedek;//seçilen kategorilerin listesi
+        private static List<CustomRelativeLayout> listSeciliCRL;//seçilen elemanların listesi
+        private static List<yedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
 
@@ -408,10 +409,11 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            listSeciliKayit = new ArrayList<>();
-            listSeciliKategori = new ArrayList<>();
+            //listSeciliKayit = new ArrayList<>();
+            //listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
+            listSeciliCRL = new ArrayList<>();
 
             return fragment;
         }
@@ -431,10 +433,11 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            listSeciliKayit = new ArrayList<>();
-            listSeciliKategori = new ArrayList<>();
+            //listSeciliKayit = new ArrayList<>();
+            //listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
+            listSeciliCRL = new ArrayList<>();
 
             KAYIT_DURUM_TUR = durum;
 
@@ -452,10 +455,11 @@ public class MainActivity extends Activity
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
-            listSeciliKayit = new ArrayList<>();
-            listSeciliKategori = new ArrayList<>();
+            //listSeciliKayit = new ArrayList<>();
+            //listSeciliKategori = new ArrayList<>();
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
+            listSeciliCRL = new ArrayList<>();
 
             return fragment;
         }
@@ -551,9 +555,8 @@ public class MainActivity extends Activity
         //xml parse edildikten sonra kayitları ana ekrana ekler
         public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, this);
-            //final customRelativeLayout crl = new customRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID);
-            crl.setId(eklenenID);
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this);
+
             if (durum.equals(DURUM_TAMAMLANDI))
             {
                 crl.getTvTik().setText(TIK_UNICODE);
@@ -569,7 +572,8 @@ public class MainActivity extends Activity
                 {
                     if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                     {
-                        listSeciliKayit.add(eklenenID);
+                        listSeciliCRL.add(crl);
+                        //listSeciliKayit.add(eklenenID);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
@@ -577,7 +581,8 @@ public class MainActivity extends Activity
 
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
 
-                        secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                        //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                        secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                     }
 
                     return true;
@@ -597,7 +602,8 @@ public class MainActivity extends Activity
                     {
                         if (crl.isCrlSeciliMi())
                         {
-                            listSeciliKayit.remove(listSeciliKayit.indexOf(eklenenID));
+                            listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
+                            //listSeciliKayit.remove(listSeciliKayit.indexOf(eklenenID));
                             crl.arkaplanKayit();
                             crl.setCrlSeciliMi(false);
 
@@ -613,16 +619,19 @@ public class MainActivity extends Activity
                             }
                             else
                             {
-                                secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
+                                //secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
+                                secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_IPTAL_EDILDI);
                             }
                         }
                         else
                         {
-                            listSeciliKayit.add(eklenenID);
+                            listSeciliCRL.add(crl);
+                            //listSeciliKayit.add(eklenenID);
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
 
-                            secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                            //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                            secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                         }
                     }
                 }
@@ -704,9 +713,8 @@ public class MainActivity extends Activity
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
         public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum)
         {
-            //final customRelativeLayout crl = new customRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, this);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            crl.setId(kategoriID);
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+
             if (durum.equals(DURUM_TAMAMLANDI))
             {
                 crl.getTvTik().setText(TIK_UNICODE);
@@ -729,7 +737,8 @@ public class MainActivity extends Activity
                     {
                         if (crl.isCrlSeciliMi())
                         {
-                            listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
+                            listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
+                            //listSeciliKategori.remove(listSeciliKategori.indexOf(kategoriID));
                             crl.arkaplanKategori();
                             crl.setCrlSeciliMi(false);
 
@@ -745,16 +754,19 @@ public class MainActivity extends Activity
                             }
                             else
                             {
-                                secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
+                                //secimEkranindaDurumuKontrolEt(durum, SECIM_IPTAL_EDILDI);
+                                secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_IPTAL_EDILDI);
                             }
                         }
                         else
                         {
-                            listSeciliKategori.add(kategoriID);
+                            listSeciliCRL.add(crl);
+                            //listSeciliKategori.add(kategoriID);
                             crl.arkaplanSecili();
                             crl.setCrlSeciliMi(true);
 
-                            secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                            //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                            secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                         }
                     }
                 }
@@ -766,7 +778,8 @@ public class MainActivity extends Activity
                 {
                     if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                     {
-                        listSeciliKategori.add(kategoriID);
+                        listSeciliCRL.add(crl);
+                        //listSeciliKategori.add(kategoriID);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
                         actionBarDegistir(ACTIONBAR_SECIM);
@@ -775,7 +788,8 @@ public class MainActivity extends Activity
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                         duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
 
-                        secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                        //secimEkranindaDurumuKontrolEt(durum, SECIM_YAPILDI);
+                        secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                     }
 
                     return true;
@@ -790,7 +804,6 @@ public class MainActivity extends Activity
             int childcount = anaLayout.getChildCount();
             for (int i = 0; i < childcount; i++)
             {
-                //customRelativeLayout crl = (customRelativeLayout) anaLayout.getChildAt(i);
                 CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.getChildAt(i);
                 if (crl.getCrlTur() == ELEMAN_TUR_KATEGORI)
                 {
@@ -877,8 +890,10 @@ public class MainActivity extends Activity
         //listSeciliKategori ve listSeciliKayit'yi sıfırlar ve actionbar ı ilk haline döndürür
         public void seciliElemanListeleriniSifirla()
         {
-            listSeciliKategori.clear();
-            listSeciliKayit.clear();
+            //listSeciliKategori.clear();
+            //listSeciliKayit.clear();
+            listSeciliCRL.clear();
+            listSeciliElemanDurumu.clear();
             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
             actionBarDegistir(ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
@@ -888,7 +903,7 @@ public class MainActivity extends Activity
         //ana ekrana ve xml'e kategori ekler(parca)
         public void kategoriKaydet()
         {
-            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Kategori Adı", "İptal", "Tamam", "", ALERTDIALOG_EDITTEXT);
+            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Kategori Adı", "İptal", "Tamam", "", ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -929,7 +944,8 @@ public class MainActivity extends Activity
 
         public int seciliElemanSayisi()
         {
-            return listSeciliKategori.size() + listSeciliKayit.size();
+            return listSeciliCRL.size();
+            //return listSeciliKategori.size() + listSeciliKayit.size();
         }
 
         public EditText yaziAlaniOlustur()
@@ -1044,7 +1060,7 @@ public class MainActivity extends Activity
         //sil tusuna basıldığı zaman secili elemanları siler
         public void seciliElemanlariSil()
         {
-            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Seçilen kayıtlar silinsin mi ?", ALERTDIALOG_TEXTVIEW);
+            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Seçilen kayıtlar silinsin mi ?", ALERTDIALOG_TEXTVIEW);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -1053,8 +1069,10 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    kayitlariSil(listSeciliKayit);
-                    kategoriSil(listSeciliKategori);
+                    kayitlariSil(listSeciliCRL);
+                    kategoriSil(listSeciliCRL);
+                    //kayitlariSil(listSeciliKayit);
+                    //kategoriSil(listSeciliKategori);
 
                     seciliElemanListeleriniSifirla();
 
@@ -1075,7 +1093,7 @@ public class MainActivity extends Activity
         {
             if (!xmlKayitID.equals("-1"))
             {
-                final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Kayıt silinsin mi ?", ALERTDIALOG_TEXTVIEW);
+                final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Kayıt silinsin mi ?", ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 
@@ -1117,44 +1135,104 @@ public class MainActivity extends Activity
         }
 
         //secili kategorileri siler
-        public void kategoriSil(List<Integer> listeSilinecek)
+        //public void kategoriSil(List<Integer> listeSilinecek)
+        public void kategoriSil(List<CustomRelativeLayout> listeSilinecek)
         {
+            for (int i = 0; i < listeSilinecek.size(); i++)
+            {
+                Element element = document.getElementById(String.valueOf(listeSilinecek.get(i).getId()));
+                element.getParentNode().removeChild(element);
+                documentToFile();
+
+                CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
+                anaLayout.removeView(crl);
+            }
+            /*
             for (int i = 0; i < listeSilinecek.size(); i++)
             {
                 Element element = document.getElementById(String.valueOf(listeSilinecek.get(i)));
                 element.getParentNode().removeChild(element);
                 documentToFile();
 
-                //customRelativeLayout view = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                 CustomRelativeLayout view = (CustomRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                 anaLayout.removeView(view);
             }
+            */
         }
 
         //secili kayıtları siler
-        public void kayitlariSil(List<Integer> listeSilinecek)
+        //public void kayitlariSil(List<Integer> listeSilinecek)
+        public void kayitlariSil(List<CustomRelativeLayout> listeSilinecek)
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
             {
+                Element element = document.getElementById(String.valueOf(listeSilinecek.get(i).getId()));
+                element.getParentNode().removeChild(element);
+                documentToFile();
+
+                //CustomRelativeLayout view = (CustomRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i).getId());
+                CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
+                anaLayout.removeView(crl);
+            }
+
+        /*
+            for (int i = 0; i < listeSilinecek.size(); i++)
+            {
+
                 Element element = document.getElementById(String.valueOf(listeSilinecek.get(i)));
                 element.getParentNode().removeChild(element);
                 documentToFile();
 
-                //customRelativeLayout view = (customRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                 CustomRelativeLayout view = (CustomRelativeLayout) anaLayout.findViewById(listeSilinecek.get(i));
                 anaLayout.removeView(view);
+
             }
+            */
         }
 
         //secili elemanların durumunu yeni olarak isaretler
         public void seciliElemanlarYeni()
         {
+
+            for (int i = 0; i < listSeciliCRL.size(); i++)
+            {
+                CustomRelativeLayout crl = listSeciliCRL.get(i);
+                Element element = kayitYeni(String.valueOf(crl.getId()));
+                if (element != null)
+                {
+                    switch (crl.getCrlTur())
+                    {
+                        case ELEMAN_TUR_KAYIT:
+                            crl.arkaplanKayit();
+                            break;
+
+                        case ELEMAN_TUR_KATEGORI:
+                            kategoriCocuklarDurum(element, DURUM_YENI);
+                            crl.arkaplanKategori();
+                            break;
+
+                        default:
+                            ekranaHataYazdir("1", "hatalı tur");
+                    }
+                    crl.getTvTik().setText("");
+                    crl.setCrlSeciliMi(false);
+                }
+            }
+
+
+            if (!listSeciliCRL.isEmpty())
+            {
+                Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                ustParcaDurumunuKontrolEtYeni(elementKayit);
+            }
+
+
+            /*
             for (int i = 0; i < listSeciliKayit.size(); i++)
             {
                 Element element = kayitYeni(String.valueOf(listSeciliKayit.get(i)));
                 if (element != null)
                 {
-                    //customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
                     CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
                     crl.getTvTik().setText("");
                     crl.arkaplanKayit();
@@ -1185,21 +1263,56 @@ public class MainActivity extends Activity
                 Element elementKayit = document.getElementById(String.valueOf(listSeciliKategori.get(0)));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
                 ustParcaDurumunuKontrolEtYeni(elementKayit);
             }
+            */
 
             seciliElemanListeleriniSifirla();
-
             documentToFile();
         }
 
         //secili kayıtları ve kategorilerin altındaki kayıtları tamamlandı olarak isaretler
         public void seciliElemanlariTamamla()
         {
+            for (int i = 0; i < listSeciliCRL.size(); i++)
+            {
+                CustomRelativeLayout crl = listSeciliCRL.get(i);
+                Element element = kayitTamamla(String.valueOf(crl.getId()));
+                if (element != null)
+                {
+                    switch (crl.getCrlTur())
+                    {
+                        case ELEMAN_TUR_KATEGORI:
+                            kategoriCocuklarDurum(element, DURUM_TAMAMLANDI);
+                            crl.arkaplanKategori();
+                            break;
+
+                        case ELEMAN_TUR_KAYIT:
+                            crl.arkaplanKayit();
+                            break;
+
+                        default:
+                            ekranaHataYazdir("1", "tur hatasi");
+                    }
+                    crl.getTvTik().setText(TIK_UNICODE);
+                    crl.setCrlSeciliMi(false);
+                }
+            }
+
+            if (!listSeciliCRL.isEmpty())
+            {
+                Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                ustParcaDurumunuKontrolEtTamamla(elementKayit);
+            }
+
+            seciliElemanListeleriniSifirla();
+            documentToFile();
+
+
+            /*
             for (int i = 0; i < listSeciliKayit.size(); i++)
             {
                 Element element = kayitTamamla(String.valueOf(listSeciliKayit.get(i)));
                 if (element != null)
                 {
-                    //customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
                     CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKayit.get(i));
                     crl.getTvTik().setText(TIK_UNICODE);
                     crl.arkaplanKayit();
@@ -1212,7 +1325,6 @@ public class MainActivity extends Activity
                 if (element != null)
                 {
                     kategoriCocuklarDurum(element, DURUM_TAMAMLANDI);
-                    //customRelativeLayout crl = (customRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
                     CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(listSeciliKategori.get(i));
                     crl.getTvTik().setText(TIK_UNICODE);
                     crl.arkaplanKategori();
@@ -1233,6 +1345,7 @@ public class MainActivity extends Activity
 
             seciliElemanListeleriniSifirla();
             documentToFile();
+            */
         }
 
         public void kategoriCocuklarDurum(Element elementKategori, String durum)
@@ -1359,12 +1472,11 @@ public class MainActivity extends Activity
         {
             if (!kayitID.equals("-1"))
             {
-                Element elementKayit = document.getElementById(String.valueOf(kayitID));
+                CustomRelativeLayout crl = findCRLbyID(Integer.parseInt(kayitID));
+                crl.setDurum(DURUM_YENI);
+                Element elementKayit = document.getElementById(kayitID);
                 elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
-
                 documentToFile();
-
-                Toast.makeText(getActivity(), "yeni olarak isaretlendi", Toast.LENGTH_SHORT).show();
 
                 return elementKayit;
             }
@@ -1372,6 +1484,21 @@ public class MainActivity extends Activity
             {
                 return null;
             }
+
+            /*
+            if (!kayitID.equals("-1"))
+            {
+                Element elementKayit = document.getElementById(String.valueOf(kayitID));
+                elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
+                documentToFile();
+
+                return elementKayit;
+            }
+            else
+            {
+                return null;
+            }
+            */
         }
 
         public void kayitDegistir()
@@ -1405,9 +1532,31 @@ public class MainActivity extends Activity
             }
         }
 
+        public CustomRelativeLayout findCRLbyID(int id)
+        {
+            CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(id);
+            return crl;
+        }
+
         //secilen kaydin durumunu tamamlandı olarak değiştirir
         public Element kayitTamamla(String kayitID)
         {
+            if (!kayitID.equals("-1"))
+            {
+                CustomRelativeLayout crl = findCRLbyID(Integer.parseInt(kayitID));
+                crl.setDurum(DURUM_TAMAMLANDI);
+                Element elementKayit = document.getElementById(kayitID);
+                elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
+                documentToFile();
+
+                return elementKayit;
+            }
+            else
+            {
+                Log.d(TAG, "hata");
+                return null;
+            }
+            /*
             if (!kayitID.equals("-1"))
             {
                 Element elementKayit = document.getElementById(String.valueOf(kayitID));
@@ -1421,6 +1570,7 @@ public class MainActivity extends Activity
                 Log.d(TAG, "hata");
                 return null;
             }
+            */
         }
 
         //duruma göre actionbarDegistirdeki simgeleri gösterir, gizler
@@ -1516,7 +1666,7 @@ public class MainActivity extends Activity
         {
             String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-            final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", zaman, ALERTDIALOG_EDITTEXT);
+            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", zaman, ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.show();
 
@@ -1541,7 +1691,7 @@ public class MainActivity extends Activity
                         File fileHedef = new File(hedefDosya);
                         if (fileHedef.exists())
                         {
-                            customAlertDialogBuilder builder2 = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Bu isme sahip dosya var. Üzerine yazılsın mı ?", ALERTDIALOG_TEXTVIEW);
+                            CustomAlertDialogBuilder builder2 = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Bu isme sahip dosya var. Üzerine yazılsın mı ?", ALERTDIALOG_TEXTVIEW);
                             final AlertDialog alert2 = builder2.create();
                             alert2.show();
 
@@ -1631,7 +1781,7 @@ public class MainActivity extends Activity
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                 {
                     final TextView vv = (TextView) view;
-                    final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", vv.getText() + " Yedek dosyası yüklensin mi ?", ALERTDIALOG_TEXTVIEW);
+                    final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", vv.getText() + " Yedek dosyası yüklensin mi ?", ALERTDIALOG_TEXTVIEW);
                     final AlertDialog alert2 = builder.create();
                     alert2.show();
 
@@ -1698,7 +1848,7 @@ public class MainActivity extends Activity
                     soru = soru + "\n" + listSeciliYedek.get(i).getIsim();
                 }
 
-                final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", soru, ALERTDIALOG_TEXTVIEW);
+                final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", soru, ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 
@@ -1834,6 +1984,7 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_secim_yeni:
                     seciliElemanlarYeni();
+                    Toast.makeText(getActivity(), "seçili kayıtlar yeni olarak isaretlendi", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.action_secim_sil:
                     seciliElemanlariSil();
@@ -1847,7 +1998,6 @@ public class MainActivity extends Activity
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
                         actionBarDegistirSimgeDurumu(DURUM_TAMAMLANDI);
-
                         Toast.makeText(getActivity(), "kayıt tamamlandı olarak işaretlendi", Toast.LENGTH_SHORT).show();
                     }
                     return true;
@@ -1857,6 +2007,7 @@ public class MainActivity extends Activity
                     {
                         ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
                         actionBarDegistirSimgeDurumu(DURUM_YENI);
+                        Toast.makeText(getActivity(), "kayıt yeni olarak isaretlendi", Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 case R.id.action_degistir_kaydet:
@@ -2031,7 +2182,7 @@ public class MainActivity extends Activity
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String formattedDate = sdf.format(date);
 
-                        final customAlertDialogBuilder builder = new customAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), ALERTDIALOG_TEXTVIEW);
+                        final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), ALERTDIALOG_TEXTVIEW);
                         final AlertDialog alert = builder.create();
                         alert.show();
 

@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class customAlertDialogBuilder extends AlertDialog.Builder
+public class CustomAlertDialogBuilder extends AlertDialog.Builder
 {
     private String baslik;
     private String yazi;
@@ -15,7 +15,7 @@ public class customAlertDialogBuilder extends AlertDialog.Builder
     private String olumsuzDugmeYazi;
     private EditText alertET;
 
-    public customAlertDialogBuilder(Context context, String baslik, String olumsuzDugmeYazi, String olumluDugmeYazi, String yazi, int tur)
+    public CustomAlertDialogBuilder(Context context, String baslik, String olumsuzDugmeYazi, String olumluDugmeYazi, String yazi, int tur)
     {
         super(context);
         this.baslik = baslik;
