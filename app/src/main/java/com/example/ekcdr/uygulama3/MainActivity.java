@@ -1232,7 +1232,6 @@ public class MainActivity extends Activity
             }
 
             seciliElemanListeleriniSifirla();
-
             documentToFile();
         }
 
@@ -1413,10 +1412,7 @@ public class MainActivity extends Activity
             {
                 Element elementKayit = document.getElementById(String.valueOf(kayitID));
                 elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
-
                 documentToFile();
-
-                Toast.makeText(getActivity(), "tamamlandi olarak isaretlendi", Toast.LENGTH_SHORT).show();
 
                 return elementKayit;
             }
@@ -1540,7 +1536,7 @@ public class MainActivity extends Activity
                     else
                     {
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                        
+
                         final String hedefDosya = xmlYedekKlasorYolu + "/" + builder.getAlertET().getText() + ".xml";
                         File fileHedef = new File(hedefDosya);
                         if (fileHedef.exists())
@@ -1834,6 +1830,7 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_secim_tamam:
                     seciliElemanlariTamamla();
+                    Toast.makeText(getActivity(), "seçili kayıtlar tamamlandı olarak işaretlendi", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.action_secim_yeni:
                     seciliElemanlarYeni();
@@ -1850,6 +1847,8 @@ public class MainActivity extends Activity
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
                         actionBarDegistirSimgeDurumu(DURUM_TAMAMLANDI);
+
+                        Toast.makeText(getActivity(), "kayıt tamamlandı olarak işaretlendi", Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 case R.id.action_degistir_yeni:
