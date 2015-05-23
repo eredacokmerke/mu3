@@ -119,6 +119,8 @@ public class MainActivity extends Activity
     private static final double ORAN_YATAY = 0.6;
     private static View activityRootView;
     private static Document document;
+    public static int elemanEnUzunluğu;
+    public static int satirBasinaKayitSayisi = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -183,6 +185,8 @@ public class MainActivity extends Activity
                 finish();
             }
         }
+
+        elemanEniniHesapla();
     }
 
     //xml i okumank için Document nesnesi olusturur
@@ -377,9 +381,18 @@ public class MainActivity extends Activity
         Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
+    //elemanların en uzunluğunu hesaplar
+    public void elemanEniniHesapla()
+    {
+        int ekranEnUzunluğu = getResources().getDisplayMetrics().widthPixels;
+        float fazlalık = (getResources().getDimension(R.dimen.activity_horizontal_margin) * 2);
+        elemanEnUzunluğu = (int) ((ekranEnUzunluğu - fazlalık) / satirBasinaKayitSayisi);
+    }
+
     public static class PlaceholderFragment extends Fragment
     {
-        private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
+        //private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
+        private RelativeLayout anaLayout;
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
@@ -389,6 +402,7 @@ public class MainActivity extends Activity
         private static List<yedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
+        List<int[]> globalMatris;
 
         public PlaceholderFragment()
         {
@@ -470,6 +484,8 @@ public class MainActivity extends Activity
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public void parseXml(String parcaID)
         {
+            List<int[]> matris = new ArrayList<>();
+
             Element element = document.getElementById(parcaID);
             NodeList nodeList = element.getChildNodes();
 
@@ -487,7 +503,7 @@ public class MainActivity extends Activity
                         String kayitDurum = nodeYazi.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kayitID = nodeYazi.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum);
+                        matris = kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, matris);
                     }
                 }
                 else if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
@@ -503,10 +519,12 @@ public class MainActivity extends Activity
                         String kategoriDurum = nodeParca.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kategoriID = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum);
+                        matris = kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, matris);
                     }
                 }
             }
+
+            globalMatris = matris;
         }
 
         //secilen elemanların durum bilgilerine göre actionBar daki simgeleri gizler, gösterir
@@ -545,9 +563,10 @@ public class MainActivity extends Activity
         }
 
         //xml parse edildikten sonra kayitları ana ekrana ekler
-        public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum)
+        public List<int[]> kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, List<int[]> matris)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this);
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this, matris);
+            List<int[]> mtrs = crl.getMatris();
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -623,6 +642,8 @@ public class MainActivity extends Activity
                 }
             });
             anaLayout.addView(crl);
+
+            return mtrs;
         }
 
         //actionBar a yazılacak olan kategorinin yolunu getiriyor
@@ -697,9 +718,10 @@ public class MainActivity extends Activity
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum)
+        public List<int[]> kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, List<int[]> matris)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this, matris);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            List<int[]> mtrs = crl.getMatris();
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -776,6 +798,8 @@ public class MainActivity extends Activity
                 }
             });
             anaLayout.addView(crl);
+
+            return mtrs;
         }
 
         //kategori layout'undaki duzenle simgesini gösterir ve gizler
@@ -904,7 +928,7 @@ public class MainActivity extends Activity
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
-                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI);
+                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI, globalMatris);
                     }
                 }
             });
@@ -1024,7 +1048,7 @@ public class MainActivity extends Activity
 
                         klavyeKapat(getActivity(), et.getWindowToken());
                         anaLayout.removeView(et);
-                        kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI);
+                        kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI, globalMatris);
 
                         break;
                     }
@@ -1865,7 +1889,8 @@ public class MainActivity extends Activity
                 case FRAGMENT_KATEGORI_EKRANI:
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+                    //anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+                    anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
                         parseXml(xmlParcaID);
@@ -1885,7 +1910,8 @@ public class MainActivity extends Activity
                 case FRAGMENT_KAYIT_EKRANI:
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+                    //anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+                    anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
 
                     RelativeLayout rl = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -1907,7 +1933,8 @@ public class MainActivity extends Activity
 
                     List<String> yedekler = yedekDosyalariniGetir();
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+                    //anaLayout = (LinearLayout) rootView.findViewById(R.id.anaLayout);
+                    anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
 
                     for (int i = 0; i < yedekler.size(); i++)
                     {
