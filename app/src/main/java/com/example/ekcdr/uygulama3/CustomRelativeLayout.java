@@ -296,13 +296,6 @@ public class CustomRelativeLayout extends RelativeLayout
                 matris.add(a);
             }
         }
-
-                /*
-                for (int i = 0; i < matris.size(); i++)
-                {
-                    Log.d("uyg3", i + ":" + Arrays.toString(matris.get(i)));
-                }
-                */
     }
 
     public void satirSayisiniHesapla(String baslik)
@@ -310,7 +303,7 @@ public class CustomRelativeLayout extends RelativeLayout
         Paint textPaint = new Paint();
         float uzunluk = dpGetir((int) textPaint.measureText(baslik));
         int satir = (int) Math.ceil(uzunluk / MainActivity.elemanEnUzunluğu);
-        setSatir(satir + 1);
+        setSatir(satir + 1);//ust ve alttaki baslıklar için +1 ekliyorum
     }
 
     public void arkaplanSecili()
@@ -399,4 +392,3 @@ public class CustomRelativeLayout extends RelativeLayout
         return matris;
     }
 }
-

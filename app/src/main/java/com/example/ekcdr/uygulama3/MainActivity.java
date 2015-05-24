@@ -112,7 +112,6 @@ public class MainActivity extends Activity
     public static final int ALERTDIALOG_EDITTEXT = 0;
     public static final int ALERTDIALOG_TEXTVIEW = 1;
     private static String KAYIT_DURUM_TUR;
-    private static String xmlKayitID = "-1";//içine girilen kayit id si
     private static String xmlParcaID = "0";//içinde olunan parçanın id si
     private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
     private static final double ORAN_DIKEY = 0.3;
@@ -391,8 +390,7 @@ public class MainActivity extends Activity
 
     public static class PlaceholderFragment extends Fragment
     {
-        //private LinearLayout anaLayout;//viewların içine yerleşeceği ana layout
-        private RelativeLayout anaLayout;
+        private RelativeLayout anaLayout;//viewların içine yerleşeceği ana layout
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
         private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
@@ -402,7 +400,8 @@ public class MainActivity extends Activity
         private static List<yedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
-        List<int[]> globalMatris;
+        private List<int[]> globalMatris;//elemanların ekrandaki yerlesimini tutuyor
+        private static CustomRelativeLayout seciliCRL;//içine girilen kaydın nesnesi
 
         public PlaceholderFragment()
         {
@@ -428,7 +427,7 @@ public class MainActivity extends Activity
             return fragment;
         }
 
-        public static PlaceholderFragment newInstanceKayit(int secim, String yazi, int id, String durum)
+        public static PlaceholderFragment newInstanceKayit(int secim, String yazi, String durum, CustomRelativeLayout crl)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -439,7 +438,7 @@ public class MainActivity extends Activity
             fragment.setHasOptionsMenu(true);
 
             ACTIONBAR_TUR = ACTIONBAR_DEGISTIR;
-            xmlKayitID = String.valueOf(id);
+            seciliCRL = crl;
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
@@ -604,7 +603,7 @@ public class MainActivity extends Activity
                 {
                     if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi, eklenenID, durum)).addToBackStack(null).commit();
+                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi, durum, crl)).addToBackStack(null).commit();
                         actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KAYIT);
                     }
                     else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
@@ -971,7 +970,6 @@ public class MainActivity extends Activity
                     if (fm.getBackStackEntryCount() > 0)
                     {
                         fm.popBackStackImmediate();
-                        xmlKayitID = "-1";
                     }
                     FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
@@ -1086,7 +1084,7 @@ public class MainActivity extends Activity
 
         public void kayitSilDiyaloguOlustur()
         {
-            if (!xmlKayitID.equals("-1"))
+            if (seciliCRL != null)
             {
                 final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "Kayıt silinsin mi ?", ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
@@ -1111,6 +1109,8 @@ public class MainActivity extends Activity
                         alert.dismiss();
                     }
                 });
+
+                klavyeKapat(getActivity(), etDegisecek.getWindowToken());
             }
             else
             {
@@ -1122,11 +1122,11 @@ public class MainActivity extends Activity
         //kayit ekranındayken sile tıklandı. bir kayıt siliyor
         public void kayitSil()
         {
-            Element element = document.getElementById(xmlKayitID);
+            Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
             element.getParentNode().removeChild(element);
             documentToFile();
 
-            xmlKayitID = "-1";
+            seciliCRL = null;
         }
 
         //secili elemanlari siler
@@ -1337,14 +1337,23 @@ public class MainActivity extends Activity
             }
         }
 
-        //secilen kaydin durumunu yeni olarak değiştirir
-        public Element kayitYeni(String kayitID)
+        public Element kayitYeni(String idd)
         {
-            if (!kayitID.equals("-1"))
+            seciliCRL.setDurum(DURUM_YENI);
+            Element elementKayit = document.getElementById(idd);
+            elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
+            documentToFile();
+
+            return elementKayit;
+        }
+
+        //secilen kaydin durumunu yeni olarak değiştirir
+        public Element kayitYeni()
+        {
+            if (seciliCRL != null)
             {
-                CustomRelativeLayout crl = findCRLbyID(Integer.parseInt(kayitID));
-                crl.setDurum(DURUM_YENI);
-                Element elementKayit = document.getElementById(kayitID);
+                seciliCRL.setDurum(DURUM_YENI);
+                Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
                 elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
                 documentToFile();
 
@@ -1358,9 +1367,9 @@ public class MainActivity extends Activity
 
         public void kayitDegistir()
         {
-            if (!xmlKayitID.equals("-1"))
+            if (seciliCRL != null)
             {
-                Element elementKayit = document.getElementById(String.valueOf(xmlKayitID));
+                Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
                 elementKayit.setTextContent(etDegisecek.getText().toString());
 
                 documentToFile();
@@ -1393,14 +1402,23 @@ public class MainActivity extends Activity
             return crl;
         }
 
-        //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public Element kayitTamamla(String kayitID)
+        public Element kayitTamamla(String idd)
         {
-            if (!kayitID.equals("-1"))
+            seciliCRL.setDurum(DURUM_TAMAMLANDI);
+            Element elementKayit = document.getElementById(idd);
+            elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
+            documentToFile();
+
+            return elementKayit;
+        }
+
+        //secilen kaydin durumunu tamamlandı olarak değiştirir
+        public Element kayitTamamla()
+        {
+            if (seciliCRL != null)
             {
-                CustomRelativeLayout crl = findCRLbyID(Integer.parseInt(kayitID));
-                crl.setDurum(DURUM_TAMAMLANDI);
-                Element elementKayit = document.getElementById(kayitID);
+                seciliCRL.setDurum(DURUM_TAMAMLANDI);
+                Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
                 elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
                 documentToFile();
 
@@ -1833,7 +1851,7 @@ public class MainActivity extends Activity
                     kayitSilDiyaloguOlustur();
                     return true;
                 case R.id.action_degistir_tamamlandi:
-                    Element elementKayitTamam = kayitTamamla(xmlKayitID);
+                    Element elementKayitTamam = kayitTamamla();
                     if (elementKayitTamam != null)
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
@@ -1842,7 +1860,7 @@ public class MainActivity extends Activity
                     }
                     return true;
                 case R.id.action_degistir_yeni:
-                    Element elementKayitYeni = kayitYeni(xmlKayitID);
+                    Element elementKayitYeni = kayitYeni();
                     if (elementKayitYeni != null)
                     {
                         ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
