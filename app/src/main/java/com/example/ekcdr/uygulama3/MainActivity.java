@@ -72,7 +72,7 @@ public class MainActivity extends Activity
 {
     private static String xmlDosyaYolu;
     private static String xmlAyarDosyaYolu;
-    private static String xmlYedekKlasorYolu;
+    public static String xmlYedekKlasorYolu;
     private static final String UYGULAMA_ADI = "uygulama3";
     private static final String YEDEK_KLASORU_ADI = "backup";
     private static final String XML_PARCA = "parca";
@@ -113,8 +113,8 @@ public class MainActivity extends Activity
     private static final String ACTIONBAR_ARKAPLAN_KAYIT = "#009ED1";
     private static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
     private static final String UC_NOKTA = "/.../";
-    public static final int ALERTDIALOG_EDITTEXT = 0;
-    public static final int ALERTDIALOG_TEXTVIEW = 1;
+    public static final int ALERTDIALOG_EDITTEXT = 0;//alertdialog ta edittex cikacak
+    public static final int ALERTDIALOG_TEXTVIEW = 1;//alertdialog ta textview cikacak
     private static String KAYIT_DURUM_TUR;
     private static String xmlParcaID = "0";//içinde olunan parçanın id si
     private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
@@ -525,7 +525,7 @@ public class MainActivity extends Activity
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
         private static List<CustomRelativeLayout> listSeciliCRL;//seçilen elemanların listesi
-        private static List<yedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
+        public static List<YedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
         private List<int[]> globalMatris;//elemanların ekrandaki yerlesimini tutuyor
@@ -2206,7 +2206,7 @@ public class MainActivity extends Activity
                     {
                         final String yedekIsmi = yedekler.get(i);
 
-                        yedekRelativeLayout yrl = new yedekRelativeLayout(getActivity(), yedekIsmi);
+                        YedekRelativeLayout yrl = new YedekRelativeLayout(getActivity(), yedekIsmi);
                         anaLayout.addView(yrl);
                     }
                     return rootView;
@@ -2300,99 +2300,6 @@ public class MainActivity extends Activity
             public EditText getEtSecenek()
             {
                 return etSecenek;
-            }
-        }
-
-        public class yedekRelativeLayout extends RelativeLayout
-        {
-            private String isim;
-            private CheckBox cb;
-
-            public yedekRelativeLayout(Context context, String isim)
-            {
-                super(context);
-                this.isim = isim;
-
-                layoutOlustur();
-            }
-
-            public void layoutOlustur()
-            {
-                int ID0 = 10000;
-                final String yedekIsmi = this.getIsim();
-                final RelativeLayout rl = this;
-
-                cb = new CheckBox(getActivity());
-                cb.setId(ID0);
-                RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                lp1.addRule(RelativeLayout.CENTER_VERTICAL);
-                rl.addView(cb, lp1);
-                cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-                {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-                    {
-                        if (b)
-                        {
-                            GradientDrawable gd = new GradientDrawable();
-                            gd.setColor(0xFF00CED1);
-                            rl.setBackground(gd);
-                            listSeciliYedek.add((yedekRelativeLayout) rl);
-                        }
-                        else
-                        {
-                            GradientDrawable gd = new GradientDrawable();
-                            gd.setColor(0x00000000);
-                            rl.setBackground(gd);
-                            listSeciliYedek.remove(listSeciliYedek.indexOf(rl));
-                        }
-                    }
-                });
-
-                final TextView tv = new TextView(getActivity());
-                tv.setText(yedekIsmi);
-                tv.setTextSize(20);
-                RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lp2.addRule(RelativeLayout.LEFT_OF, cb.getId());
-                lp2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                lp2.addRule(RelativeLayout.CENTER_VERTICAL);
-                rl.addView(tv, lp2);
-                tv.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        File xmlDosyasi = new File(xmlYedekKlasorYolu + "/" + yedekIsmi + ".xml");
-                        long olusturma = xmlDosyasi.lastModified();
-                        Date date = new Date(olusturma);
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String formattedDate = sdf.format(date);
-
-                        final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), ALERTDIALOG_TEXTVIEW);
-                        final AlertDialog alert = builder.create();
-                        alert.show();
-
-                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                alert.dismiss();
-                            }
-                        });
-                    }
-                });
-            }
-
-            public String getIsim()
-            {
-                return isim;
-            }
-
-            public CheckBox getCb()
-            {
-                return cb;
             }
         }
     }
