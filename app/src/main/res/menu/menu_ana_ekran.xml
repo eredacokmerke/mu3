@@ -28,4 +28,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Yedekler"/>
+    <item
+        android:id="@+id/action_ayarlar"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Ayarlar"/>
 </menu>

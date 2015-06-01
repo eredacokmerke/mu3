@@ -27,6 +27,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private String durum;
     private int satir;
     private List<int[]> matris;
+    private int satirBasinaKayitSayisi;
     final static int ID0 = 10000;
     final static int ID1 = 10001;
     final static int ID2 = 10002;
@@ -42,6 +43,7 @@ public class CustomRelativeLayout extends RelativeLayout
         setDurum(durum);
         this.setId(crlID);
         this.matris = matris;
+        satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
 
         switch (elemanTur)
         {
@@ -208,8 +210,8 @@ public class CustomRelativeLayout extends RelativeLayout
                             for (int l = 0; l < eklenecekSatir; l++)
                             {
                                 //Log.d("uyg3", "ekle 4");
-                                int[] c = new int[MainActivity.satirBasinaKayitSayisi];
-                                for (int k = 0; k < MainActivity.satirBasinaKayitSayisi; k++)
+                                int[] c = new int[satirBasinaKayitSayisi];
+                                for (int k = 0; k < satirBasinaKayitSayisi; k++)
                                 {
                                     c[k] = -1;
                                 }
@@ -270,9 +272,9 @@ public class CustomRelativeLayout extends RelativeLayout
                 //Log.d("uyg3", "ekle 3 -- ustteki : " + usttekiID);
                 for (int i = 0; i < this.getSatir(); i++)
                 {
-                    int[] c = new int[MainActivity.satirBasinaKayitSayisi];
+                    int[] c = new int[satirBasinaKayitSayisi];
                     c[0] = getId();
-                    for (int w = 1; w < MainActivity.satirBasinaKayitSayisi; w++)
+                    for (int w = 1; w < satirBasinaKayitSayisi; w++)
                     {
                         c[w] = -1;
                     }
@@ -285,10 +287,10 @@ public class CustomRelativeLayout extends RelativeLayout
         {
             for (int i = 0; i < this.getSatir(); i++)
             {
-                int[] a = new int[MainActivity.satirBasinaKayitSayisi];
+                int[] a = new int[satirBasinaKayitSayisi];
                 a[0] = getId();
 
-                for (int j = 1; j < MainActivity.satirBasinaKayitSayisi; j++)
+                for (int j = 1; j < satirBasinaKayitSayisi; j++)
                 {
                     a[j] = -1;
                 }

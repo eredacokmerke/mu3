@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_ayar_sifirla"
+          android:title="Öntanimli Değerler"
+          android:icon="@drawable/ontanimli"
+          android:orderInCategory="100"
+          android:showAsAction="always"/>
+    <item android:id="@+id/action_ayar_kaydet"
+          android:title="Kaydet"
+          android:icon="@drawable/kaydet"
+          android:orderInCategory="100"
+          android:showAsAction="always"/>
+</menu>
