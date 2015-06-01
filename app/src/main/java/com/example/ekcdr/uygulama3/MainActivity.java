@@ -1953,8 +1953,7 @@ public class MainActivity extends Activity
         {
             for (int i = 0; i < anaLayout.getChildCount(); i++)
             {
-                ayarlarRelativeLayout arl = (ayarlarRelativeLayout) anaLayout.getChildAt(i);
-
+                AyarlarRelativeLayout arl = (AyarlarRelativeLayout) anaLayout.getChildAt(i);
                 switch (arl.getAyarID())
                 {
                     case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
@@ -1969,7 +1968,7 @@ public class MainActivity extends Activity
         //ayar ekranina ayar metinlerini ekler
         public void ayarlariAyarEkraninaEkle()
         {
-            ayarlarRelativeLayout arl1 = new ayarlarRelativeLayout(getActivity(), "bir satırda gösterilecek eleman sayısı", DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI, AYAR_ID_SATIR_BASINA_KAYIT_SAYISI);
+            AyarlarRelativeLayout arl1 = new AyarlarRelativeLayout(getActivity(), "bir satırda gösterilecek eleman sayısı", DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI, AYAR_ID_SATIR_BASINA_KAYIT_SAYISI);
             anaLayout.addView(arl1);
         }
 
@@ -1984,7 +1983,7 @@ public class MainActivity extends Activity
                 String ayarDeger = nodeAyar.getTextContent();
                 String ayarID = nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                ayarlarRelativeLayout arl = (ayarlarRelativeLayout) anaLayout.findViewById(Integer.valueOf(ayarID));
+                AyarlarRelativeLayout arl = (AyarlarRelativeLayout) anaLayout.findViewById(Integer.valueOf(ayarID));
                 String yeniDeger = arl.getEtSecenek().getText().toString();
                 if (!ayarDeger.equals(yeniDeger))//deger degisti
                 {
@@ -2235,72 +2234,6 @@ public class MainActivity extends Activity
             Node nodeBaslik = element.getFirstChild();
             nodeBaslik.setTextContent(baslik);
             documentToFile(DOCUMENT_ASIL);
-        }
-
-        public class ayarlarRelativeLayout extends RelativeLayout
-        {
-            private String metin;
-            private String deger;
-            private int ayarID;
-            private EditText etSecenek;
-            int ekranEnUzunluğu = getResources().getDisplayMetrics().widthPixels;
-
-            public ayarlarRelativeLayout(Context context, String metin, String deger, int ayarID)
-            {
-                super(context);
-                this.metin = metin;
-                this.deger = deger;
-                this.ayarID = ayarID;
-                setId(ayarID);
-
-                metniOlustur();
-                secenegiOlustur();
-
-                if (ayarID != 1)//ilk ayar için layoutParam a gerek yok
-                {
-                    int oncekiID = ayarID - 1;
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp.addRule(RelativeLayout.BELOW, oncekiID);
-                    this.setLayoutParams(lp);
-                }
-            }
-
-            //ayar metni yazılıyor
-            public void metniOlustur()
-            {
-                TextView tvAyar = new TextView(getActivity());
-                tvAyar.setText(metin);
-                RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams((ekranEnUzunluğu / 10) * 6, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                pa.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                pa.addRule(RelativeLayout.CENTER_VERTICAL);
-                tvAyar.setLayoutParams(pa);
-                tvAyar.setTextSize(20);
-                this.addView(tvAyar);
-            }
-
-            //kullanıcının yapacagı secim elemanı olusturuluyor
-            public void secenegiOlustur()
-            {
-                etSecenek = new EditText(getActivity());
-                RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams((ekranEnUzunluğu / 10) * 2, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                pa.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                etSecenek.setLayoutParams(pa);
-                etSecenek.setTextSize(20);
-                etSecenek.setText(deger);
-                etSecenek.setGravity(Gravity.CENTER_HORIZONTAL);
-                etSecenek.setInputType(InputType.TYPE_CLASS_NUMBER);
-                this.addView(etSecenek);
-            }
-
-            public int getAyarID()
-            {
-                return ayarID;
-            }
-
-            public EditText getEtSecenek()
-            {
-                return etSecenek;
-            }
         }
     }
 
