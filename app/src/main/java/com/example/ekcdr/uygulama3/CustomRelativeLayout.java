@@ -35,6 +35,7 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int YAZI_BUYUKLUGU_KATEGORI = 30;
     final static int PADDING_DIKEY = 7;
     final static int PADDING_YATAY = 3;
+    final static int PADDING_YAZI = 10;
 
     public CustomRelativeLayout(Context context, String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, List<int[]> matris)
     {
@@ -52,7 +53,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 pa.setMargins(0, (int) dpGetir(3), 0, (int) dpGetir(3));
 
-                satirSayisiniHesapla(baslik);
+                satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KATEGORI);
                 kayitMatriseEkle(pa);
                 this.setLayoutParams(pa);
 
@@ -116,9 +117,7 @@ public class CustomRelativeLayout extends RelativeLayout
                                 alert.dismiss();
 
                                 String yeniBaslik = alertET.getText().toString();
-
                                 tvBaslik.setText(yeniBaslik);
-
                                 frag.kategoriBaslikGuncelle(yeniBaslik, crlID);
                             }
                         });
@@ -138,9 +137,9 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(Color.WHITE);
-                tvBaslik.setPadding(5, 0, 5, 0);
+                tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
+                //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
                 lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                 this.addView(tvBaslik, lp2);
 
@@ -151,7 +150,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 RelativeLayout.LayoutParams pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 pa2.setMargins(0, 0, 0, 0);
 
-                satirSayisiniHesapla(baslik);
+                satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KAYIT);
                 kayitMatriseEkle(pa2);
                 this.setLayoutParams(pa2);
 
@@ -171,7 +170,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(Color.WHITE);
-                tvBaslik.setPadding(5, 0, 5, 0);
+                tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                 this.addView(tvBaslik, lp5);
@@ -219,10 +218,19 @@ public class CustomRelativeLayout extends RelativeLayout
                                 matris.add(c);
                             }
 
-                            int usttekiID = matris.get(j - 1)[i];
-                            pa.addRule(RelativeLayout.BELOW, usttekiID);
-                            pa.addRule(RelativeLayout.ALIGN_LEFT, usttekiID);
-                            //Log.d("uyg3", "ekle 1 -- ustteki : " + usttekiID);
+                            if (j == 0)//id en ustte eklenecek
+                            {
+                                int usttekiID = matris.get(0)[i - 1];
+                                pa.addRule(RelativeLayout.RIGHT_OF, usttekiID);
+                                pa.addRule(RelativeLayout.ALIGN_TOP, usttekiID);
+                            }
+                            else//id baska bir id nin altına yerlesecek
+                            {
+                                int usttekiID = matris.get(j - 1)[i];
+                                pa.addRule(RelativeLayout.BELOW, usttekiID);
+                                pa.addRule(RelativeLayout.ALIGN_LEFT, usttekiID);
+                                //Log.d("uyg3", "ekle 1 -- ustteki : " + usttekiID);
+                            }
 
                             for (int z = 0; z < getSatir(); z++)
                             {
@@ -236,15 +244,14 @@ public class CustomRelativeLayout extends RelativeLayout
                         else//alttaki bosluk yeterli
                         {
                             //Log.d("uyg3", "ekle 2 -- j : " + j + " i : " + i);
-
-                            if (j == 0)
+                            if (j == 0)//id en ustte eklenecek
                             {
                                 int usttekiID = matris.get(0)[i - 1];
                                 pa.addRule(RelativeLayout.RIGHT_OF, usttekiID);
                                 pa.addRule(RelativeLayout.ALIGN_TOP, usttekiID);
                                 //Log.d("uyg3", "ekle 2 -- usttekiID 1 : " + usttekiID);
                             }
-                            else
+                            else//id baska bir id nin altına yerlesecek
                             {
                                 int usttekiID = matris.get(j - 1)[i];
                                 pa.addRule(RelativeLayout.BELOW, usttekiID);
@@ -300,11 +307,12 @@ public class CustomRelativeLayout extends RelativeLayout
         }
     }
 
-    public void satirSayisiniHesapla(String baslik)
+    public void satirSayisiniHesapla(String baslik, int yaziBuyuklugu)
     {
         Paint textPaint = new Paint();
+        textPaint.setTextSize(yaziBuyuklugu);
         float uzunluk = dpGetir((int) textPaint.measureText(baslik));
-        int satir = (int) Math.ceil(uzunluk / MainActivity.elemanEnUzunluğu);
+        int satir = (int) Math.ceil(uzunluk / (MainActivity.elemanEnUzunluğu - dpGetir(PADDING_YAZI * 2)));
         setSatir(satir + 1);//ust ve alttaki baslıklar için +1 ekliyorum
     }
 
