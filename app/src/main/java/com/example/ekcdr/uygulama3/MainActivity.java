@@ -2206,8 +2206,14 @@ public class MainActivity extends Activity
                     for (int i = 0; i < yedekler.size(); i++)
                     {
                         final String yedekIsmi = yedekler.get(i);
-
                         YedekRelativeLayout yrl = new YedekRelativeLayout(getActivity(), yedekIsmi);
+                        yrl.setId(i + 1);//id 0 olmamalı
+                        if (i != 0)//ilk satırdaki eleman için param'a gerek yok
+                        {
+                            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            lp.addRule(RelativeLayout.BELOW, i);
+                            yrl.setLayoutParams(lp);
+                        }
                         anaLayout.addView(yrl);
                     }
                     return rootView;
