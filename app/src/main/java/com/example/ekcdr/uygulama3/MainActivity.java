@@ -1748,6 +1748,11 @@ public class MainActivity extends Activity
                                 }
                             });
                         }
+                        else
+                        {
+                            alert.dismiss();
+                            dosyaKopyala(xmlDosyaYolu, hedefDosya);
+                        }
                     }
                 }
             });
