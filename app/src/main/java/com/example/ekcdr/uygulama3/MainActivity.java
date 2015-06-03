@@ -1314,9 +1314,11 @@ public class MainActivity extends Activity
                 element.getParentNode().removeChild(element);
                 documentToFile(DOCUMENT_ASIL);
 
-                CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
-                anaLayout.removeView(crl);
+                //CustomRelativeLayout crl = findCRLbyID(listeSilinecek.get(i).getId());
+                //anaLayout.removeView(crl);
             }
+            anaLayout.removeAllViews();
+            parseXml(xmlParcaID);
         }
 
         //secili elemanların durumunu yeni olarak isaretler
