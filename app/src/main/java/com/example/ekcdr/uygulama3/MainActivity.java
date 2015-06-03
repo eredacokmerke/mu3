@@ -1122,10 +1122,10 @@ public class MainActivity extends Activity
             return edittext;
         }
 
+        //su anki etkin ekrana gore bir ust seviyenin ekran ve actionbar bilgilerini belirler
         public void ustSeviyeyiGetir()
         {
             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
-            //Log.d(TAG, "FRAGMENT_ETKIN_EKRAN : " + FRAGMENT_ETKIN_EKRAN);
 
             switch (FRAGMENT_ETKIN_EKRAN)
             {
@@ -1999,6 +1999,21 @@ public class MainActivity extends Activity
             //ayarlariOku();
         }
 
+        //actionBar daki kategori basligini yazar
+        public void kategoriBasliginiYaz()
+        {
+            if (xmlParcaID.equals("0"))
+            {
+                getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+                getActivity().getActionBar().setTitle("/");
+            }
+            else
+            {
+                getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
+            }
+        }
+
         @Override
         public void onAttach(Activity activity)
         {
@@ -2163,16 +2178,7 @@ public class MainActivity extends Activity
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
                         parseXml(xmlParcaID);
-                        if (xmlParcaID.equals("0"))
-                        {
-                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-                            getActivity().getActionBar().setTitle("/");
-                        }
-                        else
-                        {
-                            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                            getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
-                        }
+                        kategoriBasliginiYaz();
                     }
                     return rootView;
                 }
@@ -2250,9 +2256,10 @@ public class MainActivity extends Activity
     {
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
 
-        if (FRAGMENT_ETKIN_EKRAN == FRAGMENT_YEDEK_EKRANI)//yedek ekranında ise kategori ekranına dönsün
+        if (FRAGMENT_ETKIN_EKRAN == FRAGMENT_YEDEK_EKRANI || FRAGMENT_ETKIN_EKRAN == FRAGMENT_AYAR_EKRANI)//yedek veya ayar ekranında ise kategori ekranına dönsün
         {
             fr.parseXml(xmlParcaID);
+            fr.ustSeviyeyiGetir();
         }
         else
         {
