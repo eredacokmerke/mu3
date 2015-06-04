@@ -2282,22 +2282,27 @@ public class MainActivity extends Activity
     public void onBackPressed()
     {
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-
-        if (FRAGMENT_ETKIN_EKRAN == FRAGMENT_YEDEK_EKRANI || FRAGMENT_ETKIN_EKRAN == FRAGMENT_AYAR_EKRANI)//yedek veya ayar ekranında ise kategori ekranına dönsün
+        switch (FRAGMENT_ETKIN_EKRAN)
         {
-            fr.parseXml(xmlParcaID);
-            fr.ustSeviyeyiGetir();
-        }
-        else
-        {
-            if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
-            {
-                super.onBackPressed();
-            }
-            else
-            {
+            case FRAGMENT_YEDEK_EKRANI:
+            case FRAGMENT_AYAR_EKRANI:
+                fr.parseXml(xmlParcaID);
                 fr.ustSeviyeyiGetir();
-            }
+                break;
+
+            case FRAGMENT_KAYIT_EKRANI:
+                fr.ustSeviyeyiGetir();
+                break;
+
+            default:
+                if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+                {
+                    finish();
+                }
+                else
+                {
+                    fr.ustSeviyeyiGetir();
+                }
         }
     }
 }
