@@ -1074,7 +1074,10 @@ public class MainActivity extends Activity
             alert.show();
 
             final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            if(!klavyeAcikMi())
+            {
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
 
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
@@ -1088,7 +1091,10 @@ public class MainActivity extends Activity
                     }
                     else//anaLayout'a yeni alan ekliyor
                     {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        if(klavyeAcikMi())
+                        {
+                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        }
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
@@ -1101,7 +1107,10 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    if(klavyeAcikMi())
+                    {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
                     alert.dismiss();
                 }
             });
@@ -1220,7 +1229,7 @@ public class MainActivity extends Activity
                         nodeYazi.setTextContent(str.toString());
                         */
 
-                        klavyeKapat(getActivity(), et.getWindowToken());
+                        klavyeKapat(et.getWindowToken());
                         anaLayout.removeView(et);
                         kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI, globalMatris);
 
@@ -1286,7 +1295,7 @@ public class MainActivity extends Activity
                     }
                 });
 
-                klavyeKapat(getActivity(), etDegisecek.getWindowToken());
+                klavyeKapat(etDegisecek.getWindowToken());
             }
             else
             {
@@ -1552,7 +1561,7 @@ public class MainActivity extends Activity
 
                 documentToFile(DOCUMENT_ASIL);
                 ustSeviyeyiGetir();
-                klavyeKapat(fAct, null);
+                klavyeKapat(null);
             }
             else
             {
@@ -1649,16 +1658,22 @@ public class MainActivity extends Activity
             //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
 
-        public void klavyeKapat(Context c, IBinder windowToken)
+        public void klavyeKapat(IBinder windowToken)
         {
             InputMethodManager mgr = (InputMethodManager) fAct.getSystemService(Context.INPUT_METHOD_SERVICE);
 
             if (getActivity() == null)
             {
+                if(klavyeAcikMi())
+                {
+                    mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                }
+                /*
                 if (activityRootView.getRootView().getHeight() / 2 > activityRootView.getHeight())//kullanıcı klavyeyi kapatmıs mi diye kontrol
                 {
                     mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
                 }
+                */
             }
             else
             {
@@ -1668,6 +1683,19 @@ public class MainActivity extends Activity
             //InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             //mgr.hideSoftInputFromWindow(windowToken, 0);
             //mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
+
+        //kullanıcı klavyeyi kendi kapatmis mi diye kontrol etmek için
+        public boolean klavyeAcikMi()
+        {
+            if (activityRootView.getRootView().getHeight() / 2 > activityRootView.getHeight())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void dosyaKopyala(String kaynak, String hedef)
@@ -1707,7 +1735,10 @@ public class MainActivity extends Activity
             alert.show();
 
             final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            if(!klavyeAcikMi())
+            {
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
 
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
@@ -1721,7 +1752,10 @@ public class MainActivity extends Activity
                     }
                     else
                     {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        if(klavyeAcikMi())
+                        {
+                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                        }
 
                         final String hedefDosya = xmlYedekKlasorYolu + "/" + builder.getAlertET().getText() + ".xml";
                         File fileHedef = new File(hedefDosya);
@@ -1763,7 +1797,10 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    if(klavyeAcikMi())
+                    {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    }
                     alert.dismiss();
                 }
             });
@@ -2087,7 +2124,7 @@ public class MainActivity extends Activity
                     actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
                 case R.id.action_onay_iptal:
-                    klavyeKapat(getActivity().getApplicationContext(), etEklenecek.getWindowToken());
+                    klavyeKapat(etEklenecek.getWindowToken());
                     anaLayout.removeView(etEklenecek);
                     actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
@@ -2145,7 +2182,6 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_ayar_kaydet:
                     ayarlariKaydet();
-                    //parseXml("0");
                     ustSeviyeyiGetir();
                     return true;
                 case R.id.action_ayar_sifirla:
@@ -2153,7 +2189,7 @@ public class MainActivity extends Activity
                     return true;
                 case android.R.id.home:
                     ustSeviyeyiGetir();
-                    klavyeKapat(fAct, null);
+                    klavyeKapat(null);
                     break;
             }
             return super.onOptionsItemSelected(item);
