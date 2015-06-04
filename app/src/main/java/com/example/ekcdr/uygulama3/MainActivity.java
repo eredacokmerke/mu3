@@ -1073,11 +1073,7 @@ public class MainActivity extends Activity
             final AlertDialog alert = builder.create();
             alert.show();
 
-            final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(!klavyeAcikMi())
-            {
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-            }
+            klavyeAc();
 
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
@@ -1091,10 +1087,7 @@ public class MainActivity extends Activity
                     }
                     else//anaLayout'a yeni alan ekliyor
                     {
-                        if(klavyeAcikMi())
-                        {
-                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                        }
+                        klavyeKapat();
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
@@ -1107,10 +1100,7 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    if(klavyeAcikMi())
-                    {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    }
+                    klavyeKapat();
                     alert.dismiss();
                 }
             });
@@ -1664,16 +1654,7 @@ public class MainActivity extends Activity
 
             if (getActivity() == null)
             {
-                if(klavyeAcikMi())
-                {
-                    mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                }
-                /*
-                if (activityRootView.getRootView().getHeight() / 2 > activityRootView.getHeight())//kullanıcı klavyeyi kapatmıs mi diye kontrol
-                {
-                    mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-                }
-                */
+                klavyeKapat();
             }
             else
             {
@@ -1683,6 +1664,24 @@ public class MainActivity extends Activity
             //InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             //mgr.hideSoftInputFromWindow(windowToken, 0);
             //mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
+
+        public void klavyeAc()
+        {
+            if(!klavyeAcikMi())
+            {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
+        }
+
+        public void klavyeKapat()
+        {
+            if(klavyeAcikMi())
+            {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
         }
 
         //kullanıcı klavyeyi kendi kapatmis mi diye kontrol etmek için
@@ -1735,10 +1734,7 @@ public class MainActivity extends Activity
             alert.show();
 
             final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(!klavyeAcikMi())
-            {
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-            }
+            klavyeAc();
 
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
             {
@@ -1752,10 +1748,7 @@ public class MainActivity extends Activity
                     }
                     else
                     {
-                        if(klavyeAcikMi())
-                        {
-                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                        }
+                        klavyeKapat();
 
                         final String hedefDosya = xmlYedekKlasorYolu + "/" + builder.getAlertET().getText() + ".xml";
                         File fileHedef = new File(hedefDosya);
@@ -1797,10 +1790,7 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    if(klavyeAcikMi())
-                    {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    }
+                    klavyeKapat();
                     alert.dismiss();
                 }
             });
@@ -2033,9 +2023,7 @@ public class MainActivity extends Activity
                     elemanEniniHesapla();
                 }
             }
-
             documentToFile(DOCUMENT_AYAR);
-            //ayarlariOku();
         }
 
         //actionBar daki kategori basligini yazar
@@ -2181,6 +2169,7 @@ public class MainActivity extends Activity
                     ayarEkraniniAc();
                     return true;
                 case R.id.action_ayar_kaydet:
+                    klavyeKapat();
                     ayarlariKaydet();
                     ustSeviyeyiGetir();
                     return true;
@@ -2188,8 +2177,8 @@ public class MainActivity extends Activity
                     ayarlariSifirla();
                     return true;
                 case android.R.id.home:
+                    klavyeKapat();
                     ustSeviyeyiGetir();
-                    klavyeKapat(null);
                     break;
             }
             return super.onOptionsItemSelected(item);
