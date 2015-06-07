@@ -3,11 +3,11 @@ package com.example.ekcdr.uygulama3;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +26,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private int crlTur;
     private String durum;
     private int satir;
-    private List<int[]> matris;
+    //private List<int[]> matris;
     private int satirBasinaKayitSayisi;
     final static int ID0 = 10000;
     final static int ID1 = 10001;
@@ -37,13 +37,13 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int PADDING_YATAY = 3;
     final static int PADDING_YAZI = 10;
 
-    public CustomRelativeLayout(Context context, String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, List<int[]> matris)
+    public CustomRelativeLayout(Context context, String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
     {
         super(context);
         setCrlSeciliMi(false);
         setDurum(durum);
         this.setId(crlID);
-        this.matris = matris;
+        //this.matris = matris;
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
 
         switch (elemanTur)
@@ -51,11 +51,12 @@ public class CustomRelativeLayout extends RelativeLayout
             case MainActivity.ELEMAN_TUR_KATEGORI:
             {
                 RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                pa.setMargins(0, (int) dpGetir(3), 0, (int) dpGetir(3));
+                pa.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
 
-                satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KATEGORI);
-                kayitMatriseEkle(pa);
+                //satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KATEGORI);
+                //kayitMatriseEkle(pa);
                 this.setLayoutParams(pa);
+                viewBoyunuGetir(this, ylsm, crlID, pa);
 
                 arkaplanKategori();
                 crlTur = MainActivity.ELEMAN_TUR_KATEGORI;
@@ -135,7 +136,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 tvBaslik = new TextView(context);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
-                tvBaslik.setText(baslik);
+                tvBaslik.setText(crlID + "-" + baslik);
                 tvBaslik.setTextColor(Color.WHITE);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -148,11 +149,12 @@ public class CustomRelativeLayout extends RelativeLayout
             case MainActivity.ELEMAN_TUR_KAYIT:
             {
                 RelativeLayout.LayoutParams pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                pa2.setMargins(0, 0, 0, 0);
+                pa2.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
 
-                satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KAYIT);
-                kayitMatriseEkle(pa2);
+                //satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KAYIT);
+                //kayitMatriseEkle(pa2);
                 this.setLayoutParams(pa2);
+                viewBoyunuGetir(this, ylsm, crlID, pa2);
 
                 arkaplanKayit();
                 crlTur = MainActivity.ELEMAN_TUR_KAYIT;
@@ -168,7 +170,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 tvBaslik = new TextView(context);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
-                tvBaslik.setText(baslik);
+                tvBaslik.setText(crlID + "-" + baslik);
                 tvBaslik.setTextColor(Color.WHITE);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -180,6 +182,168 @@ public class CustomRelativeLayout extends RelativeLayout
         }
     }
 
+    //verilen sutundaki ilk -1 degerine sahip satir sayisini donduruyor
+    public int matristeBosSatiriBul(Yerlesim ylsm, int sutunNo)
+    {
+        List<int[]> matris = ylsm.getYerlesimMatris();
+        for (int i = 0; i < ylsm.getYerlesimMatrisSatirSayisi(); i++)
+        {
+            if (matris.get(i)[sutunNo] == -1)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    //matrise elemnaları -1 olan yeni bir satir ekler
+    public void matriseSatirEkle(Yerlesim ylsm)
+    {
+        List<int[]> matris = ylsm.getYerlesimMatris();
+        int[] a = new int[satirBasinaKayitSayisi];
+
+        for (int j = 0; j < satirBasinaKayitSayisi; j++)
+        {
+            a[j] = -1;
+        }
+
+        matris.add(a);
+        int matrisSatir = ylsm.getYerlesimMatrisSatirSayisi();
+        matrisSatir++;
+        ylsm.setYerlesimMatrisSatirSayisi(matrisSatir);
+    }
+
+    public void viewBoyunuGetir(final CustomRelativeLayout crl, final Yerlesim ylsm, final int elemanID, final RelativeLayout.LayoutParams pa)
+    {
+        final int[] viewYukseklikleri = ylsm.getYerlesimSutunYukseklikleri();
+        final List<int[]> matris = ylsm.getYerlesimMatris();
+
+        ViewTreeObserver viewTreeObserver = this.getViewTreeObserver();
+        if (viewTreeObserver.isAlive())
+        {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+            {
+                @Override
+                public void onGlobalLayout()
+                {
+                    crl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    //int viewWidth = crl.getWidth();
+                    int viewHeight = crl.getHeight();
+
+                    int enKisaSutunNo = 0;//matris sutunlarından hangisinin boyu en kisa
+                    int enKisaUzunluk = viewYukseklikleri[enKisaSutunNo];//en kisa boya sahip sutunun uzunluğu
+
+                    boolean eklendiMi = false;
+
+                    /*
+                    for (int i = 0; i < viewYukseklikleri.length; i++)
+                    {
+                        Log.d("uyg3", "1 i : " + i + " -- " + viewYukseklikleri[i]);
+                    }
+                    */
+
+                    if (matris.isEmpty())
+                    {
+                        matriseSatirEkle(ylsm);
+                    }
+
+                    /*
+                    for (int i = 0; i < matris.size(); i++)
+                    {
+                        Log.d("uyg3", "matris : 1 : " + i + ":" + Arrays.toString(matris.get(i)));
+                    }
+                    */
+
+                    for (int i = 0; i < viewYukseklikleri.length; i++)
+                    {
+                        if (viewYukseklikleri[i] == 0)//sutuna ilk eleman ekleniyor
+                        {
+                            enKisaUzunluk = 0;
+                            enKisaSutunNo = i;
+                            viewYukseklikleri[i] = viewHeight;
+                            eklendiMi = true;
+
+                            int satirNo = matristeBosSatiriBul(ylsm, i);
+                            if (satirNo == -1)
+                            {
+                                matriseSatirEkle(ylsm);
+                                matris.get(ylsm.getYerlesimMatrisSatirSayisi() - 1)[i] = elemanID;
+                            }
+                            else
+                            {
+                                matris.get(satirNo)[i] = elemanID;
+                            }
+
+                            if (i == 0)//ekrana ilk eleman ekleniyor, en ust soldaki eleman
+                            {
+                                crl.setLayoutParams(pa);
+                            }
+                            else//ilk satira eleman ekleniyor
+                            {
+                                int soldakiID = matris.get(0)[i - 1];
+                                pa.addRule(RelativeLayout.RIGHT_OF, soldakiID);
+                                pa.addRule(RelativeLayout.ALIGN_TOP, soldakiID);
+                                crl.setLayoutParams(pa);
+                            }
+
+                            break;
+                        }
+                        else
+                        {
+                            if (viewYukseklikleri[i] < enKisaUzunluk)
+                            {
+                                enKisaUzunluk = viewYukseklikleri[i];
+                                enKisaSutunNo = i;
+                            }
+                        }
+                    }
+
+                    //Log.d("uyg3", "en kisa : " + enKisaSutunNo + " -- deger : " + viewYukseklikleri[enKisaSutunNo] + " -- eklenecek : " + viewHeight);
+                    if (!eklendiMi)
+                    {
+                        int a = viewYukseklikleri[enKisaSutunNo];
+                        viewYukseklikleri[enKisaSutunNo] = a + viewHeight;
+
+                        int satirNo = matristeBosSatiriBul(ylsm, enKisaSutunNo);
+                        if (satirNo == -1)//sutunda boş yer yok. yeni satir eklenecek
+                        {
+                            matriseSatirEkle(ylsm);
+                            matris.get(ylsm.getYerlesimMatrisSatirSayisi() - 1)[enKisaSutunNo] = elemanID;
+
+                            int usttekiID = matris.get((ylsm.getYerlesimMatrisSatirSayisi() - 1) - 1)[enKisaSutunNo];
+                            pa.addRule(RelativeLayout.BELOW, usttekiID);
+                            pa.addRule(RelativeLayout.ALIGN_LEFT, usttekiID);
+                            crl.setLayoutParams(pa);
+                        }
+                        else//sutunda boş yer var
+                        {
+                            matris.get(satirNo)[enKisaSutunNo] = elemanID;
+
+                            int usttekiID = matris.get(satirNo - 1)[enKisaSutunNo];
+                            pa.addRule(RelativeLayout.BELOW, usttekiID);
+                            pa.addRule(RelativeLayout.ALIGN_LEFT, usttekiID);
+                            crl.setLayoutParams(pa);
+                        }
+                    }
+
+                    /*
+                    for (int i = 0; i < viewYukseklikleri.length; i++)
+                    {
+                        Log.d("uyg3", "2 i : " + i + " -- " + viewYukseklikleri[i]);
+                    }
+
+                    for (int i = 0; i < matris.size(); i++)
+                    {
+                        Log.d("uyg3", "matris : 2 : " + i + ":" + Arrays.toString(matris.get(i)));
+                    }
+                    */
+                }
+            });
+        }
+    }
+
+    /*
     public void kayitMatriseEkle(RelativeLayout.LayoutParams pa)
     {
         if (!matris.isEmpty())
@@ -306,7 +470,9 @@ public class CustomRelativeLayout extends RelativeLayout
             }
         }
     }
+    */
 
+    /*
     public void satirSayisiniHesapla(String baslik, int yaziBuyuklugu)
     {
         Paint textPaint = new Paint();
@@ -315,6 +481,7 @@ public class CustomRelativeLayout extends RelativeLayout
         int satir = (int) Math.ceil(uzunluk / (MainActivity.elemanEnUzunluğu - dpGetir(PADDING_YAZI * 2)));
         setSatir(satir + 1);//ust ve alttaki baslıklar için +1 ekliyorum
     }
+    */
 
     public void arkaplanSecili()
     {
@@ -395,10 +562,5 @@ public class CustomRelativeLayout extends RelativeLayout
     public void setSatir(int satir)
     {
         this.satir = satir;
-    }
-
-    public List<int[]> getMatris()
-    {
-        return matris;
     }
 }

@@ -525,8 +525,10 @@ public class MainActivity extends Activity
         public static List<YedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
-        private List<int[]> globalMatris;//elemanların ekrandaki yerlesimini tutuyor
+        //private List<int[]> globalMatris;//elemanların ekrandaki yerlesimini tutuyor
+        //private int[] globalViewYukseklikleri;//sutunlardaki elemanların toplam yuksekligini tutuyor
         private static CustomRelativeLayout seciliCRL;//içine girilen kaydın nesnesi
+        private static Yerlesim globalYerlesim;
 
         public PlaceholderFragment()
         {
@@ -626,7 +628,9 @@ public class MainActivity extends Activity
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public void parseXml(String parcaID)
         {
-            List<int[]> matris = new ArrayList<>();
+            Yerlesim ylsm = new Yerlesim(Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
+            globalYerlesim = ylsm;
+            //List<int[]> matris = new ArrayList<>();
 
             Element element = document.getElementById(parcaID);
             NodeList nodeList = element.getChildNodes();
@@ -645,7 +649,8 @@ public class MainActivity extends Activity
                         String kayitDurum = nodeYazi.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kayitID = nodeYazi.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        matris = kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, matris);
+                        //matris = kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, matris, viewYukseklikleri);
+                        kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, ylsm);
                     }
                 }
                 else if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
@@ -661,12 +666,13 @@ public class MainActivity extends Activity
                         String kategoriDurum = nodeParca.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kategoriID = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        matris = kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, matris);
+                        //matris = kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, matris, viewYukseklikleri);
+                        kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, ylsm);
                     }
                 }
             }
 
-            globalMatris = matris;
+            //globalMatris = matris;
         }
 
         //secilen elemanların durum bilgilerine göre actionBar daki simgeleri gizler, gösterir
@@ -705,10 +711,11 @@ public class MainActivity extends Activity
         }
 
         //xml parse edildikten sonra kayitları ana ekrana ekler
-        public List<int[]> kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, List<int[]> matris)
+        //public List<int[]> kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, List<int[]> matris, int[] viewYukseklikleri)
+        public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, Yerlesim ylsm)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this, matris);
-            List<int[]> mtrs = crl.getMatris();
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this, ylsm);
+            //List<int[]> mtrs = crl.getMatris();
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -784,8 +791,6 @@ public class MainActivity extends Activity
                 }
             });
             anaLayout.addView(crl);
-
-            return mtrs;
         }
 
         //actionBar a yazılacak olan kategorinin yolunu getiriyor
@@ -860,10 +865,10 @@ public class MainActivity extends Activity
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        public List<int[]> kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, List<int[]> matris)
+        public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, Yerlesim ylsm)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this, matris);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            List<int[]> mtrs = crl.getMatris();
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this, ylsm);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            //List<int[]> mtrs = crl.getMatris();
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -940,8 +945,6 @@ public class MainActivity extends Activity
                 }
             });
             anaLayout.addView(crl);
-
-            return mtrs;
         }
 
         //kategori layout'undaki duzenle simgesini gösterir ve gizler
@@ -1091,7 +1094,7 @@ public class MainActivity extends Activity
                         alert.dismiss();
                         final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
 
-                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI, globalMatris);
+                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI, globalYerlesim);
                     }
                 }
             });
@@ -1221,7 +1224,7 @@ public class MainActivity extends Activity
 
                         klavyeKapat(et.getWindowToken());
                         anaLayout.removeView(et);
-                        kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI, globalMatris);
+                        kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI, globalYerlesim);
 
                         break;
                     }
@@ -1668,7 +1671,7 @@ public class MainActivity extends Activity
 
         public void klavyeAc()
         {
-            if(!klavyeAcikMi())
+            if (!klavyeAcikMi())
             {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
@@ -1677,7 +1680,7 @@ public class MainActivity extends Activity
 
         public void klavyeKapat()
         {
-            if(klavyeAcikMi())
+            if (klavyeAcikMi())
             {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
