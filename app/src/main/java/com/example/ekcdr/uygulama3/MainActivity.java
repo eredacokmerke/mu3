@@ -1021,41 +1021,39 @@ public class MainActivity extends Activity
             }
         }
 
-        //başta oluşturulan xml e yeni eklenecek kısımları ekler ve en buyuk xml idsini döndürür
-        public int xmlDosyasiniGuncelle(String baslik, String renk)
+        //başta oluşturulan xmle yeni eklenen kategoriyi ekler ve en buyuk xml idsini döndürür
+        public int xmlDosyasinaKategoriEkle(String baslik, String renk)
         {
             xmlEnBuyukID++;
+            Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
+            NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
+            for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
             {
-                Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
-                NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
-                for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
+                if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_ALTPARCA))//parcanın içindeki altparca etiketine ulaşılıyor
                 {
-                    if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_ALTPARCA))//parcanın içindeki altparca etiketine ulaşılıyor
-                    {
-                        Node nodeAltparca = nodeParcaCocuklari.item(i);//altparcaya giriliyor
-                        Element yeniNodeParca = document.createElement(XML_PARCA);//parca isimli etiket olşuturuluyor
-                        yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
-                        yeniNodeParca.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
-                        nodeAltparca.appendChild(yeniNodeParca);//altparca etiketine parca ekleniyor
+                    Node nodeAltparca = nodeParcaCocuklari.item(i);//altparcaya giriliyor
+                    Element yeniNodeParca = document.createElement(XML_PARCA);//parca isimli etiket olşuturuluyor
+                    yeniNodeParca.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
+                    yeniNodeParca.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
+                    nodeAltparca.appendChild(yeniNodeParca);//altparca etiketine parca ekleniyor
 
-                        Node nodeParca = document.getElementById(String.valueOf(xmlEnBuyukID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
-                        Element yeniNodeBaslik = document.createElement(XML_BASLIK);//baslik etiketi oluşturuluyor
-                        yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
-                        Element yeniNodeRenk = document.createElement(XML_RENK);//renk etiketi oluşturuluyor
-                        yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
-                        Element yeniNodeYazi = document.createElement(XML_YAZILAR);//yazi etiketi oluşturuluyor
-                        Element yeniNodeAltparca = document.createElement(XML_ALTPARCA);//altparca etiketi oluşturuluyor
-                        nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
-                        nodeParca.appendChild(yeniNodeRenk);//parca etiketine renk etiketi ekleniyor
-                        nodeParca.appendChild(yeniNodeYazi);//parca etiketine yazi etiketi ekleniyor
-                        nodeParca.appendChild(yeniNodeAltparca);//parca etiketine altparca etiketi ekleniyor
-                        break;
-                    }
+                    Node nodeParca = document.getElementById(String.valueOf(xmlEnBuyukID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
+                    Element yeniNodeBaslik = document.createElement(XML_BASLIK);//baslik etiketi oluşturuluyor
+                    yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
+                    Element yeniNodeRenk = document.createElement(XML_RENK);//renk etiketi oluşturuluyor
+                    yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
+                    Element yeniNodeYazi = document.createElement(XML_YAZILAR);//yazi etiketi oluşturuluyor
+                    Element yeniNodeAltparca = document.createElement(XML_ALTPARCA);//altparca etiketi oluşturuluyor
+                    nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
+                    nodeParca.appendChild(yeniNodeRenk);//parca etiketine renk etiketi ekleniyor
+                    nodeParca.appendChild(yeniNodeYazi);//parca etiketine yazi etiketi ekleniyor
+                    nodeParca.appendChild(yeniNodeAltparca);//parca etiketine altparca etiketi ekleniyor
+                    break;
                 }
-                documentToFile(DOCUMENT_ASIL);
-
-                return xmlEnBuyukID;
             }
+            documentToFile(DOCUMENT_ASIL);
+
+            return xmlEnBuyukID;
         }
 
         //listSeciliKategori ve listSeciliKayit'yi sıfırlar ve actionbar ı ilk haline döndürür
@@ -1092,7 +1090,7 @@ public class MainActivity extends Activity
                     {
                         klavyeKapat();
                         alert.dismiss();
-                        final int eklenenID = xmlDosyasiniGuncelle(kategoriAdi, "");
+                        final int eklenenID = xmlDosyasinaKategoriEkle(kategoriAdi, "");
 
                         kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI, globalYerlesim);
                     }
@@ -1173,64 +1171,82 @@ public class MainActivity extends Activity
             }
         }
 
-        //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
-        public void yaziyiKaydet(EditText et)
+        //başta oluşturulan xmle yeni eklenen kaydı ekler ve en buyuk xml idsini döndürür
+        public int xmlDosyasinaKayitEkle(String baslik)
         {
             xmlEnBuyukID++;
+            kategoriDurumunuGuncelle(xmlParcaID, DURUM_YENI);
+
+            Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
+            NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
+            for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
             {
-                String alanYazi = et.getText().toString();
-
-                //Log.d(TAG, "xmlParcaID : " + xmlParcaID);
-                kategoriDurumunuGuncelle(xmlParcaID, DURUM_YENI);
-
-                Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
-                NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
-                for (int i = 0; i < nodeParcaCocuklari.getLength(); i++)
+                if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
                 {
-                    if (nodeParcaCocuklari.item(i).getNodeName().equals(XML_YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
+                    int eklenenID = xmlEnBuyukID;
+                    Element yeniNodeKayit = document.createElement(XML_KAYIT);//kayıt etiketi olusturuyor
+                    yeniNodeKayit.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
+                    yeniNodeKayit.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
+                    nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
+
+                    StringBuilder str = new StringBuilder(baslik);//alt satıra geçmeyi anlayabilmek için \n <br> ile değiştiriliyor
+                    int sayac = 0;
+                    for (i = 0; i < baslik.length(); i++)//<br> eklendiği zaman stringin boyu 4 uzuyor onun için sayac tutuyoruz
                     {
-                        int eklenenID = xmlEnBuyukID;
-                        Element yeniNodeKayit = document.createElement(XML_KAYIT);//kayıt etiketi olusturuyor
-                        yeniNodeKayit.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
-                        yeniNodeKayit.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
-                        nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
-
-                        StringBuilder str = new StringBuilder(alanYazi);//alt satıra geçmeyi anlayabilmek için \n <br> ile değiştiriliyor
-                        int sayac = 0;
-                        for (i = 0; i < alanYazi.length(); i++)//<br> eklendiği zaman stringin boyu 4 uzuyor onun için sayac tutuyoruz
+                        if (baslik.charAt(i) == '\n')
                         {
-                            if (alanYazi.charAt(i) == '\n')
-                            {
-                                str.insert(i + sayac, "<br>");
-                                sayac = sayac + 4;
-                            }
+                            str.insert(i + sayac, "<br>");
+                            sayac = sayac + 4;
                         }
-                        yeniNodeKayit.setTextContent(str.toString());
+                    }
+                    yeniNodeKayit.setTextContent(str.toString());
 
-                        /*
-                        Node nodeYazi = nodeParcaCocuklari.item(i);//altparcaya giriliyor
-                        StringBuffer str = new StringBuffer(alanYazi);//alt satıra geçmeyi anlayabilmek için \n <br> ile değiştiriliyor
-                        int sayac = 0;
-                        for (i = 0; i < alanYazi.length(); i++)//<br> eklendiği zaman stringin boyu 4 uzuyor onun için sayac tutuyoruz
-                        {
-                            if (alanYazi.charAt(i) == '\n')
-                            {
-                                str.insert(i + sayac, "<br>");
-                                sayac = sayac + 4;
-                            }
-                        }
-                        nodeYazi.setTextContent(str.toString());
-                        */
+                    break;
+                }
+            }
+            documentToFile(DOCUMENT_ASIL);
 
-                        klavyeKapat(et.getWindowToken());
-                        anaLayout.removeView(et);
-                        kayitlariAnaEkranaEkle(alanYazi, eklenenID, DURUM_YENI, globalYerlesim);
+            return xmlEnBuyukID;
+        }
 
-                        break;
+        //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
+        public void yaziyiKaydet()
+        {
+            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Kayıt", "İptal", "Tamam", "", ALERTDIALOG_EDITTEXT);
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+            klavyeAc();
+
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    final String kayitAdi = builder.getAlertET().getText().toString();
+                    if (kayitAdi.isEmpty())//edittext boşken tamam'a tıklandı
+                    {
+                        Toast.makeText(getActivity(), "Kayıt boş olamaz", Toast.LENGTH_LONG).show();
+                    }
+                    else//anaLayout'a yeni alan ekliyor
+                    {
+                        klavyeKapat();
+                        alert.dismiss();
+                        final int eklenenID = xmlDosyasinaKayitEkle(kayitAdi);
+
+                        kayitlariAnaEkranaEkle(kayitAdi, eklenenID, DURUM_YENI, globalYerlesim);
                     }
                 }
-                documentToFile(DOCUMENT_ASIL);
-            }
+            });
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    klavyeKapat();
+                    alert.dismiss();
+                }
+            });
         }
 
         //sil tusuna basıldığı zaman secili elemanları siler
@@ -2106,13 +2122,14 @@ public class MainActivity extends Activity
                     kategoriKaydet();
                     return true;
                 case R.id.action_kayit_ekle:
-                    actionBarDegistir(ACTIONBAR_ONAY);
-                    etEklenecek = yaziAlaniOlustur();
-                    klavyeAc(getActivity().getApplicationContext(), etEklenecek);
+                    yaziyiKaydet();
+                    //actionBarDegistir(ACTIONBAR_ONAY);
+                    //etEklenecek = yaziAlaniOlustur();
+                    //klavyeAc(getActivity().getApplicationContext(), etEklenecek);
                     return true;
                 case R.id.action_onay_kaydet:
-                    yaziyiKaydet(etEklenecek);
-                    actionBarDegistir(ACTIONBAR_EKLE);
+                    //yaziyiKaydet(etEklenecek);
+                    //actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
                 case R.id.action_onay_iptal:
                     klavyeKapat(etEklenecek.getWindowToken());
