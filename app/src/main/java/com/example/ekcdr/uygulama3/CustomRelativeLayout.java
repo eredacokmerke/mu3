@@ -43,7 +43,6 @@ public class CustomRelativeLayout extends RelativeLayout
         setCrlSeciliMi(false);
         setDurum(durum);
         this.setId(crlID);
-        //this.matris = matris;
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
 
         switch (elemanTur)
@@ -53,8 +52,6 @@ public class CustomRelativeLayout extends RelativeLayout
                 RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 pa.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
 
-                //satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KATEGORI);
-                //kayitMatriseEkle(pa);
                 this.setLayoutParams(pa);
                 viewBoyunuGetir(this, ylsm, crlID, pa);
 
@@ -136,7 +133,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 tvBaslik = new TextView(context);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
-                tvBaslik.setText(crlID + "-" + baslik);
+                tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(Color.WHITE);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -151,8 +148,6 @@ public class CustomRelativeLayout extends RelativeLayout
                 RelativeLayout.LayoutParams pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 pa2.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
 
-                //satirSayisiniHesapla(baslik, YAZI_BUYUKLUGU_KAYIT);
-                //kayitMatriseEkle(pa2);
                 this.setLayoutParams(pa2);
                 viewBoyunuGetir(this, ylsm, crlID, pa2);
 
@@ -170,7 +165,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 tvBaslik = new TextView(context);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
-                tvBaslik.setText(crlID + "-" + baslik);
+                tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(Color.WHITE);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -342,146 +337,6 @@ public class CustomRelativeLayout extends RelativeLayout
             });
         }
     }
-
-    /*
-    public void kayitMatriseEkle(RelativeLayout.LayoutParams pa)
-    {
-        if (!matris.isEmpty())
-        {
-            int matrisBoyu = matris.size();
-
-            boolean bosIndeksVarMi = false;
-            boolean idEklendiMi = false;
-            for (int j = 0; j < matrisBoyu && !idEklendiMi; j++)
-            {
-                int[] a = matris.get(j);
-
-                //Log.d("uyg3", "a : "+Arrays.toString(matris.get(j)));
-                for (int i = 0; i < a.length; i++)
-                {
-                    //Log.d("uyg3", "i : "+i+" -- "+a[i]);
-                    if (a[i] == -1)//bos indeks bulundu
-                    {
-                        //Log.d("uyg3", "-1 bulundu");
-                        bosIndeksVarMi = true;
-
-                        int bosSatirSayisi = matris.size() - j;//bulunduğum yerin altında daha kaç satır var
-                        if (getSatir() > bosSatirSayisi)//alttaki bosluk yetersiz. yeni satir eklenecek
-                        {
-                            int eklenecekSatir = getSatir() - bosSatirSayisi;//eklenecek satir sayisi
-
-                            for (int l = 0; l < eklenecekSatir; l++)
-                            {
-                                //Log.d("uyg3", "ekle 4");
-                                int[] c = new int[satirBasinaKayitSayisi];
-                                for (int k = 0; k < satirBasinaKayitSayisi; k++)
-                                {
-                                    c[k] = -1;
-                                }
-
-                                matris.add(c);
-                            }
-
-                            if (j == 0)//id en ustte eklenecek
-                            {
-                                int usttekiID = matris.get(0)[i - 1];
-                                pa.addRule(RelativeLayout.RIGHT_OF, usttekiID);
-                                pa.addRule(RelativeLayout.ALIGN_TOP, usttekiID);
-                            }
-                            else//id baska bir id nin altına yerlesecek
-                            {
-                                int usttekiID = matris.get(j - 1)[i];
-                                pa.addRule(RelativeLayout.BELOW, usttekiID);
-                                pa.addRule(RelativeLayout.ALIGN_LEFT, usttekiID);
-                                //Log.d("uyg3", "ekle 1 -- ustteki : " + usttekiID);
-                            }
-
-                            for (int z = 0; z < getSatir(); z++)
-                            {
-                                //Log.d("uyg3", "ekle 1");
-                                int[] b = matris.get(j + z);
-                                b[i] = getId();
-
-                                idEklendiMi = true;
-                            }
-                        }
-                        else//alttaki bosluk yeterli
-                        {
-                            //Log.d("uyg3", "ekle 2 -- j : " + j + " i : " + i);
-                            if (j == 0)//id en ustte eklenecek
-                            {
-                                int usttekiID = matris.get(0)[i - 1];
-                                pa.addRule(RelativeLayout.RIGHT_OF, usttekiID);
-                                pa.addRule(RelativeLayout.ALIGN_TOP, usttekiID);
-                                //Log.d("uyg3", "ekle 2 -- usttekiID 1 : " + usttekiID);
-                            }
-                            else//id baska bir id nin altına yerlesecek
-                            {
-                                int usttekiID = matris.get(j - 1)[i];
-                                pa.addRule(RelativeLayout.BELOW, usttekiID);
-                                pa.addRule(RelativeLayout.ALIGN_LEFT, usttekiID);
-                                //Log.d("uyg3", "ekle 2 -- usttekiID 2 : " + usttekiID);
-                            }
-
-                            for (int z = 0; z < getSatir(); z++)
-                            {
-                                int[] b = matris.get(j + z);
-                                b[i] = getId();
-
-                                idEklendiMi = true;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            if (!bosIndeksVarMi)//bos indeks yok yeni satir eklenecek
-            {
-                int usttekiID = matris.get(matrisBoyu - 1)[0];
-                pa.addRule(RelativeLayout.BELOW, usttekiID);
-
-                //Log.d("uyg3", "ekle 3 -- ustteki : " + usttekiID);
-                for (int i = 0; i < this.getSatir(); i++)
-                {
-                    int[] c = new int[satirBasinaKayitSayisi];
-                    c[0] = getId();
-                    for (int w = 1; w < satirBasinaKayitSayisi; w++)
-                    {
-                        c[w] = -1;
-                    }
-
-                    matris.add(c);
-                }
-            }
-        }
-        else//matris boş, ilk eleman ekleniyor
-        {
-            for (int i = 0; i < this.getSatir(); i++)
-            {
-                int[] a = new int[satirBasinaKayitSayisi];
-                a[0] = getId();
-
-                for (int j = 1; j < satirBasinaKayitSayisi; j++)
-                {
-                    a[j] = -1;
-                }
-
-                matris.add(a);
-            }
-        }
-    }
-    */
-
-    /*
-    public void satirSayisiniHesapla(String baslik, int yaziBuyuklugu)
-    {
-        Paint textPaint = new Paint();
-        textPaint.setTextSize(yaziBuyuklugu);
-        float uzunluk = dpGetir((int) textPaint.measureText(baslik));
-        int satir = (int) Math.ceil(uzunluk / (MainActivity.elemanEnUzunluğu - dpGetir(PADDING_YAZI * 2)));
-        setSatir(satir + 1);//ust ve alttaki baslıklar için +1 ekliyorum
-    }
-    */
 
     public void arkaplanSecili()
     {
