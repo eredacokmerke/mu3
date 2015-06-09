@@ -15,6 +15,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
     private String olumsuzDugmeYazi;
     private EditText alertET;
 
+    //olumlu ve olumsuz seceneklerin oldugu dialog
     public CustomAlertDialogBuilder(Context context, String baslik, String olumsuzDugmeYazi, String olumluDugmeYazi, String yazi, int tur)
     {
         super(context);
@@ -24,6 +25,23 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
         this.yazi = yazi;
 
         alertDialogOlustur(tur);
+
+        this.setPositiveButton(this.getOlumluDugmeYazi(), null);//dugmeye tıklama olayını alertDialog ta yakaladığım için buraya null değeri giriyorum
+        this.setNegativeButton(this.getOlumsuzDugmeYazi(), null);
+    }
+
+    //sadece olumlu secenegin oldugu dialog
+    public CustomAlertDialogBuilder(Context context, String baslik, String olumluDugmeYazi, String yazi, int tur)
+    {
+        super(context);
+        this.baslik = baslik;
+        this.olumsuzDugmeYazi = "";
+        this.olumluDugmeYazi = olumluDugmeYazi;
+        this.yazi = yazi;
+
+        alertDialogOlustur(tur);
+
+        this.setPositiveButton(this.getOlumluDugmeYazi(), null);
     }
 
     public void alertDialogOlustur(int tur)
@@ -66,8 +84,8 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
         this.setTitle(this.getBaslik());
         this.setView(alertLL);
 
-        this.setPositiveButton(this.getOlumluDugmeYazi(), null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-        this.setNegativeButton(this.getOlumsuzDugmeYazi(), null);
+        //this.setPositiveButton(this.getOlumluDugmeYazi(), null);//dugmeye tıklama olayını alertDialog ta yakaladığım için buraya null değeri giriyorum
+        //this.setNegativeButton(this.getOlumsuzDugmeYazi(), null);
     }
 
     public EditText getAlertET()

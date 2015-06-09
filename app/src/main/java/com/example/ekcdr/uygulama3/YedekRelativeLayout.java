@@ -79,7 +79,7 @@ public class YedekRelativeLayout extends RelativeLayout
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = sdf.format(date);
 
-                final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Onay", "İptal", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), MainActivity.ALERTDIALOG_TEXTVIEW);
+                final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Onay", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), MainActivity.ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 
