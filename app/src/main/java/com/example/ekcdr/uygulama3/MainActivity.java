@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -1000,6 +1001,7 @@ public class MainActivity extends Activity
         {
             final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Kategori Adı", "İptal", "Tamam", "", ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
+            alert.setCanceledOnTouchOutside(true);
             alert.show();
 
             klavyeAc();
@@ -1031,6 +1033,14 @@ public class MainActivity extends Activity
                 {
                     klavyeKapat();
                     alert.dismiss();
+                }
+            });
+            alert.setOnCancelListener(new DialogInterface.OnCancelListener()//dialogun dışına tıklandı
+            {
+                @Override
+                public void onCancel(DialogInterface dialogInterface)
+                {
+                    klavyeKapat();
                 }
             });
         }
@@ -1137,11 +1147,12 @@ public class MainActivity extends Activity
             return xmlEnBuyukID;
         }
 
-        //kayit ekle tusuna basıldıktan sonra açılan edittext'e yazılan yazıyı xml'e ekler
+        //ana ekrana ve xml'e kayıt ekler
         public void yaziyiKaydet()
         {
             final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Kayıt", "İptal", "Tamam", "", ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
+            alert.setCanceledOnTouchOutside(true);
             alert.show();
 
             klavyeAc();
@@ -1173,6 +1184,14 @@ public class MainActivity extends Activity
                 {
                     klavyeKapat();
                     alert.dismiss();
+                }
+            });
+            alert.setOnCancelListener(new DialogInterface.OnCancelListener()//dialogun dışına tıklandı
+            {
+                @Override
+                public void onCancel(DialogInterface dialogInterface)
+                {
+                    klavyeKapat();
                 }
             });
         }
@@ -1672,9 +1691,9 @@ public class MainActivity extends Activity
 
             final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Onay", "İptal", "Tamam", zaman, ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
+            alert.setCanceledOnTouchOutside(true);
             alert.show();
 
-            final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             klavyeAc();
 
             alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
@@ -1733,6 +1752,14 @@ public class MainActivity extends Activity
                 {
                     klavyeKapat();
                     alert.dismiss();
+                }
+            });
+            alert.setOnCancelListener(new DialogInterface.OnCancelListener()//dialogun dışına tıklandı
+            {
+                @Override
+                public void onCancel(DialogInterface dialogInterface)
+                {
+                    klavyeKapat();
                 }
             });
         }
