@@ -151,47 +151,7 @@ public class MainActivity extends Activity
             {
                 xmlDosyasi = uygulamaKlasoru + "/" + "new.xml";
                 xmlAyarDosyasi = uygulamaKlasoru + "/" + "opt.xml";
-
-                //if (xmlDosyasiKontrolEt(xmlDosyasi))
-                /*
-                if (new File(xmlDosyasi).exists())//xml dosyası var mı
-                {
-                    document = xmlDocumentNesnesiOlustur(xmlDosyasi);
-                    if (document == null)
-                    {
-                        ekranaHataYazdir("1", "document olusamadı");
-                        finish();
-                    }
-                    else
-                    {
-                        xmlEnBuyukID = enBuyukIDyiBul();
-                        if (xmlEnBuyukID == -1)
-                        {
-                            ekranaHataYazdir("1", "xml okunamadı");
-                            finish();
-                        }
-                    }
-                }
-                else
-                {
-                    xmlDosyasiOlustur(xmlDosyasi);
-                    xmlEnBuyukID = 0;
-                    document = xmlDocumentNesnesiOlustur(xmlDosyasi);
-                }
-                */
                 xmlDosyasiKontrolEt(xmlDosyasi);
-
-                /*
-                if (new File(xmlAyarDosyasi).exists())//xml ayar dosyası var mı
-                {
-                    //ayarlariOku();
-                }
-                else
-                {
-                    xmlAyarDosyasiOlustur(xmlAyarDosyasi);
-                    //ontanimliAyarlariGetir();
-                }*/
-
                 xmlAyarDosyasiKontrolEt(xmlAyarDosyasi);
 
                 if (savedInstanceState == null)
@@ -1132,6 +1092,7 @@ public class MainActivity extends Activity
                 case FRAGMENT_KAYIT_EKRANI:
 
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
                     /*
                     FragmentManager fm = getFragmentManager();
 
@@ -1140,8 +1101,6 @@ public class MainActivity extends Activity
                         fm.popBackStackImmediate();
                     }
                     */
-                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
-                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
                 case FRAGMENT_KATEGORI_EKRANI:
@@ -1150,19 +1109,18 @@ public class MainActivity extends Activity
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
                     xmlParcaID = ustSeviyeID;
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                    ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
                 case FRAGMENT_YEDEK_EKRANI:
 
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
-                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
                 case FRAGMENT_AYAR_EKRANI:
 
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
-                    FRAGMENT_ETKIN_EKRAN = FRAGMENT_KATEGORI_EKRANI;
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
@@ -2132,9 +2090,9 @@ public class MainActivity extends Activity
                     //actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
                 case R.id.action_onay_iptal:
-                    klavyeKapat(etEklenecek.getWindowToken());
-                    anaLayout.removeView(etEklenecek);
-                    actionBarDegistir(ACTIONBAR_EKLE);
+                    //klavyeKapat(etEklenecek.getWindowToken());
+                    //anaLayout.removeView(etEklenecek);
+                    //actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
                 case R.id.action_secim_tamam:
                     seciliElemanlariTamamla();
