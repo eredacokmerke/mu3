@@ -86,7 +86,6 @@ public class MainActivity extends Activity
     private static final String FRAGMENT_TAG = "fragment_tag";
     public static final int ELEMAN_TUR_KAYIT = 0;
     public static final int ELEMAN_TUR_KATEGORI = 1;
-    //private static final String FRAGMENT_SECIM = "fragment_secim";
     private static final String FRAGMENT_YAZI = "fragment_yazi";
     private static final int ACTIONBAR_EKLE = 0;
     private static final int ACTIONBAR_ONAY = 1;
@@ -431,35 +430,6 @@ public class MainActivity extends Activity
         }
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_ana_ekran, menu);
-        return true;
-    }
-    */
-
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId())
-        {
-            case R.id.action_kategori_ekle://fragment sınıfının içinde yakaladığım için false döndürüyor
-                return false;
-            case R.id.action_kayit_ekle://fragment sınıfının içinde yakaladığım için false döndürüyor
-                return false;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
     public void ekranaHataYazdir(String id, String hata)
     {
         Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
@@ -478,15 +448,13 @@ public class MainActivity extends Activity
         private RelativeLayout anaLayout;//viewların içine yerleşeceği ana layout
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
-        private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
+        //private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
         private static List<CustomRelativeLayout> listSeciliCRL;//seçilen elemanların listesi
         public static List<YedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
-        //private List<int[]> globalMatris;//elemanların ekrandaki yerlesimini tutuyor
-        //private int[] globalViewYukseklikleri;//sutunlardaki elemanların toplam yuksekligini tutuyor
         private static CustomRelativeLayout seciliCRL;//içine girilen kaydın nesnesi
         private static Yerlesim globalYerlesim;
 
@@ -1072,6 +1040,7 @@ public class MainActivity extends Activity
             return listSeciliCRL.size();
         }
 
+        /*
         public EditText yaziAlaniOlustur()
         {
             //actionBarOnay();
@@ -1081,6 +1050,7 @@ public class MainActivity extends Activity
             anaLayout.addView(edittext);
             return edittext;
         }
+        */
 
         //su anki etkin ekrana gore bir ust seviyenin ekran ve actionbar bilgilerini belirler
         public void ustSeviyeyiGetir()
@@ -1548,12 +1518,6 @@ public class MainActivity extends Activity
                 nodeParca = nodeParca.getParentNode().getParentNode();
                 sonuc = parcayiIsaretleTamamlandi(nodeParca);
             }
-        }
-
-        public CustomRelativeLayout findCRLbyID(int id)
-        {
-            CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(id);
-            return crl;
         }
 
         public Element kayitTamamla(String idd)
@@ -2172,8 +2136,6 @@ public class MainActivity extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            //Log.d(TAG, "FRAGMENT_ETKIN_EKRAN : " + FRAGMENT_ETKIN_EKRAN + " FRAGMENT_SECIM : " + getArguments().getInt(FRAGMENT_SECIM));
-            //switch (getArguments().getInt(FRAGMENT_SECIM))
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case FRAGMENT_KATEGORI_EKRANI:

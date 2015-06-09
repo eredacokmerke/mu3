@@ -6,8 +6,8 @@ import java.util.List;
 public class Yerlesim
 {
     private List<int[]> yerlesimMatris;//elemanların ekrandaki yerlesimini tutuyor
-    private int[] yerlesimSutunYukseklikleri;
-    private int yerlesimMatrisSatirSayisi = 0;
+    private int[] yerlesimSutunYukseklikleri;//sutunların boy uzunluklarını tutuyor
+    private int yerlesimMatrisSatirSayisi = 0;//matristeki satır sayısını tutuyor
 
     public Yerlesim(int satirBasinaElemanSayisi)
     {

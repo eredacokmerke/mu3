@@ -408,14 +408,4 @@ public class CustomRelativeLayout extends RelativeLayout
     {
         this.durum = durum;
     }
-
-    public int getSatir()
-    {
-        return satir;
-    }
-
-    public void setSatir(int satir)
-    {
-        this.satir = satir;
-    }
 }
