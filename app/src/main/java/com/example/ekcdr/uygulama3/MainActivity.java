@@ -308,8 +308,8 @@ public class MainActivity extends Activity
         }
         else
         {
-            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyasi, this);
             xmlAyarDosyasiOlustur(xmlAyarDosyasi);
+            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyasi, this);
             ayarlariOku();
         }
     }
