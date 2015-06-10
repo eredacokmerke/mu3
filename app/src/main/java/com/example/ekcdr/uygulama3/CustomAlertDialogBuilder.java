@@ -79,7 +79,6 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
                 break;
         }
 
-
         //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         this.setTitle(this.getBaslik());
         this.setView(alertLL);

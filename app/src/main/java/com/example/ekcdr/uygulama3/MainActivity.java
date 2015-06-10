@@ -1971,6 +1971,43 @@ public class MainActivity extends Activity
             anaLayout.addView(arl1);
         }
 
+        public String ayarDegeriniGetir(String ayarID)
+        {
+            AyarlarRelativeLayout arl = (AyarlarRelativeLayout) anaLayout.findViewById(Integer.valueOf(ayarID));
+            String yeniDeger = arl.getEtSecenek().getText().toString();
+
+            return yeniDeger;
+        }
+
+        //girilen değerleri kontrol eder
+        public boolean ayarlariKontrolEt()
+        {
+            boolean sonuc = true;
+            Element element = documentAyar.getDocumentElement();
+            NodeList nodeList = element.getChildNodes();
+            for (int i = 0; i < nodeList.getLength(); i++)
+            {
+                Node nodeAyar = nodeList.item(i);
+                String ayarID = nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue();
+                String yeniDeger = ayarDegeriniGetir(ayarID);
+
+                switch (Integer.valueOf(ayarID))
+                {
+                    case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
+                        if (Integer.valueOf(yeniDeger) < 1)
+                        {
+                            Toast.makeText(getActivity(),"satır başına kayıt sayısı 1 den küçük olamaz",Toast.LENGTH_SHORT).show();
+                            sonuc = sonuc & false;
+                        }
+                        break;
+                    default:
+                        ekranaHataYazdir("1", "hatalı ayar id");
+                }
+            }
+
+            return sonuc;
+        }
+
         public void ayarlariKaydet()
         {
             Element element = documentAyar.getDocumentElement();
@@ -1981,14 +2018,19 @@ public class MainActivity extends Activity
                 Node nodeAyar = nodeList.item(i);
                 String ayarDeger = nodeAyar.getTextContent();
                 String ayarID = nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue();
-
-                AyarlarRelativeLayout arl = (AyarlarRelativeLayout) anaLayout.findViewById(Integer.valueOf(ayarID));
-                String yeniDeger = arl.getEtSecenek().getText().toString();
-                if (!ayarDeger.equals(yeniDeger))//deger degisti
+                String yeniDeger = ayarDegeriniGetir(ayarID);
+                switch (Integer.valueOf(ayarID))
                 {
-                    nodeAyar.setTextContent(yeniDeger);
-                    DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = yeniDeger;
-                    elemanEniniHesapla();
+                    case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
+                        if (!ayarDeger.equals(yeniDeger))//deger degisti
+                        {
+                            nodeAyar.setTextContent(yeniDeger);
+                            DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = yeniDeger;
+                            elemanEniniHesapla();
+                        }
+                        break;
+                    default:
+                        ekranaHataYazdir("1", "hatalı ayar id");
                 }
             }
             documentToFile(DOCUMENT_AYAR);
@@ -2046,7 +2088,6 @@ public class MainActivity extends Activity
                             menu.findItem(R.id.action_degistir_yeni).setVisible(false);
                             break;
                         default:
-                            Log.e("hata[141]", "KAYIT_DURUM_TUR hatalı : " + KAYIT_DURUM_TUR);
                             ekranaHataYazdir("141", "KAYIT_DURUM_TUR hatalı : " + KAYIT_DURUM_TUR);
                     }
                     break;
@@ -2057,7 +2098,6 @@ public class MainActivity extends Activity
                     inflater.inflate(R.menu.menu_ayar, menu);
                     break;
                 default:
-                    Log.e("hata[142]", "ACTIONBAR_TUR hatalı : " + ACTIONBAR_TUR);
                     ekranaHataYazdir("142", "ACTIONBAR_TUR hatalı : " + ACTIONBAR_TUR);
             }
         }
@@ -2119,6 +2159,7 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_degistir_kaydet:
                     kayitDegistir();
+                    klavyeKapat();
                     return true;
                 case R.id.action_yedekle:
                     xmlYedekle();
@@ -2139,8 +2180,11 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_ayar_kaydet:
                     klavyeKapat();
-                    ayarlariKaydet();
-                    ustSeviyeyiGetir();
+                    if(ayarlariKontrolEt())
+                    {
+                        ayarlariKaydet();
+                        ustSeviyeyiGetir();
+                    }
                     return true;
                 case R.id.action_ayar_sifirla:
                     ayarlariSifirla();
