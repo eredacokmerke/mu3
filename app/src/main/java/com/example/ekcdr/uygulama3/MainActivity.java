@@ -480,6 +480,9 @@ public class MainActivity extends Activity
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
 
+            Yerlesim ylsm = new Yerlesim(Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
+            globalYerlesim = ylsm;
+
             return fragment;
         }
 
@@ -557,10 +560,6 @@ public class MainActivity extends Activity
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public void parseXml(String parcaID)
         {
-            Yerlesim ylsm = new Yerlesim(Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
-            globalYerlesim = ylsm;
-            //List<int[]> matris = new ArrayList<>();
-
             Element element = document.getElementById(parcaID);
             NodeList nodeList = element.getChildNodes();
 
@@ -578,8 +577,7 @@ public class MainActivity extends Activity
                         String kayitDurum = nodeYazi.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kayitID = nodeYazi.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        //matris = kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, matris, viewYukseklikleri);
-                        kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, ylsm);
+                        kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, globalYerlesim);
                     }
                 }
                 else if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
@@ -595,13 +593,10 @@ public class MainActivity extends Activity
                         String kategoriDurum = nodeParca.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kategoriID = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        //matris = kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, matris, viewYukseklikleri);
-                        kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, ylsm);
+                        kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, globalYerlesim);
                     }
                 }
             }
-
-            //globalMatris = matris;
         }
 
         //secilen elemanların durum bilgilerine göre actionBar daki simgeleri gizler, gösterir
@@ -644,7 +639,6 @@ public class MainActivity extends Activity
         public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, Yerlesim ylsm)
         {
             final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this, ylsm);
-            //List<int[]> mtrs = crl.getMatris();
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -1996,7 +1990,7 @@ public class MainActivity extends Activity
                     case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
                         if (Integer.valueOf(yeniDeger) < 1)
                         {
-                            Toast.makeText(getActivity(),"satır başına kayıt sayısı 1 den küçük olamaz",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "satır başına kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
                             sonuc = sonuc & false;
                         }
                         break;
@@ -2180,7 +2174,7 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_ayar_kaydet:
                     klavyeKapat();
-                    if(ayarlariKontrolEt())
+                    if (ayarlariKontrolEt())
                     {
                         ayarlariKaydet();
                         ustSeviyeyiGetir();
