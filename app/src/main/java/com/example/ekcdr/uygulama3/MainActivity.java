@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -68,9 +70,12 @@ import javax.xml.transform.stream.StreamResult;
 
 public class MainActivity extends Activity
 {
-    private static String xmlDosyaYolu;
-    private static String xmlAyarDosyaYolu;
-    public static String xmlYedekKlasorYolu;
+    public static final int ELEMAN_TUR_KAYIT = 0;
+    public static final int ELEMAN_TUR_KATEGORI = 1;
+    public static final int ALERTDIALOG_EDITTEXT = 0;//alertdialog ta edittex cikacak
+    public static final int ALERTDIALOG_TEXTVIEW = 1;//alertdialog ta textview cikacak
+    public static final int SECENEK_EDITTEXT = 0;
+    public static final int SECENEK_CHECKBOX = 1;
     private static final String UYGULAMA_ADI = "uygulama3";
     private static final String YEDEK_KLASORU_ADI = "backup";
     private static final String XML_PARCA = "parca";
@@ -85,8 +90,6 @@ public class MainActivity extends Activity
     private static final String DURUM_YENI = "0";
     private static final String DURUM_TAMAMLANDI = "1";
     private static final String FRAGMENT_TAG = "fragment_tag";
-    public static final int ELEMAN_TUR_KAYIT = 0;
-    public static final int ELEMAN_TUR_KATEGORI = 1;
     private static final String FRAGMENT_YAZI = "fragment_yazi";
     private static final int ACTIONBAR_EKLE = 0;
     private static final int ACTIONBAR_ONAY = 1;
@@ -96,37 +99,104 @@ public class MainActivity extends Activity
     private static final int ACTIONBAR_AYAR = 5;
     private static final int SECIM_YAPILDI = 1;
     private static final int SECIM_IPTAL_EDILDI = 0;
-    private static int ACTIONBAR_TUR = ACTIONBAR_EKLE;
     private static final int FRAGMENT_KATEGORI_EKRANI = 0;
     private static final int FRAGMENT_KAYIT_EKRANI = 1;
     private static final int FRAGMENT_YEDEK_EKRANI = 2;
     private static final int FRAGMENT_AYAR_EKRANI = 3;
-    private static int FRAGMENT_ETKIN_EKRAN;
     private static final int OLAY_ICINE_GIR = 0;
     private static final int OLAY_SECIM_YAP = 1;
-    private static int TIKLAMA_OLAYI;
     private static final String TIK_UNICODE = "\u2714";
     private static final String ACTIONBAR_ARKAPLAN_KATEGORI = "#00CED1";
     private static final String ACTIONBAR_ARKAPLAN_KAYIT = "#009ED1";
     private static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
     private static final String UC_NOKTA = "/.../";
-    public static final int ALERTDIALOG_EDITTEXT = 0;//alertdialog ta edittex cikacak
-    public static final int ALERTDIALOG_TEXTVIEW = 1;//alertdialog ta textview cikacak
-    private static String KAYIT_DURUM_TUR;
-    private static String xmlParcaID = "0";//içinde olunan parçanın id si
-    private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
     private static final double ORAN_DIKEY = 0.3;
     private static final double ORAN_YATAY = 0.6;
-    private static View activityRootView;
-    private static Document document;
-    private static Document documentAyar;
-    public static int elemanEnUzunluğu;
     private static final int DOCUMENT_ASIL = 0;
     private static final int DOCUMENT_AYAR = 1;
     private static final int AYAR_ID_SATIR_BASINA_KAYIT_SAYISI = 1;
     private static final String ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = "1";
+    private static final int AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = 2;
+    private static final String ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = "0";
+    private static final int AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI = 3;
+    private static final String ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = "5";
+    public static String xmlYedekKlasorYolu;
+    public static int elemanEnUzunluğu;
+    public static int elemanBoyUzunluğu;
     public static String DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI;
+    public static String DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN;
+    public static String DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI;
     public static Resources mResources;
+    private static String xmlDosyaYolu;
+    private static String xmlAyarDosyaYolu;
+    private static int ACTIONBAR_TUR = ACTIONBAR_EKLE;
+    private static int FRAGMENT_ETKIN_EKRAN;
+    private static int TIKLAMA_OLAYI;
+    private static String KAYIT_DURUM_TUR;
+    private static String xmlParcaID = "0";//içinde olunan parçanın id si
+    private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
+    private static View activityRootView;
+    private static Document document;
+    private static Document documentAyar;
+    private static int actionBarBoy;
+
+    //xml i okumank için Document nesnesi olusturur
+    public static Document xmlDocumentNesnesiOlustur(String xmlDosyaYolu, MainActivity ma)
+    {
+        try
+        {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(false);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+
+            return doc;
+        }
+        catch (ParserConfigurationException e)
+        {
+            ma.ekranaHataYazdir("1", "document olusamadı : " + e.getMessage());
+            return null;
+        }
+        catch (FileNotFoundException e)
+        {
+            ma.ekranaHataYazdir("2", "document olusamadı : " + e.getMessage());
+            return null;
+        }
+        catch (IOException e)
+        {
+            ma.ekranaHataYazdir("3", "document olusamadı : " + e.getMessage());
+            return null;
+        }
+        catch (SAXException e)
+        {
+            ma.ekranaHataYazdir("4", "document olusamadı : " + e.getMessage());
+            return null;
+        }
+    }
+
+    //elemanların en uzunluğunu hesaplar
+    public static void elemanEniniHesapla()
+    {
+        int ekranEnUzunluğu = mResources.getDisplayMetrics().widthPixels;
+        float fazlalık = (mResources.getDimension(R.dimen.activity_horizontal_margin) * 2);
+        fazlalık = fazlalık + dpGetir(3) * ((Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI)) - 1);
+        elemanEnUzunluğu = (int) ((ekranEnUzunluğu - fazlalık) / Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
+    }
+
+    //elemanların boy uzunluğunu hesaplar
+    public static void elemanBoyunuHesapla()
+    {
+        int ekranBoyUzunluğu = mResources.getDisplayMetrics().heightPixels;
+        float fazlalık = (mResources.getDimension(R.dimen.activity_horizontal_margin) * 2);
+        fazlalık = fazlalık + actionBarBoy + dpGetir(30) + dpGetir(3) * ((Integer.valueOf(DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI)) - 1);
+        elemanBoyUzunluğu = (int) ((ekranBoyUzunluğu - fazlalık) / Integer.valueOf(DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI));
+    }
+
+    //px birimini dp ye cevirir
+    public static float dpGetir(int px)
+    {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, mResources.getDisplayMetrics());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -173,41 +243,18 @@ public class MainActivity extends Activity
             }
         }
 
+        actionBarBoyUzunlugunuGetir();
         elemanEniniHesapla();
+        elemanBoyunuHesapla();
     }
 
-    //xml i okumank için Document nesnesi olusturur
-    public static Document xmlDocumentNesnesiOlustur(String xmlDosyaYolu, MainActivity ma)
+    public void actionBarBoyUzunlugunuGetir()
     {
-        try
-        {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setValidating(false);
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new FileInputStream(new File(xmlDosyaYolu)));
+        TypedValue tv = new TypedValue();
+        getApplicationContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
+        int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
 
-            return doc;
-        }
-        catch (ParserConfigurationException e)
-        {
-            ma.ekranaHataYazdir("1", "document olusamadı : " + e.getMessage());
-            return null;
-        }
-        catch (FileNotFoundException e)
-        {
-            ma.ekranaHataYazdir("2", "document olusamadı : " + e.getMessage());
-            return null;
-        }
-        catch (IOException e)
-        {
-            ma.ekranaHataYazdir("3", "document olusamadı : " + e.getMessage());
-            return null;
-        }
-        catch (SAXException e)
-        {
-            ma.ekranaHataYazdir("4", "document olusamadı : " + e.getMessage());
-            return null;
-        }
+        actionBarBoy = actionBarHeight;
     }
 
     //xml in duracagı klasoru olusturur
@@ -315,7 +362,7 @@ public class MainActivity extends Activity
     }
 
     //uygulama açılırken gecerli ayarları xml den okur
-    private static void ayarlariOku()
+    private void ayarlariOku()
     {
         Element element = documentAyar.getDocumentElement();
         NodeList nodeList = element.getChildNodes();
@@ -324,16 +371,21 @@ public class MainActivity extends Activity
         {
             Node nodeAyar = nodeList.item(i);
             String ayarDeger = nodeAyar.getTextContent();
-            String ayarID = nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue();
+            int ayarID = Integer.valueOf(nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue());
 
-            switch (Integer.valueOf(ayarID))
+            switch (ayarID)
             {
                 case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
                     DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = ayarDeger;
                     break;
-
+                case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
+                    DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = ayarDeger;
+                    break;
+                case AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
+                    DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = ayarDeger;
+                    break;
                 default:
-                    //ekranaHataYazdir("122", "tanımsız ayar id");
+                    ekranaHataYazdir("122", "tanımsız ayar id");
             }
         }
     }
@@ -421,6 +473,8 @@ public class MainActivity extends Activity
             BufferedWriter out = new BufferedWriter(new FileWriter(xmlAyarDosyaYolu));
             out.write("<?xml version=\"1.0\"?><root>" +
                     "<ayar id=\"" + AYAR_ID_SATIR_BASINA_KAYIT_SAYISI + "\">" + ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI + "</ayar>" +
+                    "<ayar id=\"" + AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN + "\">" + ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN + "</ayar>" +
+                    "<ayar id=\"" + AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI + "\">" + ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI + "</ayar>" +
                     "</root>");
             out.close();
             ////////////////////////////////////////
@@ -436,28 +490,47 @@ public class MainActivity extends Activity
         Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
-    //elemanların en uzunluğunu hesaplar
-    public static void elemanEniniHesapla()
+    @Override
+    public void onBackPressed()
     {
-        int ekranEnUzunluğu = mResources.getDisplayMetrics().widthPixels;
-        float fazlalık = (mResources.getDimension(R.dimen.activity_horizontal_margin) * 2);
-        elemanEnUzunluğu = (int) ((ekranEnUzunluğu - fazlalık) / Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
+        PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+        switch (FRAGMENT_ETKIN_EKRAN)
+        {
+            case FRAGMENT_YEDEK_EKRANI:
+            case FRAGMENT_AYAR_EKRANI:
+                fr.parseXml(xmlParcaID);
+                fr.ustSeviyeyiGetir();
+                break;
+
+            case FRAGMENT_KAYIT_EKRANI:
+                fr.ustSeviyeyiGetir();
+                break;
+
+            default:
+                if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+                {
+                    finish();
+                }
+                else
+                {
+                    fr.ustSeviyeyiGetir();
+                }
+        }
     }
 
     public static class PlaceholderFragment extends Fragment
     {
+        public static List<YedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
+        private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
+        private static List<CustomRelativeLayout> listSeciliCRL;//seçilen elemanların listesi
+        private static CustomRelativeLayout seciliCRL;//içine girilen kaydın nesnesi
+        private static Yerlesim globalYerlesim;
         private RelativeLayout anaLayout;//viewların içine yerleşeceği ana layout
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
-        //private EditText etEklenecek;//yeni kayıt eklemeye tıklandığı zaman olusan edittext
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
-        private static List<String> listSeciliElemanDurumu;//seçilen elemanların durumlarının listesi
-        private static List<CustomRelativeLayout> listSeciliCRL;//seçilen elemanların listesi
-        public static List<YedekRelativeLayout> listSeciliYedek;//seçilen yedeklerin listesi
         private String TAG = "uyg3";
         private Activity fAct;
-        private static CustomRelativeLayout seciliCRL;//içine girilen kaydın nesnesi
-        private static Yerlesim globalYerlesim;
 
         public PlaceholderFragment()
         {
@@ -1950,7 +2023,20 @@ public class MainActivity extends Activity
                 switch (arl.getAyarID())
                 {
                     case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
-                        arl.getEtSecenek().setText(ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
+                        ((EditText) arl.getViewSecenek()).setText(ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
+                        break;
+                    case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
+                        if (ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("1"))
+                        {
+                            ((CheckBox) arl.getViewSecenek()).setChecked(true);
+                        }
+                        else
+                        {
+                            ((CheckBox) arl.getViewSecenek()).setChecked(false);
+                        }
+                        break;
+                    case AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
+                        ((EditText) arl.getViewSecenek()).setText(ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI);
                         break;
                     default:
                         ekranaHataYazdir("1", "ayar id hatali");
@@ -1961,16 +2047,67 @@ public class MainActivity extends Activity
         //ayar ekranina ayar metinlerini ekler
         public void ayarlariAyarEkraninaEkle()
         {
-            AyarlarRelativeLayout arl1 = new AyarlarRelativeLayout(getActivity(), "bir satırda gösterilecek eleman sayısı", DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI, AYAR_ID_SATIR_BASINA_KAYIT_SAYISI);
+            AyarlarRelativeLayout arl1 = new AyarlarRelativeLayout(getActivity(), "bir satırda gösterilecek eleman sayısı", DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI, AYAR_ID_SATIR_BASINA_KAYIT_SAYISI, SECENEK_EDITTEXT);
             anaLayout.addView(arl1);
+
+            AyarlarRelativeLayout arl2 = new AyarlarRelativeLayout(getActivity(), "satır boy uzunluğu sabit olsun", DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, SECENEK_CHECKBOX);
+            anaLayout.addView(arl2);
+
+            final AyarlarRelativeLayout arl3 = new AyarlarRelativeLayout(getActivity(), "ekranda gösterilecek satir sayisi", DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI, AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, SECENEK_EDITTEXT);
+            anaLayout.addView(arl3);
+
+            if (DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("0"))//2. ayardaki checkbox secili değilse 3. ayar disable olsun
+            {
+                for (int i = 0; i < arl3.getChildCount(); i++)
+                {
+                    arl3.getChildAt(i).setEnabled(false);
+                }
+            }
+
+            //3. ayar için önce 2. ayardaki checkbox'ın isaretlenmesi gerek
+            ((CheckBox) arl2.getViewSecenek()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                {
+                    for (int i = 0; i < arl3.getChildCount(); i++)
+                    {
+                        arl3.getChildAt(i).setEnabled(b);
+                    }
+                }
+            });
         }
 
-        public String ayarDegeriniGetir(String ayarID)
+        public String ayarDegeriniGetir(int ayarID)
         {
-            AyarlarRelativeLayout arl = (AyarlarRelativeLayout) anaLayout.findViewById(Integer.valueOf(ayarID));
-            String yeniDeger = arl.getEtSecenek().getText().toString();
+            switch (ayarID)
+            {
+                case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
+                    AyarlarRelativeLayout arl1 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    String yeniDeger1 = ((EditText) arl1.getViewSecenek()).getText().toString();
+                    return yeniDeger1;
 
-            return yeniDeger;
+                case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
+                    AyarlarRelativeLayout arl2 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    boolean yeniDeger2 = ((CheckBox) arl2.getViewSecenek()).isChecked();
+
+                    if (yeniDeger2)
+                    {
+                        return "1";
+                    }
+                    else
+                    {
+                        return "0";
+                    }
+
+                case AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
+                    AyarlarRelativeLayout arl3 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    String yeniDeger3 = ((EditText) arl3.getViewSecenek()).getText().toString();
+                    return yeniDeger3;
+
+                default:
+                    return "0";
+            }
         }
 
         //girilen değerleri kontrol eder
@@ -1982,15 +2119,24 @@ public class MainActivity extends Activity
             for (int i = 0; i < nodeList.getLength(); i++)
             {
                 Node nodeAyar = nodeList.item(i);
-                String ayarID = nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue();
+                int ayarID = Integer.valueOf(nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue());
                 String yeniDeger = ayarDegeriniGetir(ayarID);
 
-                switch (Integer.valueOf(ayarID))
+                switch (ayarID)
                 {
                     case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
                         if (Integer.valueOf(yeniDeger) < 1)
                         {
                             Toast.makeText(getActivity(), "satır başına kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
+                            sonuc = sonuc & false;
+                        }
+                        break;
+                    case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN://checkbox olduğu için kontrole gerek yok
+                        break;
+                    case AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
+                        if (Integer.valueOf(yeniDeger) < 1)
+                        {
+                            Toast.makeText(getActivity(), "ekranda gösterilecek kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
                             sonuc = sonuc & false;
                         }
                         break;
@@ -2011,9 +2157,9 @@ public class MainActivity extends Activity
             {
                 Node nodeAyar = nodeList.item(i);
                 String ayarDeger = nodeAyar.getTextContent();
-                String ayarID = nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue();
+                int ayarID = Integer.valueOf(nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue());
                 String yeniDeger = ayarDegeriniGetir(ayarID);
-                switch (Integer.valueOf(ayarID))
+                switch (ayarID)
                 {
                     case AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
                         if (!ayarDeger.equals(yeniDeger))//deger degisti
@@ -2021,6 +2167,20 @@ public class MainActivity extends Activity
                             nodeAyar.setTextContent(yeniDeger);
                             DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = yeniDeger;
                             elemanEniniHesapla();
+                        }
+                        break;
+
+                    case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
+                        nodeAyar.setTextContent(yeniDeger);
+                        DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = yeniDeger;
+                        break;
+
+                    case AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
+                        if (!ayarDeger.equals(yeniDeger))//deger degisti
+                        {
+                            nodeAyar.setTextContent(yeniDeger);
+                            DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = yeniDeger;
+                            elemanBoyunuHesapla();
                         }
                         break;
                     default:
@@ -2174,7 +2334,7 @@ public class MainActivity extends Activity
                     return true;
                 case R.id.action_ayar_kaydet:
                     klavyeKapat();
-                    if (ayarlariKontrolEt())
+                    if (ayarlariKontrolEt())//ayarlarda sorun yoksa kaydetsin
                     {
                         ayarlariKaydet();
                         ustSeviyeyiGetir();
@@ -2280,34 +2440,6 @@ public class MainActivity extends Activity
             Node nodeBaslik = element.getFirstChild();
             nodeBaslik.setTextContent(baslik);
             documentToFile(DOCUMENT_ASIL);
-        }
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-        switch (FRAGMENT_ETKIN_EKRAN)
-        {
-            case FRAGMENT_YEDEK_EKRANI:
-            case FRAGMENT_AYAR_EKRANI:
-                fr.parseXml(xmlParcaID);
-                fr.ustSeviyeyiGetir();
-                break;
-
-            case FRAGMENT_KAYIT_EKRANI:
-                fr.ustSeviyeyiGetir();
-                break;
-
-            default:
-                if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
-                {
-                    finish();
-                }
-                else
-                {
-                    fr.ustSeviyeyiGetir();
-                }
         }
     }
 }

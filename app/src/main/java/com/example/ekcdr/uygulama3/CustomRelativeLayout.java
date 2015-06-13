@@ -19,15 +19,6 @@ import java.util.List;
 
 public class CustomRelativeLayout extends RelativeLayout
 {
-    private boolean crlSeciliMi = false;
-    private TextView tvTik;
-    private TextView tvBaslik;
-    private ImageView tvDuzenle;
-    private int crlTur;
-    private String durum;
-    private int satir;
-    //private List<int[]> matris;
-    private int satirBasinaKayitSayisi;
     final static int ID0 = 10000;
     final static int ID1 = 10001;
     final static int ID2 = 10002;
@@ -36,6 +27,13 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int PADDING_DIKEY = 7;
     final static int PADDING_YATAY = 3;
     final static int PADDING_YAZI = 10;
+    private boolean crlSeciliMi = false;
+    private TextView tvTik;
+    private TextView tvBaslik;
+    private ImageView tvDuzenle;
+    private int crlTur;
+    private String durum;
+    private int satirBasinaKayitSayisi;
 
     public CustomRelativeLayout(Context context, String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
     {
@@ -49,7 +47,17 @@ public class CustomRelativeLayout extends RelativeLayout
         {
             case MainActivity.ELEMAN_TUR_KATEGORI:
             {
-                RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams pa;
+                if (MainActivity.DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("1"))
+                {
+                    pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, MainActivity.elemanBoyUzunluğu);
+                }
+                else
+                {
+                    pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                }
+
+                //RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 pa.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
 
                 this.setLayoutParams(pa);
@@ -145,7 +153,16 @@ public class CustomRelativeLayout extends RelativeLayout
             }
             case MainActivity.ELEMAN_TUR_KAYIT:
             {
-                RelativeLayout.LayoutParams pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams pa2;
+                if (MainActivity.DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("1"))
+                {
+                    pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, MainActivity.elemanBoyUzunluğu);
+                }
+                else
+                {
+                    pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                }
+                //RelativeLayout.LayoutParams pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 pa2.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
 
                 this.setLayoutParams(pa2);
