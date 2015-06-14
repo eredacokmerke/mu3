@@ -812,12 +812,23 @@ public class MainActivity extends Activity
                         listSeciliCRL.add(crl);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
-                        actionBarDegistir(ACTIONBAR_SECIM);
-                        TIKLAMA_OLAYI = OLAY_SECIM_YAP;
+                        //actionBarDegistir(ACTIONBAR_SECIM);
+                        //TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
-                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+                        //actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+
+                        if (TIKLAMA_OLAYI != OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
+                        {
+                            actionBarDegistir(ACTIONBAR_SECIM);
+                            TIKLAMA_OLAYI = OLAY_SECIM_YAP;
+                            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+                            duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+                            basligiDuzenleninYaninaAl();
+                        }
 
                         secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
+
+
                     }
 
                     return true;
@@ -843,13 +854,18 @@ public class MainActivity extends Activity
 
                             if (seciliElemanSayisi() == 0)
                             {
+                                seciliElemanListeleriniSifirla();
+                                /*
                                 actionBarDegistir(ACTIONBAR_EKLE);
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
                                 actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                 duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
 
+                                basligiEskiYerineAl();
+
                                 listSeciliElemanDurumu.clear();
+                                */
                             }
                             else
                             {
@@ -974,13 +990,18 @@ public class MainActivity extends Activity
 
                             if (seciliElemanSayisi() == 0)
                             {
+                                seciliElemanListeleriniSifirla();
+                                /*
                                 actionBarDegistir(ACTIONBAR_EKLE);
                                 TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
                                 actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
                                 duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
 
+                                basligiEskiYerineAl();
+
                                 listSeciliElemanDurumu.clear();
+                                */
                             }
                             else
                             {
@@ -1008,12 +1029,15 @@ public class MainActivity extends Activity
                         listSeciliCRL.add(crl);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
-                        actionBarDegistir(ACTIONBAR_SECIM);
-                        TIKLAMA_OLAYI = OLAY_SECIM_YAP;
 
-                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
-                        duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
-
+                        if (TIKLAMA_OLAYI != OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
+                        {
+                            actionBarDegistir(ACTIONBAR_SECIM);
+                            TIKLAMA_OLAYI = OLAY_SECIM_YAP;
+                            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+                            duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+                            basligiDuzenleninYaninaAl();
+                        }
                         secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
                     }
 
@@ -1023,11 +1047,40 @@ public class MainActivity extends Activity
             anaLayout.addView(crl);
         }
 
+        //kategori secildigi zaman kategori basligini duzenle simgesini yanına alır
+        public void basligiDuzenleninYaninaAl()
+        {
+            for (int i = 0; i < anaLayout.getChildCount(); i++)
+            {
+                CustomRelativeLayout c = (CustomRelativeLayout) anaLayout.getChildAt(i);
+                if (c.getCrlTur() == ELEMAN_TUR_KATEGORI)
+                {
+                    RelativeLayout.LayoutParams lpBaslik = (RelativeLayout.LayoutParams) c.getTvBaslik().getLayoutParams();
+                    lpBaslik.addRule(RelativeLayout.LEFT_OF, c.getTvDuzenle().getId());
+                    c.getTvBaslik().setLayoutParams(lpBaslik);
+                }
+            }
+        }
+
+        //kategori secildigi zaman kategori basligini duzenle simgesini yanına alır
+        public void basligiEskiYerineAl()
+        {
+            for (int i = 0; i < anaLayout.getChildCount(); i++)
+            {
+                CustomRelativeLayout c = (CustomRelativeLayout) anaLayout.getChildAt(i);
+                if (c.getCrlTur() == ELEMAN_TUR_KATEGORI)
+                {
+                    RelativeLayout.LayoutParams lpBaslik = (RelativeLayout.LayoutParams) c.getTvBaslik().getLayoutParams();
+                    lpBaslik.removeRule(RelativeLayout.LEFT_OF);
+                    c.getTvBaslik().setLayoutParams(lpBaslik);
+                }
+            }
+        }
+
         //kategori layout'undaki duzenle simgesini gösterir ve gizler
         public void duzenleSimgesininGorunumunuDegistir(int gorunum)
         {
-            int childcount = anaLayout.getChildCount();
-            for (int i = 0; i < childcount; i++)
+            for (int i = 0; i < anaLayout.getChildCount(); i++)
             {
                 CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.getChildAt(i);
                 if (crl.getCrlTur() == ELEMAN_TUR_KATEGORI)
@@ -1137,6 +1190,7 @@ public class MainActivity extends Activity
             actionBarDegistir(ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
             duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
+            basligiEskiYerineAl();
         }
 
         //ana ekrana ve xml'e kategori ekler(parca)

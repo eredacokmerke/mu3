@@ -35,7 +35,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private String durum;
     private int satirBasinaKayitSayisi;
 
-    public CustomRelativeLayout(Context context, String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
+    public CustomRelativeLayout(Context context, final String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
     {
         super(context);
         setCrlSeciliMi(false);
@@ -75,6 +75,16 @@ public class CustomRelativeLayout extends RelativeLayout
                 lp3.addRule(RelativeLayout.CENTER_VERTICAL);
                 this.addView(tvTik, lp3);
 
+                tvBaslik = new TextView(context);
+                tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
+                tvBaslik.setText(baslik);
+                tvBaslik.setTextColor(Color.WHITE);
+                tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
+                RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
+                lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
+                this.addView(tvBaslik, lp2);
+
                 tvDuzenle = new ImageView(context);
                 tvDuzenle.setImageResource(R.drawable.duzenle);
                 tvDuzenle.setId(ID1);
@@ -100,6 +110,7 @@ public class CustomRelativeLayout extends RelativeLayout
                         LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f);
                         alertET.setLayoutParams(pa2);
                         alertET.setGravity(Gravity.CENTER);//yazı Edittext in ortasında yazılsın
+                        alertET.setText(baslik);
                         alertLL.addView(alertET);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -138,16 +149,6 @@ public class CustomRelativeLayout extends RelativeLayout
                         });
                     }
                 });
-
-                tvBaslik = new TextView(context);
-                tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
-                tvBaslik.setText(baslik);
-                tvBaslik.setTextColor(Color.WHITE);
-                tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
-                RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
-                lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
-                this.addView(tvBaslik, lp2);
 
                 break;
             }
@@ -389,6 +390,11 @@ public class CustomRelativeLayout extends RelativeLayout
     public float dpGetir(int px)
     {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
+    }
+
+    public TextView getTvBaslik()
+    {
+        return tvBaslik;
     }
 
     public TextView getTvTik()
