@@ -14,7 +14,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -206,8 +205,6 @@ public class MainActivity extends Activity
 
         File uygulamaKlasoru;
         File xmlYedekKlasoru;
-        String xmlDosyasi;
-        String xmlAyarDosyasi;
         mResources = getResources();
 
         activityRootView = findViewById(R.id.container);
@@ -219,22 +216,25 @@ public class MainActivity extends Activity
 
             if (uygulamaKlasoru.exists())
             {
-                xmlDosyasi = uygulamaKlasoru + "/" + "new.xml";
-                xmlAyarDosyasi = uygulamaKlasoru + "/" + "opt.xml";
-                xmlDosyasiKontrolEt(xmlDosyasi);
-                xmlAyarDosyasiKontrolEt(xmlAyarDosyasi);
+                xmlDosyaYolu = uygulamaKlasoru + "/" + "new.xml";
+                xmlAyarDosyaYolu = uygulamaKlasoru + "/" + "opt.xml";
 
-                if (savedInstanceState == null)
+                if (xmlDosyasiKontrolEt() && xmlAyarDosyasiKontrolEt())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
                 {
-                    getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
+                    if (savedInstanceState == null)
+                    {
+                        getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
+                    }
+
+                    getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI)));
+                    getActionBar().setDisplayUseLogoEnabled(false);
+                    getActionBar().setDisplayShowHomeEnabled(false);
                 }
-
-                getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI)));
-                getActionBar().setDisplayUseLogoEnabled(false);
-                getActionBar().setDisplayShowHomeEnabled(false);
-
-                xmlDosyaYolu = xmlDosyasi;
-                xmlAyarDosyaYolu = xmlAyarDosyasi;
+                else
+                {
+                    ekranaHataYazdir("38", "xml dosylarıyla ilgili hata oluştu, uygulama kapatıldı");
+                    finish();
+                }
             }
             else
             {
@@ -248,6 +248,7 @@ public class MainActivity extends Activity
         }
         else
         {
+            ekranaHataYazdir("37", "klasörlerle ilgili hata oluştu, uygulama kapatıldı");
             finish();
         }
     }
@@ -311,15 +312,15 @@ public class MainActivity extends Activity
     }
 
     //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve en buyuk xml id sini buluyor
-    public void xmlDosyasiKontrolEt(String xmlDosyasi)
+    public boolean xmlDosyasiKontrolEt()
     {
-        if (new File(xmlDosyasi).exists())//xml dosyası var mı
+        if (new File(xmlDosyaYolu).exists())//xml dosyası var mı
         {
-            document = xmlDocumentNesnesiOlustur(xmlDosyasi, this);
+            document = xmlDocumentNesnesiOlustur(xmlDosyaYolu, this);
             if (document == null)
             {
                 ekranaHataYazdir("4", "xml document oluşamadı");
-                finish();
+                return false;
             }
             else
             {
@@ -327,39 +328,123 @@ public class MainActivity extends Activity
                 if (xmlEnBuyukID == -1)
                 {
                     ekranaHataYazdir("5", "xml okunamadı");
-                    finish();
+                    return false;
+                }
+                else
+                {
+                    return true;
                 }
             }
         }
         else
         {
-            xmlDosyasiOlustur(xmlDosyasi);
+            xmlDosyasiOlustur();
             xmlEnBuyukID = 0;
-            document = xmlDocumentNesnesiOlustur(xmlDosyasi, this);
+            document = xmlDocumentNesnesiOlustur(xmlDosyaYolu, this);
+            return true;
         }
     }
 
     //uygulama baslarken sistemde ayar dosyası var mı diye bakar. varsa ayarları alır. yoksa öntanımlı ayarla ile dosyayı olusturur
-    public void xmlAyarDosyasiKontrolEt(String xmlAyarDosyasi)
+    public boolean xmlAyarDosyasiKontrolEt()
     {
-        if (new File(xmlAyarDosyasi).exists())//xml ayar dosyası var mı
+        if (new File(xmlAyarDosyaYolu).exists())//xml ayar dosyası var mı
         {
-            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyasi, this);
+            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyaYolu, this);
             if (documentAyar == null)
             {
                 ekranaHataYazdir("6", "xml document ayar oluşamadı");
-                finish();
+                return false;
             }
             else
             {
+                yeniAyarVarsaEkle();
                 ayarlariOku();
+                return true;
             }
         }
         else
         {
-            xmlAyarDosyasiOlustur(xmlAyarDosyasi);
-            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyasi, this);
+            xmlAyarDosyasiOlustur();
+            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyaYolu, this);
+            yeniAyarVarsaEkle();
             ayarlariOku();
+            return true;
+        }
+    }
+
+    //yeni ayar varsa xml ayar dosyasına ekle
+    private void yeniAyarVarsaEkle()
+    {
+        boolean eksikAyarVarMi = false;
+        List<Integer> xmldekiAyarlar = new ArrayList<>();
+        Element element = documentAyar.getDocumentElement();
+        NodeList nodeList = element.getChildNodes();
+
+        for (int i = 0; i < nodeList.getLength(); i++)
+        {
+            Node nodeAyar = nodeList.item(i);
+            int ayarID = Integer.valueOf(nodeAyar.getAttributes().getNamedItem(XML_ID).getNodeValue());
+
+            xmldekiAyarlar.add(ayarID);
+        }
+
+        if (!xmldekiAyarlar.contains(AYAR_ID_SATIR_BASINA_KAYIT_SAYISI))
+        {
+            Element elementAyar = documentAyar.createElement("ayar");//ayar isimli etiket olşuturuluyor
+            elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SATIR_BASINA_KAYIT_SAYISI));//ayar etiketine id veriliyor
+            elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);//ayar etiketinin icerigi yazılıyor
+            element.appendChild(elementAyar);//root etiketine ayar etiketi ekleniyor
+            eksikAyarVarMi = true;
+        }
+        if (!xmldekiAyarlar.contains(AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN))
+        {
+            Element elementAyar = documentAyar.createElement("ayar");
+            elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN));
+            elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+        if (!xmldekiAyarlar.contains(AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI))
+        {
+            Element elementAyar = documentAyar.createElement("ayar");
+            elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI));
+            elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+
+        if (eksikAyarVarMi)
+        {
+            try
+            {
+                documentAyar.normalize();
+                //document i string e çeviriyor
+                TransformerFactory tf = TransformerFactory.newInstance();
+                Transformer transformer = tf.newTransformer();
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                StringWriter writer = new StringWriter();
+                transformer.transform(new DOMSource(documentAyar), new StreamResult(writer));
+                String output = "<?xml version=\"1.0\"?>" + writer.getBuffer().toString().replaceAll("\n|\r", "");
+                ///////////////////////////////
+                //string i xml dosyasına yazıyor
+                BufferedWriter out = new BufferedWriter(new FileWriter(xmlAyarDosyaYolu));
+                out.write(output);
+                out.close();
+                //////////////////////////////////
+            }
+            catch (TransformerConfigurationException e)
+            {
+                ekranaHataYazdir("31", "xml documenti dosyaya yazarken hata oluştu : " + e.getMessage());
+            }
+            catch (TransformerException e)
+            {
+                ekranaHataYazdir("32", "xml documenti dosyaya yazarken hata oluştu : " + e.getMessage());
+            }
+            catch (IOException e)
+            {
+                ekranaHataYazdir("33", "xml documenti dosyaya yazarken hata oluştu : " + e.getMessage());
+            }
         }
     }
 
@@ -444,7 +529,7 @@ public class MainActivity extends Activity
     }
 
     //xml dosyası yoksa oluşturuyor
-    public void xmlDosyasiOlustur(String xmlDosyaYolu)
+    public void xmlDosyasiOlustur()
     {
         try
         {
@@ -459,7 +544,6 @@ public class MainActivity extends Activity
                     "</parca>" +
                     "</root>");
             out.close();
-            ////////////////////////////////////////
         }
         catch (IOException e)
         {
@@ -467,7 +551,7 @@ public class MainActivity extends Activity
         }
     }
 
-    public void xmlAyarDosyasiOlustur(String xmlAyarDosyaYolu)
+    public void xmlAyarDosyasiOlustur()
     {
         try
         {
@@ -479,11 +563,10 @@ public class MainActivity extends Activity
                     "<ayar id=\"" + AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI + "\">" + ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI + "</ayar>" +
                     "</root>");
             out.close();
-            ////////////////////////////////////////
         }
         catch (IOException e)
         {
-            ekranaHataYazdir("9", e.getMessage());
+            ekranaHataYazdir("9", "xml ayar dosyası oluşturulurken hata oluştu : " + e.getMessage() + ", dosya : " + xmlAyarDosyaYolu);
         }
     }
 
@@ -531,7 +614,6 @@ public class MainActivity extends Activity
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
-        private String TAG = "uyg3";
         private Activity fAct;
 
         public PlaceholderFragment()
@@ -686,7 +768,7 @@ public class MainActivity extends Activity
                     break;
 
                 default:
-                    Log.d(TAG, "hata");
+                    ekranaHataYazdir("34", "hatalı seçim türü : " + eylem);
             }
 
             if (listSeciliElemanDurumu.contains(DURUM_YENI))
@@ -708,7 +790,6 @@ public class MainActivity extends Activity
         }
 
         //xml parse edildikten sonra kayitları ana ekrana ekler
-        //public List<int[]> kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, List<int[]> matris, int[] viewYukseklikleri)
         public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, Yerlesim ylsm)
         {
             final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this, ylsm);
@@ -864,7 +945,6 @@ public class MainActivity extends Activity
         public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, Yerlesim ylsm)
         {
             final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this, ylsm);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-            //List<int[]> mtrs = crl.getMatris();
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -982,7 +1062,6 @@ public class MainActivity extends Activity
 
                 if (doc != null)
                 {
-
                     doc.normalize();
                     //document i string e çeviriyor
                     TransformerFactory tf = TransformerFactory.newInstance();
@@ -1614,7 +1693,7 @@ public class MainActivity extends Activity
             }
             else
             {
-                Log.d(TAG, "hata");
+                ekranaHataYazdir("35", "seçili layout boş");
                 return null;
             }
         }
@@ -1635,7 +1714,7 @@ public class MainActivity extends Activity
                     break;
 
                 default:
-                    Log.d(TAG, "hata");
+                    ekranaHataYazdir("36", "hatalı durum türü : " + durum);
             }
         }
 
