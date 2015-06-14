@@ -154,22 +154,22 @@ public class MainActivity extends Activity
         }
         catch (ParserConfigurationException e)
         {
-            ma.ekranaHataYazdir("1", "document olusamadı : " + e.getMessage());
+            ma.ekranaHataYazdir("28", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
         catch (FileNotFoundException e)
         {
-            ma.ekranaHataYazdir("2", "document olusamadı : " + e.getMessage());
+            ma.ekranaHataYazdir("29", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
         catch (IOException e)
         {
-            ma.ekranaHataYazdir("3", "document olusamadı : " + e.getMessage());
+            ma.ekranaHataYazdir("30", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
         catch (SAXException e)
         {
-            ma.ekranaHataYazdir("4", "document olusamadı : " + e.getMessage());
+            ma.ekranaHataYazdir("15", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
     }
@@ -238,14 +238,18 @@ public class MainActivity extends Activity
             }
             else
             {
-                ekranaHataYazdir("2", "xml klasoru olusurken hata");
+                ekranaHataYazdir("1", "uygulama klasoru yok : " + uygulamaKlasoru);
                 finish();
             }
-        }
 
-        actionBarBoyUzunlugunuGetir();
-        elemanEniniHesapla();
-        elemanBoyunuHesapla();
+            actionBarBoyUzunlugunuGetir();
+            elemanEniniHesapla();
+            elemanBoyunuHesapla();
+        }
+        else
+        {
+            finish();
+        }
     }
 
     public void actionBarBoyUzunlugunuGetir()
@@ -274,7 +278,7 @@ public class MainActivity extends Activity
         {
             if (!uygKlasoru.mkdirs())
             {
-                ekranaHataYazdir("2", "xml klasoru olusurken hata");
+                ekranaHataYazdir("2", "uygulama klasöru oluşturulurken hata oluştu : " + uygKlasoru);
                 return null;
             }
         }
@@ -298,7 +302,7 @@ public class MainActivity extends Activity
         {
             if (!xmlYedekKlasoru.mkdirs())
             {
-                ekranaHataYazdir("2", "xml yedek klasoru olusurken hata");
+                ekranaHataYazdir("3", "xml yedek klasörü oluşturulurken hata oluştu : " + xmlYedekKlasoru);
                 return null;
             }
         }
@@ -309,15 +313,12 @@ public class MainActivity extends Activity
     //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve en buyuk xml id sini buluyor
     public void xmlDosyasiKontrolEt(String xmlDosyasi)
     {
-        //File xmlDosyasi = new File(xmlDosyaYolu);
-        //return xmlDosyasi.exists();
-
         if (new File(xmlDosyasi).exists())//xml dosyası var mı
         {
             document = xmlDocumentNesnesiOlustur(xmlDosyasi, this);
             if (document == null)
             {
-                ekranaHataYazdir("1", "document olusamadı");
+                ekranaHataYazdir("4", "xml document oluşamadı");
                 finish();
             }
             else
@@ -325,7 +326,7 @@ public class MainActivity extends Activity
                 xmlEnBuyukID = enBuyukIDyiBul();
                 if (xmlEnBuyukID == -1)
                 {
-                    ekranaHataYazdir("1", "xml okunamadı");
+                    ekranaHataYazdir("5", "xml okunamadı");
                     finish();
                 }
             }
@@ -346,7 +347,8 @@ public class MainActivity extends Activity
             documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyasi, this);
             if (documentAyar == null)
             {
-                ekranaHataYazdir("123", "tanımsız document ayar");
+                ekranaHataYazdir("6", "xml document ayar oluşamadı");
+                finish();
             }
             else
             {
@@ -385,7 +387,7 @@ public class MainActivity extends Activity
                     DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = ayarDeger;
                     break;
                 default:
-                    ekranaHataYazdir("122", "tanımsız ayar id");
+                    ekranaHataYazdir("7", "hatalı ayar id, ayar id : " + ayarID);
             }
         }
     }
@@ -461,7 +463,7 @@ public class MainActivity extends Activity
         }
         catch (IOException e)
         {
-            ekranaHataYazdir("3", e.getMessage());
+            ekranaHataYazdir("8", "boş xml dosyası oluşturulurken hata oluştu : " + e.getMessage() + ", dosya : " + xmlDosyaYolu);
         }
     }
 
@@ -481,7 +483,7 @@ public class MainActivity extends Activity
         }
         catch (IOException e)
         {
-            ekranaHataYazdir("3", e.getMessage());
+            ekranaHataYazdir("9", e.getMessage());
         }
     }
 
@@ -541,7 +543,6 @@ public class MainActivity extends Activity
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            //args.putInt(FRAGMENT_SECIM, secim);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
             xmlParcaID = String.valueOf(kategoriID);
@@ -563,7 +564,6 @@ public class MainActivity extends Activity
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            //args.putInt(FRAGMENT_SECIM, secim);
             args.putString(FRAGMENT_YAZI, yazi);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
@@ -977,7 +977,7 @@ public class MainActivity extends Activity
                         break;
 
                     default:
-                        ekranaHataYazdir("1", "document turu hatali");
+                        ekranaHataYazdir("10", "hatalı xml document turu : " + tur);
                 }
 
                 if (doc != null)
@@ -1002,18 +1002,15 @@ public class MainActivity extends Activity
             }
             catch (TransformerConfigurationException e)
             {
-                Log.e("hata[9]", e.getMessage());
-                ekranaHataYazdir("9", e.getMessage());
+                ekranaHataYazdir("11", "xml documenti dosyaya yazarken hata oluştu : " + e.getMessage());
             }
             catch (TransformerException e)
             {
-                Log.e("hata[10]", e.getMessage());
-                ekranaHataYazdir("10", e.getMessage());
+                ekranaHataYazdir("12", "xml documenti dosyaya yazarken hata oluştu : " + e.getMessage());
             }
             catch (IOException e)
             {
-                Log.e("hata[11]", e.getMessage());
-                ekranaHataYazdir("11", e.getMessage());
+                ekranaHataYazdir("13", "xml documenti dosyaya yazarken hata oluştu : " + e.getMessage());
             }
         }
 
@@ -1117,18 +1114,6 @@ public class MainActivity extends Activity
             return listSeciliCRL.size();
         }
 
-        /*
-        public EditText yaziAlaniOlustur()
-        {
-            //actionBarOnay();
-            //ACTIONBAR_TUR = ACTIONBAR_ONAY;
-
-            EditText edittext = new EditText(getActivity());
-            anaLayout.addView(edittext);
-            return edittext;
-        }
-        */
-
         //su anki etkin ekrana gore bir ust seviyenin ekran ve actionbar bilgilerini belirler
         public void ustSeviyeyiGetir()
         {
@@ -1172,7 +1157,7 @@ public class MainActivity extends Activity
 
                     break;
                 default:
-                    ekranaHataYazdir("1", "geri giderken hata");
+                    ekranaHataYazdir("14", "hatalı fragment id, fragment id : " + FRAGMENT_ETKIN_EKRAN);
             }
         }
 
@@ -1322,8 +1307,7 @@ public class MainActivity extends Activity
             }
             else
             {
-                Log.e("hata[23]", "kayıt id -1");
-                ekranaHataYazdir("23", "kayıt id -1");
+                ekranaHataYazdir("16", "secili layout bos");
             }
         }
 
@@ -1374,7 +1358,7 @@ public class MainActivity extends Activity
                             break;
 
                         default:
-                            ekranaHataYazdir("1", "hatalı tur");
+                            ekranaHataYazdir("17", "hatalı kayıt türü : " + crl.getCrlTur());
                     }
                     crl.getTvTik().setText("");
                     crl.setCrlSeciliMi(false);
@@ -1411,7 +1395,7 @@ public class MainActivity extends Activity
                             break;
 
                         default:
-                            ekranaHataYazdir("1", "tur hatasi");
+                            ekranaHataYazdir("18", "hatalı kayıt türü : " + crl.getCrlTur());
                     }
                     crl.getTvTik().setText(TIK_UNICODE);
                     crl.setCrlSeciliMi(false);
@@ -1588,7 +1572,7 @@ public class MainActivity extends Activity
             }
             else
             {
-                ekranaHataYazdir("1", "kayit id hatali");
+                ekranaHataYazdir("19", "seçili layout boş");
             }
         }
 
@@ -1839,15 +1823,15 @@ public class MainActivity extends Activity
             File file[] = f.listFiles();
             for (int i = 0; i < file.length; i++)
             {
-                String a = file[i].getName().substring(file[i].getName().length() - 4);
-                if (a.equals(".xml"))//yedek dosyalarının uzantıları xml olmalı
+                String uzanti = file[i].getName().substring(file[i].getName().length() - 4);
+                if (uzanti.equals(".xml"))//yedek dosyalarının uzantıları xml olmalı
                 {
                     String b = file[i].getName().substring(0, file[i].getName().length() - 4);
                     yedekler.add(b);
                 }
                 else
                 {
-                    ekranaHataYazdir("11", "yedek dosyası uzantı hatası");
+                    ekranaHataYazdir("20", "yedek dosyasının uzantısı hatalı : " + uzanti);
                 }
             }
 
@@ -1907,7 +1891,7 @@ public class MainActivity extends Activity
                             }
                             else
                             {
-                                ekranaHataYazdir("1", "dosya silinirken hata");
+                                ekranaHataYazdir("21", "xml dosyası silinirken hata oluştu : " + xmlDosyasi);
                             }
                             alert2.dismiss();
                             alert.dismiss();
@@ -1967,7 +1951,7 @@ public class MainActivity extends Activity
 
                             if (!yedekDosya.delete())
                             {
-                                ekranaHataYazdir("1", "dosya silinirken hata");
+                                ekranaHataYazdir("22", "yedek xml dosyasi silinirken hata oluştu : " + yedekDosya);
                             }
                             anaLayout.removeView(listSeciliYedek.get(i));
                         }
@@ -2039,7 +2023,7 @@ public class MainActivity extends Activity
                         ((EditText) arl.getViewSecenek()).setText(ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI);
                         break;
                     default:
-                        ekranaHataYazdir("1", "ayar id hatali");
+                        ekranaHataYazdir("23", "hatalı ayar id, ayar id : " + arl.getAyarID());
                 }
             }
         }
@@ -2141,7 +2125,7 @@ public class MainActivity extends Activity
                         }
                         break;
                     default:
-                        ekranaHataYazdir("1", "hatalı ayar id");
+                        ekranaHataYazdir("24", "hatalı ayar id, ayar id : " + ayarID);
                 }
             }
 
@@ -2184,7 +2168,7 @@ public class MainActivity extends Activity
                         }
                         break;
                     default:
-                        ekranaHataYazdir("1", "hatalı ayar id");
+                        ekranaHataYazdir("25", "hatalı ayar id, ayar id : " + ayarID);
                 }
             }
             documentToFile(DOCUMENT_AYAR);
@@ -2242,7 +2226,7 @@ public class MainActivity extends Activity
                             menu.findItem(R.id.action_degistir_yeni).setVisible(false);
                             break;
                         default:
-                            ekranaHataYazdir("141", "KAYIT_DURUM_TUR hatalı : " + KAYIT_DURUM_TUR);
+                            ekranaHataYazdir("26", "hatalı kayıt durum türü : " + KAYIT_DURUM_TUR);
                     }
                     break;
                 case ACTIONBAR_YEDEK:
@@ -2252,7 +2236,7 @@ public class MainActivity extends Activity
                     inflater.inflate(R.menu.menu_ayar, menu);
                     break;
                 default:
-                    ekranaHataYazdir("142", "ACTIONBAR_TUR hatalı : " + ACTIONBAR_TUR);
+                    ekranaHataYazdir("27", "hatalı actionBar türü : " + ACTIONBAR_TUR);
             }
         }
 
