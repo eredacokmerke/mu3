@@ -636,9 +636,6 @@ public class MainActivity extends Activity
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
 
-            Yerlesim ylsm = new Yerlesim(Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
-            globalYerlesim = ylsm;
-
             return fragment;
         }
 
@@ -701,6 +698,13 @@ public class MainActivity extends Activity
             return fragment;
         }
 
+        //kutuların ekranda yerlesimini ayarlamak için yerlesim nesnesi
+        public static void yeniYerlesimOlustur()
+        {
+            Yerlesim ylsm = new Yerlesim(Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI));
+            globalYerlesim = ylsm;
+        }
+
         public void actionBarArkaPlanDegistir(String renk)
         {
             ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
@@ -715,6 +719,8 @@ public class MainActivity extends Activity
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public void parseXml(String parcaID)
         {
+            yeniYerlesimOlustur();
+
             Element element = document.getElementById(parcaID);
             NodeList nodeList = element.getChildNodes();
 
@@ -827,8 +833,6 @@ public class MainActivity extends Activity
                         }
 
                         secimEkranindaDurumuKontrolEt(crl.getDurum(), SECIM_YAPILDI);
-
-
                     }
 
                     return true;
@@ -855,17 +859,6 @@ public class MainActivity extends Activity
                             if (seciliElemanSayisi() == 0)
                             {
                                 seciliElemanListeleriniSifirla();
-                                /*
-                                actionBarDegistir(ACTIONBAR_EKLE);
-                                TIKLAMA_OLAYI = OLAY_ICINE_GIR;
-
-                                actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
-                                duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
-
-                                basligiEskiYerineAl();
-
-                                listSeciliElemanDurumu.clear();
-                                */
                             }
                             else
                             {
@@ -991,17 +984,6 @@ public class MainActivity extends Activity
                             if (seciliElemanSayisi() == 0)
                             {
                                 seciliElemanListeleriniSifirla();
-                                /*
-                                actionBarDegistir(ACTIONBAR_EKLE);
-                                TIKLAMA_OLAYI = OLAY_ICINE_GIR;
-
-                                actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
-                                duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
-
-                                basligiEskiYerineAl();
-
-                                listSeciliElemanDurumu.clear();
-                                */
                             }
                             else
                             {
@@ -1186,6 +1168,7 @@ public class MainActivity extends Activity
         {
             listSeciliCRL.clear();
             listSeciliElemanDurumu.clear();
+
             actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
             actionBarDegistir(ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
@@ -1862,9 +1845,11 @@ public class MainActivity extends Activity
             }
             catch (FileNotFoundException e)
             {
+                ekranaHataYazdir("37", "yedek dosyasıkpyalanırken hata oluştu : " + e.getMessage() + ", kaynak : " + kaynak + ", hedef : " + hedef);
             }
             catch (IOException e)
             {
+                ekranaHataYazdir("38", "yedek dosyasıkpyalanırken hata oluştu : " + e.getMessage() + ", kaynak : " + kaynak + ", hedef : " + hedef);
             }
         }
 
