@@ -131,7 +131,6 @@ public class MainActivity extends Activity
     private static int ACTIONBAR_TUR = ACTIONBAR_EKLE;
     private static int FRAGMENT_ETKIN_EKRAN;
     private static int TIKLAMA_OLAYI;
-    private static String KAYIT_DURUM_TUR;
     private static String xmlParcaID = "0";//içinde olunan parçanın id si
     private static int xmlEnBuyukID;//eklenen kategori ve kayıtlara id verebilmek için
     private static View activityRootView;
@@ -650,14 +649,13 @@ public class MainActivity extends Activity
 
             ACTIONBAR_TUR = ACTIONBAR_DEGISTIR;
             seciliCRL = crl;
+            seciliCRL.setDurum(durum);
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
-
-            KAYIT_DURUM_TUR = durum;
 
             return fragment;
         }
@@ -697,6 +695,13 @@ public class MainActivity extends Activity
 
             return fragment;
         }
+
+        public CustomRelativeLayout findCRLbyID(int id)
+        {
+            CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(id);
+            return crl;
+        }
+
 
         //kutuların ekranda yerlesimini ayarlamak için yerlesim nesnesi
         public static void yeniYerlesimOlustur()
@@ -1649,7 +1654,9 @@ public class MainActivity extends Activity
 
         public Element kayitYeni(String idd)
         {
-            seciliCRL.setDurum(DURUM_YENI);
+            CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
+            crl.setDurum(DURUM_YENI);
+            //seciliCRL.setDurum(DURUM_YENI);
             Element elementKayit = document.getElementById(idd);
             elementKayit.setAttribute(XML_DURUM, DURUM_YENI);
             documentToFile(DOCUMENT_ASIL);
@@ -1708,7 +1715,9 @@ public class MainActivity extends Activity
 
         public Element kayitTamamla(String idd)
         {
-            seciliCRL.setDurum(DURUM_TAMAMLANDI);
+            CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
+            crl.setDurum(DURUM_TAMAMLANDI);
+            //seciliCRL.setDurum(DURUM_TAMAMLANDI);
             Element elementKayit = document.getElementById(idd);
             elementKayit.setAttribute(XML_DURUM, DURUM_TAMAMLANDI);
             documentToFile(DOCUMENT_ASIL);
@@ -2335,7 +2344,7 @@ public class MainActivity extends Activity
                     break;
                 case ACTIONBAR_DEGISTIR:
                     inflater.inflate(R.menu.menu_degistir, menu);
-                    switch (KAYIT_DURUM_TUR)
+                    switch (seciliCRL.getDurum())
                     {
                         case DURUM_TAMAMLANDI:
                             menu.findItem(R.id.action_degistir_tamamlandi).setVisible(false);
@@ -2344,7 +2353,7 @@ public class MainActivity extends Activity
                             menu.findItem(R.id.action_degistir_yeni).setVisible(false);
                             break;
                         default:
-                            ekranaHataYazdir("26", "hatalı kayıt durum türü : " + KAYIT_DURUM_TUR);
+                            ekranaHataYazdir("26", "hatalı kayıt durum türü : " + seciliCRL.getDurum());
                     }
                     break;
                 case ACTIONBAR_YEDEK:
