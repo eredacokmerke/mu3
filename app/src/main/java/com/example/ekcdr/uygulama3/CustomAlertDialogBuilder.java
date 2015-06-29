@@ -3,9 +3,11 @@ package com.example.ekcdr.uygulama3;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CustomAlertDialogBuilder extends AlertDialog.Builder
 {
@@ -14,6 +16,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
     private String olumluDugmeYazi;
     private String olumsuzDugmeYazi;
     private EditText alertET;
+    private View view;
 
     //olumlu ve olumsuz seceneklerin oldugu dialog
     public CustomAlertDialogBuilder(Context context, String baslik, String olumsuzDugmeYazi, String olumluDugmeYazi, String yazi, int tur)
@@ -44,20 +47,36 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
         this.setPositiveButton(this.getOlumluDugmeYazi(), null);
     }
 
+    //hazırlanmış view gosterilecek
+    public CustomAlertDialogBuilder(Context context, String baslik, String olumsuzDugmeYazi, View view, int tur)
+    {
+        super(context);
+        this.baslik = baslik;
+        this.olumsuzDugmeYazi = "";
+        this.olumsuzDugmeYazi = olumsuzDugmeYazi;
+        this.view = view;
+
+        alertDialogOlustur(tur);
+
+        this.setNegativeButton(this.getOlumsuzDugmeYazi(), null);
+    }
+
     public void alertDialogOlustur(int tur)
     {
-        //alertdialog un içindeki ana LinearLayout
-        LinearLayout alertLL = new LinearLayout(getContext());
-        LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        alertLL.setLayoutParams(pa1);
-        alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-        alertLL.setWeightSum(1f);
 
-        LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.8f);
-        //yazının yazılacagı kısım
+        LinearLayout alertLL = new LinearLayout(getContext());//alertDialoga eklenecek ana layout
         switch (tur)
         {
             case MainActivity.ALERTDIALOG_EDITTEXT:
+            {
+                //alertdialog un içindeki ana LinearLayout
+                LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                alertLL.setLayoutParams(pa1);
+                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                alertLL.setWeightSum(1f);
+
+                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.8f);
+                //yazının yazılacagı kısım
 
                 alertET = new EditText(getContext());
                 alertET.setLayoutParams(pa2);
@@ -65,8 +84,17 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
                 alertET.setText(yazi);
                 alertLL.addView(alertET);
                 break;
-
+            }
             case MainActivity.ALERTDIALOG_TEXTVIEW:
+            {
+                //alertdialog un içindeki ana LinearLayout
+                LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                alertLL.setLayoutParams(pa1);
+                alertLL.setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
+                alertLL.setWeightSum(1f);
+
+                LinearLayout.LayoutParams pa2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.8f);
+                //yazının yazılacagı kısım
                 TextView alertTV = new TextView(getContext());
                 alertTV.setLayoutParams(pa2);
                 alertTV.setGravity(Gravity.CENTER);//yazı TextView in ortasında yazılsın
@@ -74,8 +102,13 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
                 alertLL.addView(alertTV);
                 break;
 
+            }
+            case MainActivity.ALERTDIALOG_CUSTOM_VIEW:
+                alertLL = (LinearLayout) view;
+                break;
+
             default:
-                //ekranaHataYazdir("1", "alert dialog hatasi");
+                ekranaHataYazdir("39", "hatalı alert dialog türü : " + tur);
                 break;
         }
 
@@ -85,6 +118,11 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
 
         //this.setPositiveButton(this.getOlumluDugmeYazi(), null);//dugmeye tıklama olayını alertDialog ta yakaladığım için buraya null değeri giriyorum
         //this.setNegativeButton(this.getOlumsuzDugmeYazi(), null);
+    }
+
+    public void ekranaHataYazdir(String id, String hata)
+    {
+        Toast.makeText(getContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
     public EditText getAlertET()

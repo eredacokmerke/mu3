@@ -73,6 +73,7 @@ public class MainActivity extends Activity
     public static final int ELEMAN_TUR_KATEGORI = 1;
     public static final int ALERTDIALOG_EDITTEXT = 0;//alertdialog ta edittex cikacak
     public static final int ALERTDIALOG_TEXTVIEW = 1;//alertdialog ta textview cikacak
+    public static final int ALERTDIALOG_CUSTOM_VIEW = 2;//alertdialog ta hazırlanmış view gosterilecek
     public static final int SECENEK_EDITTEXT = 0;
     public static final int SECENEK_CHECKBOX = 1;
     private static final String UYGULAMA_ADI = "uygulama3";
@@ -81,17 +82,20 @@ public class MainActivity extends Activity
     private static final String XML_RENK = "renk";
     private static final String XML_BASLIK = "baslik";
     private static final String XML_YAZILAR = "yazilar";
+    private static final String XML_YAZI = "yazi";
     //private static final String XML_ROOT = "root";
     private static final String XML_KAYIT = "kayit";
     private static final String XML_ALTPARCA = "altparca";
     private static final String XML_ID = "id";
     private static final String XML_DURUM = "durum";
+    private static final String KATEGORI_ONTANIMLI_RENK = "#00FFFF";
+    private static final String KAYIT_ONTANIMLI_RENK = "#009ED1";
     private static final String DURUM_YENI = "0";
     private static final String DURUM_TAMAMLANDI = "1";
     private static final String FRAGMENT_TAG = "fragment_tag";
     private static final String FRAGMENT_YAZI = "fragment_yazi";
     private static final int ACTIONBAR_EKLE = 0;
-    private static final int ACTIONBAR_ONAY = 1;
+    //private static final int ACTIONBAR_ONAY = 1;
     private static final int ACTIONBAR_SECIM = 2;
     private static final int ACTIONBAR_DEGISTIR = 3;
     private static final int ACTIONBAR_YEDEK = 4;
@@ -105,8 +109,6 @@ public class MainActivity extends Activity
     private static final int OLAY_ICINE_GIR = 0;
     private static final int OLAY_SECIM_YAP = 1;
     private static final String TIK_UNICODE = "\u2714";
-    private static final String ACTIONBAR_ARKAPLAN_KATEGORI = "#00CED1";
-    private static final String ACTIONBAR_ARKAPLAN_KAYIT = "#009ED1";
     private static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
     private static final String UC_NOKTA = "/.../";
     private static final double ORAN_DIKEY = 0.3;
@@ -137,6 +139,8 @@ public class MainActivity extends Activity
     private static Document document;
     private static Document documentAyar;
     private static int actionBarBoy;
+    public static Context cnt;
+    private static List<String> listeRenkler;
 
     //xml i okumank için Document nesnesi olusturur
     public static Document xmlDocumentNesnesiOlustur(String xmlDosyaYolu, MainActivity ma)
@@ -152,22 +156,22 @@ public class MainActivity extends Activity
         }
         catch (ParserConfigurationException e)
         {
-            ma.ekranaHataYazdir("28", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
+            ekranaHataYazdir("28", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
         catch (FileNotFoundException e)
         {
-            ma.ekranaHataYazdir("29", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
+            ekranaHataYazdir("29", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
         catch (IOException e)
         {
-            ma.ekranaHataYazdir("30", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
+            ekranaHataYazdir("30", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
         catch (SAXException e)
         {
-            ma.ekranaHataYazdir("15", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
+            ekranaHataYazdir("15", "document olusamadı : " + e.getMessage() + " ,xml : " + xmlDosyaYolu);
             return null;
         }
     }
@@ -205,6 +209,7 @@ public class MainActivity extends Activity
         File uygulamaKlasoru;
         File xmlYedekKlasoru;
         mResources = getResources();
+        cnt = getApplicationContext();
 
         activityRootView = findViewById(R.id.container);
         uygulamaKlasoru = uygulamaKlasoruKontrolEt();
@@ -222,16 +227,33 @@ public class MainActivity extends Activity
                 {
                     if (savedInstanceState == null)
                     {
-                        getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0), FRAGMENT_TAG).commit();
+                        CustomRelativeLayout crl = new CustomRelativeLayout(cnt, ELEMAN_TUR_KATEGORI, 0);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                        getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0, crl), FRAGMENT_TAG).commit();
                     }
 
-                    getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(ACTIONBAR_ARKAPLAN_KATEGORI)));
+                    actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir("0"));
                     getActionBar().setDisplayUseLogoEnabled(false);
                     getActionBar().setDisplayShowHomeEnabled(false);
+
+                    actionBarBoyUzunlugunuGetir();
+                    elemanEniniHesapla();
+                    elemanBoyunuHesapla();
+
+                    listeRenkler = new ArrayList<>();
+                    listeRenkler.add("#000000");
+                    listeRenkler.add("#FFFFFF");
+                    listeRenkler.add("#00FF00");
+                    listeRenkler.add("#0000FF");
+                    listeRenkler.add("#FFFF00");
+                    listeRenkler.add("#00FFFF");
+                    listeRenkler.add("#FF00FF");
+                    listeRenkler.add("#FF007F");
+                    listeRenkler.add("#808080");
+                    listeRenkler.add("#FF8000");
                 }
                 else
                 {
-                    ekranaHataYazdir("38", "xml dosylarıyla ilgili hata oluştu, uygulama kapatıldı");
+                    ekranaHataYazdir("45", "xml dosylarıyla ilgili hata oluştu, uygulama kapatıldı");
                     finish();
                 }
             }
@@ -240,10 +262,6 @@ public class MainActivity extends Activity
                 ekranaHataYazdir("1", "uygulama klasoru yok : " + uygulamaKlasoru);
                 finish();
             }
-
-            actionBarBoyUzunlugunuGetir();
-            elemanEniniHesapla();
-            elemanBoyunuHesapla();
         }
         else
         {
@@ -537,7 +555,7 @@ public class MainActivity extends Activity
             out.write("<?xml version=\"1.0\"?><root>" +
                     "<parca id=\"0\" durum=\"0\">" +
                     "<baslik/>" +
-                    "<renk/>" +
+                    "<renk>#00FFFF</renk>" +
                     "<yazilar/>" +
                     "<altparca/>" +
                     "</parca>" +
@@ -569,9 +587,50 @@ public class MainActivity extends Activity
         }
     }
 
-    public void ekranaHataYazdir(String id, String hata)
+    public static void ekranaHataYazdir(String id, String hata)
     {
-        Toast.makeText(getApplicationContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
+        Toast.makeText(cnt, "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
+    }
+
+    public void actionBarArkaPlanDegistir(String renk)
+    {
+        ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
+        getActionBar().setBackgroundDrawable(actionBarArkaPlan);
+    }
+
+    //kategorinin renk degerinin dondurur
+    public static String kategoriRenkBilgisiniGetir(String kategoriID)
+    {
+        Element element = document.getElementById(kategoriID);
+        //Node nodeRenk = element.getChildNodes().item(1);
+
+        Node nodeRenk = etiketiGetir(element, XML_RENK);
+        if (nodeRenk == null)
+        {
+            ekranaHataYazdir("39", "etiket getirilemedi");
+            return KATEGORI_ONTANIMLI_RENK;
+        }
+        else
+        {
+            return nodeRenk.getTextContent();
+        }
+
+        //return nodeRenk.getTextContent();
+    }
+
+    //etiket isminden etiketi bulur
+    public static Node etiketiGetir(Element element, String etiketAdi)
+    {
+        NodeList nodeList = element.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++)
+        {
+            if (nodeList.item(i).getNodeName().equals(etiketAdi))
+            {
+                return nodeList.item(i);
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -614,31 +673,42 @@ public class MainActivity extends Activity
         private Menu menuActionBar;
         private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private Activity fAct;
+        private static MainActivity ma;//MainActivity
+        private AlertDialog alertRenk;//renkleri soran alertDialog. renk dugmesine dokunuca alertDialog^u kapatabilmek için
+        private static int elemanTuru;
 
         public PlaceholderFragment()
         {
-
         }
 
-        public static PlaceholderFragment newInstanceKategori(int secim, int kategoriID)
+        public static PlaceholderFragment newInstanceKategori(int secim, int kategoriID, CustomRelativeLayout crl)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
+            //Bundle args = new Bundle();
             FRAGMENT_ETKIN_EKRAN = secim;
-            fragment.setArguments(args);
+            //fragment.setArguments(args);
             xmlParcaID = String.valueOf(kategoriID);
             fragment.setHasOptionsMenu(true);
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
+            seciliCRL = crl;
 
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
+            elemanTuru = ELEMAN_TUR_KATEGORI;
+
+            if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
+            {
+                String kategoriRenk = kategoriRenkBilgisiniGetir(String.valueOf(kategoriID));
+                seciliCRL.setRenk(kategoriRenk);
+                ma.actionBarArkaPlanDegistir(kategoriRenk);
+            }
 
             return fragment;
         }
 
-        public static PlaceholderFragment newInstanceKayit(int secim, String yazi, String durum, CustomRelativeLayout crl)
+        public static PlaceholderFragment newInstanceKayit(int secim, String yazi, CustomRelativeLayout crl)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -649,13 +719,16 @@ public class MainActivity extends Activity
 
             ACTIONBAR_TUR = ACTIONBAR_DEGISTIR;
             seciliCRL = crl;
-            seciliCRL.setDurum(durum);
+            //seciliCRL.setDurum(durum);
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
 
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
+            elemanTuru = ELEMAN_TUR_KAYIT;
+
+            ma.actionBarArkaPlanDegistir(kayitRenkBilgisiniGetir(String.valueOf(crl.getId())));
 
             return fragment;
         }
@@ -663,10 +736,10 @@ public class MainActivity extends Activity
         public static PlaceholderFragment newInstanceYedek(int secim)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
+            //Bundle args = new Bundle();
             //args.putInt(FRAGMENT_SECIM, secim);
             FRAGMENT_ETKIN_EKRAN = secim;
-            fragment.setArguments(args);
+            //fragment.setArguments(args);
             fragment.setHasOptionsMenu(true);
 
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
@@ -696,12 +769,28 @@ public class MainActivity extends Activity
             return fragment;
         }
 
+        //kaydin renk degerinin dondurur
+        public static String kayitRenkBilgisiniGetir(String kayitID)
+        {
+            Element element = document.getElementById(kayitID);
+
+            Node nodeRenk = etiketiGetir(element, XML_RENK);
+            if (nodeRenk == null)
+            {
+                ekranaHataYazdir("48", "etiket getirilemedi");
+                return KAYIT_ONTANIMLI_RENK;
+            }
+            else
+            {
+                return nodeRenk.getTextContent();
+            }
+        }
+
         public CustomRelativeLayout findCRLbyID(int id)
         {
             CustomRelativeLayout crl = (CustomRelativeLayout) anaLayout.findViewById(id);
             return crl;
         }
-
 
         //kutuların ekranda yerlesimini ayarlamak için yerlesim nesnesi
         public static void yeniYerlesimOlustur()
@@ -710,22 +799,9 @@ public class MainActivity extends Activity
             globalYerlesim = ylsm;
         }
 
-        public void actionBarArkaPlanDegistir(String renk)
-        {
-            ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
-            getActivity().getActionBar().setBackgroundDrawable(actionBarArkaPlan);
-        }
-
-        public void ekranaHataYazdir(String id, String hata)
-        {
-            Toast.makeText(getActivity(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
-        }
-
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public void parseXml(String parcaID)
         {
-            yeniYerlesimOlustur();
-
             Element element = document.getElementById(parcaID);
             NodeList nodeList = element.getChildNodes();
 
@@ -733,17 +809,38 @@ public class MainActivity extends Activity
             {
                 if (nodeList.item(i).getNodeName().equals(XML_YAZILAR))
                 {
-                    Node nodeKayit = nodeList.item(i);
-                    NodeList nodeListYazilar = nodeKayit.getChildNodes();
+                    Node nodeYazilar = nodeList.item(i);
+                    NodeList nodeListKayitlar = nodeYazilar.getChildNodes();
 
-                    for (int j = 0; j < nodeListYazilar.getLength(); j++)
+                    for (int j = 0; j < nodeListKayitlar.getLength(); j++)
                     {
-                        Node nodeYazi = nodeListYazilar.item(j);
-                        String kayitYazi = nodeYazi.getTextContent();
-                        String kayitDurum = nodeYazi.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
-                        String kayitID = nodeYazi.getAttributes().getNamedItem(XML_ID).getNodeValue();
+                        Node nodeKayit = nodeListKayitlar.item(j);
+                        //String kayitYazi = nodeKayit.getTextContent();
+                        //String kayitYazi = nodeKayit.getChildNodes().item(1).getTextContent();
+                        String kayitYazi = "";
+                        String kayitRenk = "";
+                        Node nodeKayitYazi = etiketiGetir((Element) nodeKayit, XML_YAZI);
+                        if (nodeKayitYazi == null)
+                        {
+                            ekranaHataYazdir("40", "etiket getirilemedi");
+                        }
+                        else
+                        {
+                            kayitYazi = nodeKayitYazi.getTextContent();
+                        }
+                        Node nodeRenk = etiketiGetir((Element) nodeKayit, XML_RENK);
+                        if (nodeRenk == null)
+                        {
+                            ekranaHataYazdir("47", "etiket getirilemedi");
+                        }
+                        else
+                        {
+                            kayitRenk = nodeRenk.getTextContent();
+                        }
+                        String kayitDurum = nodeKayit.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
+                        String kayitID = nodeKayit.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, globalYerlesim);
+                        kayitlariAnaEkranaEkle(kayitYazi, Integer.parseInt(kayitID), kayitDurum, kayitRenk, globalYerlesim);
                     }
                 }
                 else if (nodeList.item(i).getNodeName().equals(XML_ALTPARCA))
@@ -754,12 +851,35 @@ public class MainActivity extends Activity
                     for (int j = 0; j < nodeListParcalar.getLength(); j++)
                     {
                         Node nodeParca = nodeListParcalar.item(j);
-                        Node nodeBaslik = nodeParca.getFirstChild();
-                        String kategoriYazi = nodeBaslik.getTextContent();
+                        //Node nodeBaslik = nodeParca.getChildNodes().item(0);
+                        //Node nodeRenk = nodeParca.getChildNodes().item(1);
+                        Node nodeBaslik = etiketiGetir((Element) nodeParca, XML_BASLIK);
+
+                        String kategoriBaslik = "";
+                        String kategoriRenk = "";
+                        if (nodeBaslik == null)
+                        {
+                            ekranaHataYazdir("41", "etiket getirilemedi");
+                        }
+                        else
+                        {
+                            kategoriBaslik = nodeBaslik.getTextContent();
+                        }
+
+                        Node nodeRenk = etiketiGetir((Element) nodeParca, XML_RENK);
+                        if (nodeRenk == null)
+                        {
+                            ekranaHataYazdir("42", "etiket getirilemedi");
+                        }
+                        else
+                        {
+                            kategoriRenk = nodeRenk.getTextContent();
+                        }
+
                         String kategoriDurum = nodeParca.getAttributes().getNamedItem(XML_DURUM).getNodeValue();
                         String kategoriID = nodeParca.getAttributes().getNamedItem(XML_ID).getNodeValue();
 
-                        kategoriyiAnaEkranaEkle(kategoriYazi, Integer.parseInt(kategoriID), kategoriDurum, globalYerlesim);
+                        kategoriyiAnaEkranaEkle(kategoriBaslik, Integer.parseInt(kategoriID), kategoriDurum, kategoriRenk, globalYerlesim);
                     }
                 }
             }
@@ -801,9 +921,9 @@ public class MainActivity extends Activity
         }
 
         //xml parse edildikten sonra kayitları ana ekrana ekler
-        public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, Yerlesim ylsm)
+        public void kayitlariAnaEkranaEkle(final String yazi, final int eklenenID, final String durum, String renk, Yerlesim ylsm)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, this, ylsm);
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), yazi, ELEMAN_TUR_KAYIT, eklenenID, durum, renk, this, ylsm);
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -832,7 +952,7 @@ public class MainActivity extends Activity
                         {
                             actionBarDegistir(ACTIONBAR_SECIM);
                             TIKLAMA_OLAYI = OLAY_SECIM_YAP;
-                            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+                            ma.actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                             duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
                             basligiDuzenleninYaninaAl();
                         }
@@ -850,8 +970,8 @@ public class MainActivity extends Activity
                 {
                     if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi, durum, crl)).addToBackStack(null).commit();
-                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KAYIT);
+                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(FRAGMENT_KAYIT_EKRANI, yazi, crl)).addToBackStack(null).commit();
+                        //ma.actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KAYIT);
                     }
                     else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
@@ -956,9 +1076,9 @@ public class MainActivity extends Activity
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, Yerlesim ylsm)
+        public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, String renk, Yerlesim ylsm)
         {
-            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, this, ylsm);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+            final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, ELEMAN_TUR_KATEGORI, kategoriID, durum, renk, this, ylsm);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
 
             if (durum.equals(DURUM_TAMAMLANDI))
             {
@@ -975,8 +1095,8 @@ public class MainActivity extends Activity
                 {
                     if (TIKLAMA_OLAYI == OLAY_ICINE_GIR)
                     {
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID), FRAGMENT_TAG).commit();
-                        actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, kategoriID, crl), FRAGMENT_TAG).commit();
+                        //ma.actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir(String.valueOf(kategoriID)));
                     }
                     else if (TIKLAMA_OLAYI == OLAY_SECIM_YAP)
                     {
@@ -1021,7 +1141,7 @@ public class MainActivity extends Activity
                         {
                             actionBarDegistir(ACTIONBAR_SECIM);
                             TIKLAMA_OLAYI = OLAY_SECIM_YAP;
-                            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
+                            ma.actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_SECILI);
                             duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
                             basligiDuzenleninYaninaAl();
                         }
@@ -1134,7 +1254,7 @@ public class MainActivity extends Activity
         }
 
         //başta oluşturulan xmle yeni eklenen kategoriyi ekler ve en buyuk xml idsini döndürür
-        public int xmlDosyasinaKategoriEkle(String baslik, String renk)
+        public int xmlDosyasinaKategoriEkle(String baslik)
         {
             xmlEnBuyukID++;
             Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
@@ -1153,7 +1273,7 @@ public class MainActivity extends Activity
                     Element yeniNodeBaslik = document.createElement(XML_BASLIK);//baslik etiketi oluşturuluyor
                     yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
                     Element yeniNodeRenk = document.createElement(XML_RENK);//renk etiketi oluşturuluyor
-                    yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
+                    yeniNodeRenk.setTextContent(KATEGORI_ONTANIMLI_RENK);//renk etiketine renk değeri giriliyor
                     Element yeniNodeYazi = document.createElement(XML_YAZILAR);//yazi etiketi oluşturuluyor
                     Element yeniNodeAltparca = document.createElement(XML_ALTPARCA);//altparca etiketi oluşturuluyor
                     nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
@@ -1174,7 +1294,7 @@ public class MainActivity extends Activity
             listSeciliCRL.clear();
             listSeciliElemanDurumu.clear();
 
-            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
+            ma.actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir(xmlParcaID));
             actionBarDegistir(ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = OLAY_ICINE_GIR;
             duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
@@ -1205,9 +1325,9 @@ public class MainActivity extends Activity
                     {
                         klavyeKapat();
                         alert.dismiss();
-                        final int eklenenID = xmlDosyasinaKategoriEkle(kategoriAdi, "");
+                        final int eklenenID = xmlDosyasinaKategoriEkle(kategoriAdi);
 
-                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI, globalYerlesim);
+                        kategoriyiAnaEkranaEkle(kategoriAdi, eklenenID, DURUM_YENI, KATEGORI_ONTANIMLI_RENK, globalYerlesim);
                     }
                 }
             });
@@ -1238,13 +1358,12 @@ public class MainActivity extends Activity
         //su anki etkin ekrana gore bir ust seviyenin ekran ve actionbar bilgilerini belirler
         public void ustSeviyeyiGetir()
         {
-            actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KATEGORI);
-
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case FRAGMENT_KAYIT_EKRANI:
-
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                {
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
                     /*
                     FragmentManager fm = getFragmentManager();
@@ -1256,27 +1375,37 @@ public class MainActivity extends Activity
                     */
 
                     break;
+                }
                 case FRAGMENT_KATEGORI_EKRANI:
-
+                {
                     Element element = document.getElementById(xmlParcaID);
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
                     xmlParcaID = ustSeviyeID;
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
+                }
                 case FRAGMENT_YEDEK_EKRANI:
+                {
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
 
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
+                }
                 case FRAGMENT_AYAR_EKRANI:
+                {
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
 
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID)), FRAGMENT_TAG).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
                     break;
+                }
                 default:
                     ekranaHataYazdir("14", "hatalı fragment id, fragment id : " + FRAGMENT_ETKIN_EKRAN);
             }
@@ -1298,19 +1427,27 @@ public class MainActivity extends Activity
                     Element yeniNodeKayit = document.createElement(XML_KAYIT);//kayıt etiketi olusturuyor
                     yeniNodeKayit.setAttribute(XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
                     yeniNodeKayit.setAttribute(XML_DURUM, DURUM_YENI);//parca ya id özelliği ekleniyor
-                    nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
 
                     StringBuilder str = new StringBuilder(baslik);//alt satıra geçmeyi anlayabilmek için \n <br> ile değiştiriliyor
                     int sayac = 0;
-                    for (i = 0; i < baslik.length(); i++)//<br> eklendiği zaman stringin boyu 4 uzuyor onun için sayac tutuyoruz
+                    for (int j = 0; j < baslik.length(); j++)//<br> eklendiği zaman stringin boyu 4 uzuyor onun için sayac tutuyoruz
                     {
-                        if (baslik.charAt(i) == '\n')
+                        if (baslik.charAt(j) == '\n')
                         {
-                            str.insert(i + sayac, "<br>");
+                            str.insert(j + sayac, "<br>");
                             sayac = sayac + 4;
                         }
                     }
-                    yeniNodeKayit.setTextContent(str.toString());
+                    //yeniNodeKayit.setTextContent(str.toString());
+                    Element yeniNodeBaslik = document.createElement(XML_YAZI);//yazi etiketi oluşturuluyor
+                    yeniNodeBaslik.setTextContent(str.toString());//yazi etiketine yazi değeri giriliyor
+                    yeniNodeKayit.appendChild(yeniNodeBaslik);
+
+                    Element yeniNodeRenk = document.createElement(XML_RENK);//renk etiketi oluşturuluyor
+                    yeniNodeRenk.setTextContent(KAYIT_ONTANIMLI_RENK);//renk etiketine renk değeri giriliyor
+                    yeniNodeKayit.appendChild(yeniNodeRenk);
+
+                    nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
 
                     break;
                 }
@@ -1346,7 +1483,7 @@ public class MainActivity extends Activity
                         alert.dismiss();
                         final int eklenenID = xmlDosyasinaKayitEkle(kayitAdi);
 
-                        kayitlariAnaEkranaEkle(kayitAdi, eklenenID, DURUM_YENI, globalYerlesim);
+                        kayitlariAnaEkranaEkle(kayitAdi, eklenenID, DURUM_YENI, KAYIT_ONTANIMLI_RENK, globalYerlesim);
                     }
                 }
             });
@@ -1464,7 +1601,7 @@ public class MainActivity extends Activity
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
-                Element element = kayitYeni(String.valueOf(crl.getId()));
+                Element element = kayitDurumunuYeniYap(String.valueOf(crl.getId()));
                 if (element != null)
                 {
                     switch (crl.getCrlTur())
@@ -1501,7 +1638,7 @@ public class MainActivity extends Activity
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
-                Element element = kayitTamamla(String.valueOf(crl.getId()));
+                Element element = kayitDurumunuTamamlandiYap(String.valueOf(crl.getId()));
                 if (element != null)
                 {
                     switch (crl.getCrlTur())
@@ -1652,7 +1789,8 @@ public class MainActivity extends Activity
             }
         }
 
-        public Element kayitYeni(String idd)
+        //secilen kaydin durumunu yeni olarak değiştirir
+        public Element kayitDurumunuYeniYap(String idd)
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(DURUM_YENI);
@@ -1665,7 +1803,7 @@ public class MainActivity extends Activity
         }
 
         //secilen kaydin durumunu yeni olarak değiştirir
-        public Element kayitYeni()
+        public Element kayitDurumunuYeniYap()
         {
             if (seciliCRL != null)
             {
@@ -1687,7 +1825,16 @@ public class MainActivity extends Activity
             if (seciliCRL != null)
             {
                 Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
-                elementKayit.setTextContent(etDegisecek.getText().toString());
+                //elementKayit.setTextContent(etDegisecek.getText().toString());
+                Node NodeYazi = etiketiGetir(elementKayit, XML_YAZI);
+                if (NodeYazi == null)
+                {
+                    ekranaHataYazdir("43", "etiket getirilemedi");
+                }
+                else
+                {
+                    NodeYazi.setTextContent(etDegisecek.getText().toString());
+                }
 
                 documentToFile(DOCUMENT_ASIL);
                 ustSeviyeyiGetir();
@@ -1713,7 +1860,8 @@ public class MainActivity extends Activity
             }
         }
 
-        public Element kayitTamamla(String idd)
+        //secilen kaydin durumunu tamamlandı olarak değiştirir
+        public Element kayitDurumunuTamamlandiYap(String idd)
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(DURUM_TAMAMLANDI);
@@ -1726,7 +1874,7 @@ public class MainActivity extends Activity
         }
 
         //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public Element kayitTamamla()
+        public Element kayitDurumunuTamamlandiYap()
         {
             if (seciliCRL != null)
             {
@@ -2008,9 +2156,10 @@ public class MainActivity extends Activity
                             if (xmlDosyasi.delete())
                             {
                                 dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + ".xml", xmlDosyaYolu);
-
                                 anaLayout.removeAllViews();
                                 document = xmlDocumentNesnesiOlustur(xmlDosyaYolu, (MainActivity) fAct);
+                                yeniYerlesimOlustur();
+                                //seciliCRL = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));
                                 xmlParcaID = "0";
                                 parseXml(xmlParcaID);
                                 getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
@@ -2304,7 +2453,8 @@ public class MainActivity extends Activity
         //actionBar daki kategori basligini yazar
         public void kategoriBasliginiYaz()
         {
-            if (xmlParcaID.equals("0"))
+            //if (xmlParcaID.equals("0"))
+            if (seciliCRL.getId() == 0)
             {
                 getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
                 getActivity().getActionBar().setTitle("/");
@@ -2312,8 +2462,85 @@ public class MainActivity extends Activity
             else
             {
                 getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
+                getActivity().getActionBar().setTitle(kategoriYolunuGetir(String.valueOf(seciliCRL.getId())));
+                //getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
             }
+        }
+
+        //kategori seciliyken duzenleye tıklanıldığı zaman girilen ismi xml'e kaydeder
+        public void kategorininBaslikBilgisiniGuncelle(String baslik, int kategoriID)
+        {
+            Element element = document.getElementById(String.valueOf(kategoriID));
+            Node nodeBaslik = element.getFirstChild();
+            nodeBaslik.setTextContent(baslik);
+            documentToFile(DOCUMENT_ASIL);
+        }
+
+        //actionbar da renk tusuna dokunulduğu zaman ekrana gelen alertdialogu olusturur
+        public void renkDialogunuOlustur()
+        {
+            LinearLayout alertLL = new RenkDugmeleri(getActivity(), seciliCRL.getRenk(), listeRenkler, this);
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), "Renk", "İptal", alertLL, ALERTDIALOG_CUSTOM_VIEW);
+            alertRenk = builder.create();
+            alertRenk.setCanceledOnTouchOutside(true);
+            alertRenk.show();
+        }
+
+        public void renkSecimiYapildi(String secilenRenk)
+        {
+            if (getElemanTuru() == ELEMAN_TUR_KATEGORI)
+            {
+                kategorininRenkBilgisiniGuncelle(secilenRenk);
+                ma.actionBarArkaPlanDegistir(secilenRenk);
+                seciliCRL.setRenk(secilenRenk);
+            }
+            else if (getElemanTuru() == ELEMAN_TUR_KAYIT)
+            {
+                kaydinRenkBilgisiniGuncelle(secilenRenk);
+                ma.actionBarArkaPlanDegistir(secilenRenk);
+                seciliCRL.setRenk(secilenRenk);
+            }
+        }
+
+        public void kategorininRenkBilgisiniGuncelle(String secilenRenk)
+        {
+            alertRenk.dismiss();
+            Element element = document.getElementById(String.valueOf(xmlParcaID));
+            //Node nodeRenk = element.getChildNodes().item(1);
+
+            Node nodeRenk = etiketiGetir(element, XML_RENK);
+            if (nodeRenk == null)
+            {
+                ekranaHataYazdir("44", "etiket getirilemedi");
+            }
+            else
+            {
+                nodeRenk.setTextContent(secilenRenk);
+                documentToFile(DOCUMENT_ASIL);
+            }
+        }
+
+        public void kaydinRenkBilgisiniGuncelle(String secilenRenk)
+        {
+            alertRenk.dismiss();
+            Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
+            //Node nodeRenk = element.getChildNodes().item(1);
+
+            Node nodeRenk = etiketiGetir(element, XML_RENK);
+            if (nodeRenk == null)
+            {
+                ekranaHataYazdir("46", "etiket getirilemedi");
+            }
+            else
+            {
+                nodeRenk.setTextContent(secilenRenk);
+                documentToFile(DOCUMENT_ASIL);
+            }
+        }
+
+        public static int getElemanTuru()
+        {
+            return elemanTuru;
         }
 
         @Override
@@ -2321,6 +2548,7 @@ public class MainActivity extends Activity
         {
             super.onAttach(activity);
             fAct = activity;
+            ma = (MainActivity) fAct;
         }
 
         @Override
@@ -2339,9 +2567,11 @@ public class MainActivity extends Activity
                 case ACTIONBAR_SECIM:
                     inflater.inflate(R.menu.menu_secim, menu);
                     break;
+                /*
                 case ACTIONBAR_ONAY:
                     inflater.inflate(R.menu.menu_onay, menu);
                     break;
+                */
                 case ACTIONBAR_DEGISTIR:
                     inflater.inflate(R.menu.menu_degistir, menu);
                     switch (seciliCRL.getDurum())
@@ -2381,6 +2611,10 @@ public class MainActivity extends Activity
                     //etEklenecek = yaziAlaniOlustur();
                     //klavyeAc(getActivity().getApplicationContext(), etEklenecek);
                     return true;
+                case R.id.action_renk_degistir:
+                    renkDialogunuOlustur();
+                    return true;
+                /*
                 case R.id.action_onay_kaydet:
                     //yaziyiKaydet(etEklenecek);
                     //actionBarDegistir(ACTIONBAR_EKLE);
@@ -2390,6 +2624,7 @@ public class MainActivity extends Activity
                     //anaLayout.removeView(etEklenecek);
                     //actionBarDegistir(ACTIONBAR_EKLE);
                     return true;
+                */
                 case R.id.action_secim_tamam:
                     seciliElemanlariTamamla();
                     Toast.makeText(getActivity(), "seçili kayıtlar tamamlandı olarak işaretlendi", Toast.LENGTH_SHORT).show();
@@ -2405,7 +2640,7 @@ public class MainActivity extends Activity
                     kayitSilDiyaloguOlustur();
                     return true;
                 case R.id.action_degistir_tamamlandi:
-                    Element elementKayitTamam = kayitTamamla();
+                    Element elementKayitTamam = kayitDurumunuTamamlandiYap();
                     if (elementKayitTamam != null)
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
@@ -2414,7 +2649,7 @@ public class MainActivity extends Activity
                     }
                     return true;
                 case R.id.action_degistir_yeni:
-                    Element elementKayitYeni = kayitYeni();
+                    Element elementKayitYeni = kayitDurumunuYeniYap();
                     if (elementKayitYeni != null)
                     {
                         ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
@@ -2425,6 +2660,9 @@ public class MainActivity extends Activity
                 case R.id.action_degistir_kaydet:
                     kayitDegistir();
                     klavyeKapat();
+                    return true;
+                case R.id.action_degistir_renk_degistir:
+                    renkDialogunuOlustur();
                     return true;
                 case R.id.action_yedekle:
                     xmlYedekle();
@@ -2480,8 +2718,14 @@ public class MainActivity extends Activity
                     anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
-                        parseXml(xmlParcaID);
+                        yeniYerlesimOlustur();
+                        //parseXml(xmlParcaID);
+                        parseXml(String.valueOf(seciliCRL.getId()));
                         kategoriBasliginiYaz();
+                    }
+                    else//xml'de kayıt yok
+                    {
+                        yeniYerlesimOlustur();
                     }
                     return rootView;
                 }
@@ -2542,15 +2786,6 @@ public class MainActivity extends Activity
                 default:
                     return null;
             }
-        }
-
-        //kategori seciliyken duzenleye tıklanıldığı zaman girilen ismi xml'e kaydeder
-        public void kategoriBaslikGuncelle(String baslik, int kategoriID)
-        {
-            Element element = document.getElementById(String.valueOf(kategoriID));
-            Node nodeBaslik = element.getFirstChild();
-            nodeBaslik.setTextContent(baslik);
-            documentToFile(DOCUMENT_ASIL);
         }
     }
 }

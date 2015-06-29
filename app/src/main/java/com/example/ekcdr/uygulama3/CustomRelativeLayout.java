@@ -33,13 +33,15 @@ public class CustomRelativeLayout extends RelativeLayout
     private ImageView tvDuzenle;
     private int crlTur;
     private String durum;
+    private String renk;
     private int satirBasinaKayitSayisi;
 
-    public CustomRelativeLayout(Context context, final String baslik, int elemanTur, final int crlID, String durum, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
+    public CustomRelativeLayout(Context context, final String baslik, int elemanTur, final int crlID, String durum, String renk, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
     {
         super(context);
         setCrlSeciliMi(false);
-        setDurum(durum);
+        this.durum = durum;
+        this.renk = renk;
         this.setId(crlID);
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
 
@@ -135,7 +137,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                                 String yeniBaslik = alertET.getText().toString();
                                 tvBaslik.setText(yeniBaslik);
-                                frag.kategoriBaslikGuncelle(yeniBaslik, crlID);
+                                frag.kategorininBaslikBilgisiniGuncelle(yeniBaslik, crlID);
                             }
                         });
                         alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new OnClickListener()
@@ -193,6 +195,13 @@ public class CustomRelativeLayout extends RelativeLayout
                 break;
             }
         }
+    }
+
+    public CustomRelativeLayout(Context context, int elemanTur, final int crlID)
+    {
+        super(context);
+        setCrlSeciliMi(false);
+        this.setId(crlID);
     }
 
     //verilen sutundaki ilk -1 degerine sahip satir sayisini donduruyor
@@ -369,7 +378,8 @@ public class CustomRelativeLayout extends RelativeLayout
     public void arkaplanKategori()
     {
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(0xFF00CED1);
+        //gd.setColor(0xFF00CED1);
+        gd.setColor(Color.parseColor(renk));
         gd.setStroke((int) dpGetir(2), 0xFF009095);
         gd.setCornerRadius(dpGetir(7));
         setBackground(gd);
@@ -379,7 +389,8 @@ public class CustomRelativeLayout extends RelativeLayout
     public void arkaplanKayit()
     {
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(0xFF009ED1);
+        //gd.setColor(0xFF009ED1);
+        gd.setColor(Color.parseColor(renk));
         gd.setStroke((int) dpGetir(2), 0xFF004095);
         gd.setCornerRadius(dpGetir(7));
         setBackground(gd);
@@ -430,5 +441,15 @@ public class CustomRelativeLayout extends RelativeLayout
     public void setDurum(String durum)
     {
         this.durum = durum;
+    }
+
+    public String getRenk()
+    {
+        return renk;
+    }
+
+    public void setRenk(String renk)
+    {
+        this.renk = renk;
     }
 }
