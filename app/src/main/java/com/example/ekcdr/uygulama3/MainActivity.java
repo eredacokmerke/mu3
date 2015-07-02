@@ -227,7 +227,7 @@ public class MainActivity extends Activity
                 {
                     if (savedInstanceState == null)
                     {
-                        CustomRelativeLayout crl = new CustomRelativeLayout(cnt, ELEMAN_TUR_KATEGORI, 0);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                        CustomRelativeLayout crl = new CustomRelativeLayout(cnt, kategoriRenkBilgisiniGetir("0"), 0);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                         getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0, crl), FRAGMENT_TAG).commit();
                     }
 
@@ -700,9 +700,10 @@ public class MainActivity extends Activity
 
             if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
             {
-                String kategoriRenk = kategoriRenkBilgisiniGetir(String.valueOf(kategoriID));
-                seciliCRL.setRenk(kategoriRenk);
-                ma.actionBarArkaPlanDegistir(kategoriRenk);
+                //String kategoriRenk = kategoriRenkBilgisiniGetir(String.valueOf(kategoriID));
+                //seciliCRL.setRenk(kategoriRenk);
+                //ma.actionBarArkaPlanDegistir(kategoriRenk);
+                ma.actionBarArkaPlanDegistir(seciliCRL.getRenk());
             }
 
             return fragment;
@@ -1362,7 +1363,7 @@ public class MainActivity extends Activity
             {
                 case FRAGMENT_KAYIT_EKRANI:
                 {
-                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
                     /*
@@ -1381,7 +1382,7 @@ public class MainActivity extends Activity
                     Element element = document.getElementById(xmlParcaID);
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(XML_ID).getNodeValue();
                     xmlParcaID = ustSeviyeID;
-                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
 
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
@@ -1390,8 +1391,7 @@ public class MainActivity extends Activity
                 }
                 case FRAGMENT_YEDEK_EKRANI:
                 {
-                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
@@ -1399,8 +1399,7 @@ public class MainActivity extends Activity
                 }
                 case FRAGMENT_AYAR_EKRANI:
                 {
-                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), ELEMAN_TUR_KATEGORI, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), FRAGMENT_TAG).commit();
                     ACTIONBAR_TUR = ACTIONBAR_EKLE;
 
@@ -2156,6 +2155,12 @@ public class MainActivity extends Activity
                             if (xmlDosyasi.delete())
                             {
                                 dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + ".xml", xmlDosyaYolu);
+
+                                document = xmlDocumentNesnesiOlustur(xmlDosyaYolu, (MainActivity) fAct);
+                                CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir("0"), 0);
+                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(FRAGMENT_KATEGORI_EKRANI, 0, crl), FRAGMENT_TAG).commit();
+
+                                /*
                                 anaLayout.removeAllViews();
                                 document = xmlDocumentNesnesiOlustur(xmlDosyaYolu, (MainActivity) fAct);
                                 yeniYerlesimOlustur();
@@ -2164,6 +2169,7 @@ public class MainActivity extends Activity
                                 parseXml(xmlParcaID);
                                 getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
                                 getActivity().getActionBar().setTitle("/");
+                                */
                             }
                             else
                             {

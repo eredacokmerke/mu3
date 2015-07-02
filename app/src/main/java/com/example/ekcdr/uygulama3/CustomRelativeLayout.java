@@ -197,11 +197,12 @@ public class CustomRelativeLayout extends RelativeLayout
         }
     }
 
-    public CustomRelativeLayout(Context context, int elemanTur, final int crlID)
+    public CustomRelativeLayout(Context context, String renk, final int crlID)
     {
         super(context);
         setCrlSeciliMi(false);
         this.setId(crlID);
+        this.renk = renk;
     }
 
     //verilen sutundaki ilk -1 degerine sahip satir sayisini donduruyor
