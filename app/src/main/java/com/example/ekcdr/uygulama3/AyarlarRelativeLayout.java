@@ -1,11 +1,15 @@
 package com.example.ekcdr.uygulama3;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +21,9 @@ public class AyarlarRelativeLayout extends RelativeLayout
     private String deger;
     private int ayarID;
     private View viewSecenek;
+    private AyarlarRelativeLayout aa = this;
+    private AlertDialog alertRenk;//renkleri soran alertDialog. renk dugmesine dokunuca alertDialogu kapatabilmek için
+    private String secilenRenk;
 
     public AyarlarRelativeLayout(Context context, String metin, String deger, int ayarID, int secenekTuru)
     {
@@ -52,7 +59,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
     }
 
     //kullanıcının yapacagı secim elemanı olusturuluyor
-    public void secenegiOlustur(Context cnt, int secenekTuru)
+    public void secenegiOlustur(final Context cnt, int secenekTuru)
     {
         switch (secenekTuru)
         {
@@ -88,8 +95,43 @@ public class AyarlarRelativeLayout extends RelativeLayout
                 ll.addView(viewSecenek);
                 this.addView(ll);
                 break;
+
+            case MainActivity.SECENEK_BUTTON:
+                secilenRenk = deger;
+                viewSecenek = new ImageButton(cnt);
+                ImageButton im = (ImageButton) viewSecenek;
+                im.getBackground().setColorFilter(Color.parseColor(deger), PorterDuff.Mode.SRC_ATOP);
+                RelativeLayout.LayoutParams pa3 = new RelativeLayout.LayoutParams((ekranEnUzunluğu / 10) * 2, (int) MainActivity.dpGetir(50));
+                pa3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                im.setLayoutParams(pa3);
+                this.addView(im);
+
+                im.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        RenkDugmeleri alertLL = new RenkDugmeleri(cnt, deger, MainActivity.getListeRenkler());
+                        alertLL.setCagiranYer(alertLL.CAGIRAN_YER_AYARLAR, aa);
+                        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Renk", "İptal", alertLL, MainActivity.ALERTDIALOG_CUSTOM_VIEW);
+                        alertRenk = builder.create();
+                        alertRenk.setCanceledOnTouchOutside(true);
+                        alertRenk.show();
+                    }
+                });
+                break;
+
             default:
+                MainActivity.ekranaHataYazdir("51", "hatalı ayar türü, tür: " + secenekTuru);
         }
+    }
+
+    public void renkSecimiYapildi(String secilenRenk)
+    {
+        ImageButton im = (ImageButton) viewSecenek;
+        im.getBackground().setColorFilter(Color.parseColor(secilenRenk), PorterDuff.Mode.SRC_ATOP);
+        this.secilenRenk = secilenRenk;
+        alertRenk.dismiss();
     }
 
     public int getAyarID()
@@ -100,5 +142,10 @@ public class AyarlarRelativeLayout extends RelativeLayout
     public View getViewSecenek()
     {
         return viewSecenek;
+    }
+
+    public String getSecilenRenk()
+    {
+        return secilenRenk;
     }
 }

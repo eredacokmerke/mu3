@@ -11,12 +11,16 @@ import java.util.Random;
 
 public class RenkDugmeleri extends LinearLayout
 {
-    MainActivity.PlaceholderFragment frag;
+    public final int CAGIRAN_YER_FRAGMENT = 0;//sınıf fragment ten cagriliyor
+    public final int CAGIRAN_YER_AYARLAR = 1;//sınıf ayarlar dan çagriliyor
+    public MainActivity.PlaceholderFragment frag;
+    public AyarlarRelativeLayout arl;
+    public int cagiranYer;//renkDugmeleri nereden cagrildi
 
-    public RenkDugmeleri(Context context, String seciliRenk, List<String> listeRenkler, MainActivity.PlaceholderFragment frag)
+    //public RenkDugmeleri(Context context, String seciliRenk, List<String> listeRenkler, MainActivity.PlaceholderFragment frag)
+    public RenkDugmeleri(Context context, String seciliRenk, List<String> listeRenkler)
     {
         super(context);
-        this.frag = frag;
 
         setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -100,7 +104,19 @@ public class RenkDugmeleri extends LinearLayout
 
     public void secimYapildi(String secilenRenk)
     {
-        frag.renkSecimiYapildi(secilenRenk);
+        switch (cagiranYer)
+        {
+            case CAGIRAN_YER_AYARLAR://sınıf ayarlar ekranından cagrildi
+                arl.renkSecimiYapildi(secilenRenk);
+                break;
+
+            case CAGIRAN_YER_FRAGMENT://sınıf fragment ten cagrildi
+                frag.renkSecimiYapildi(secilenRenk);
+                break;
+
+            default:
+                MainActivity.ekranaHataYazdir("50", "cağıran sınıf hatalı, id : " + cagiranYer);
+        }
     }
 
     public float dpGetir(int px)
@@ -114,5 +130,17 @@ public class RenkDugmeleri extends LinearLayout
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 
         return color;
+    }
+
+    public void setCagiranYer(int yer, AyarlarRelativeLayout arl)
+    {
+        cagiranYer = yer;
+        this.arl = arl;
+    }
+
+    public void setCagiranYer(int yer, MainActivity.PlaceholderFragment frag)
+    {
+        cagiranYer = yer;
+        this.frag = frag;
     }
 }

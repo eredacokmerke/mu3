@@ -71,7 +71,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvTik = new TextView(context);
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvTik.setId(ID0);
-                tvTik.setTextColor(Color.WHITE);
+                tvTik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
                 RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp3.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -80,7 +80,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik = new TextView(context);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvBaslik.setText(baslik);
-                tvBaslik.setTextColor(Color.WHITE);
+                tvBaslik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
@@ -177,7 +177,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvTik = new TextView(context);
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvTik.setId(ID2);
-                tvTik.setTextColor(Color.WHITE);
+                tvTik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
                 RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp4.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -186,7 +186,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik = new TextView(context);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvBaslik.setText(baslik);
-                tvBaslik.setTextColor(Color.WHITE);
+                tvBaslik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());

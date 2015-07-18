@@ -63,7 +63,6 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
 
     public void alertDialogOlustur(int tur)
     {
-
         LinearLayout alertLL = new LinearLayout(getContext());//alertDialoga eklenecek ana layout
         switch (tur)
         {
