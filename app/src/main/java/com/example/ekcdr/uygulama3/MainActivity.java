@@ -1673,6 +1673,7 @@ public class MainActivity extends Activity
                 //anaLayout.removeView(crl);
             }
             anaLayout.removeAllViews();
+            yeniYerlesimOlustur();
             parseXml(xmlParcaID);
         }
 
@@ -1979,13 +1980,13 @@ public class MainActivity extends Activity
             switch (durum)
             {
                 case DURUM_TAMAMLANDI:
-                    menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(false);
-                    menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(true);
+                    menuActionBar.findItem(ACTION_DEGISTIR_TAMAM).setVisible(false);
+                    menuActionBar.findItem(ACTION_DEGISTIR_YENI).setVisible(true);
                     break;
 
                 case DURUM_YENI:
-                    menuActionBar.findItem(R.id.action_degistir_tamamlandi).setVisible(true);
-                    menuActionBar.findItem(R.id.action_degistir_yeni).setVisible(false);
+                    menuActionBar.findItem(ACTION_DEGISTIR_TAMAM).setVisible(true);
+                    menuActionBar.findItem(ACTION_DEGISTIR_YENI).setVisible(false);
                     break;
 
                 default:
@@ -2782,11 +2783,9 @@ public class MainActivity extends Activity
             {
                 case ACTIONBAR_EKLE:
                     menuAnaEkran(menu);
-                    //inflater.inflate(R.menu.menu_ana_ekran, menu);
                     break;
 
                 case ACTIONBAR_SECIM:
-                    //inflater.inflate(R.menu.menu_secim, menu);
                     menuSecim(menu);
                     break;
 
@@ -2797,17 +2796,14 @@ public class MainActivity extends Activity
                 */
 
                 case ACTIONBAR_DEGISTIR:
-                    //inflater.inflate(R.menu.menu_degistir, menu);
                     menuKayitDegistir(menu);
                     switch (seciliCRL.getDurum())
                     {
                         case DURUM_TAMAMLANDI:
-                            //menu.findItem(R.id.action_degistir_tamamlandi).setVisible(false);
                             menu.findItem(ACTION_DEGISTIR_TAMAM).setVisible(false);
                             break;
 
                         case DURUM_YENI:
-                            //menu.findItem(R.id.action_degistir_yeni).setVisible(false);
                             menu.findItem(ACTION_DEGISTIR_YENI).setVisible(false);
                             break;
 
@@ -2817,12 +2813,10 @@ public class MainActivity extends Activity
                     break;
 
                 case ACTIONBAR_YEDEK:
-                    //inflater.inflate(R.menu.menu_yedek, menu);
                     menuYedek(menu);
                     break;
 
                 case ACTIONBAR_AYAR:
-                    //inflater.inflate(R.menu.menu_ayar, menu);
                     menuAyar(menu);
                     break;
 
