@@ -2971,9 +2971,6 @@ public class MainActivity extends Activity
             {
                 case FRAGMENT_KATEGORI_EKRANI:
                 {
-                    //View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    //anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
-
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
                         yeniYerlesimOlustur();
@@ -2984,15 +2981,13 @@ public class MainActivity extends Activity
                     else//xml'de kayıt yok
                     {
                         yeniYerlesimOlustur();
+                        kategoriBasliginiYaz();
                     }
                     return rootView;
                 }
 
                 case FRAGMENT_KAYIT_EKRANI:
                 {
-                    //View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    //anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
-
                     RelativeLayout rl = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     etDegisecek = new EditText(getActivity());
@@ -3019,8 +3014,6 @@ public class MainActivity extends Activity
                     */
 
                     List<String> yedekler = yedekDosyalariniGetir();
-                    //View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    //anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
 
                     for (int i = 0; i < yedekler.size(); i++)
                     {
@@ -3042,9 +3035,6 @@ public class MainActivity extends Activity
                 {
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
                     getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>ayarlar</font>")));
-
-                    //View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    //anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
 
                     ayarlariAyarEkraninaEkle();
 
