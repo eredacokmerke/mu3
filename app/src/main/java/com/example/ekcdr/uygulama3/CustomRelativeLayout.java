@@ -3,6 +3,9 @@ package com.example.ekcdr.uygulama3;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -88,7 +91,12 @@ public class CustomRelativeLayout extends RelativeLayout
                 this.addView(tvBaslik, lp2);
 
                 tvDuzenle = new ImageView(context);
-                tvDuzenle.setImageResource(R.drawable.duzenle);
+                //tvDuzenle.setImageResource(R.drawable.duzenle);
+
+                Drawable drawable = getResources().getDrawable(R.drawable.duzenle);
+                drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(MainActivity.DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_IN));
+                tvDuzenle.setImageDrawable(drawable);
+
                 tvDuzenle.setId(ID1);
                 RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
