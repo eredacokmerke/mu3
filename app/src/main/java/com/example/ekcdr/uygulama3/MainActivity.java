@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -119,7 +118,7 @@ public class MainActivity extends Activity
     private static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
     private static final String UC_NOKTA = "/.../";
     private static final double ORAN_DIKEY = 0.3;
-    private static final double ORAN_YATAY = 0.6;
+    private static final double ORAN_YATAY = 0.5;
     private static final int DOCUMENT_ASIL = 0;
     private static final int DOCUMENT_AYAR = 1;
     private static final int AYAR_ID_SATIR_BASINA_KAYIT_SAYISI = 1;
@@ -1101,11 +1100,13 @@ public class MainActivity extends Activity
             }
             while (!elementParca.getAttributes().getNamedItem(XML_ID).getNodeValue().equals("0"));
 
-            Rect bounds = new Rect();
+            //Rect bounds = new Rect();
             Paint textPaint = new Paint();
-            textPaint.getTextBounds(baslik, 0, baslik.length(), bounds);
-            int height = bounds.width();
+            //textPaint.getTextBounds(baslik, 0, baslik.length(), bounds);
+            //int height = bounds.width();
+            float height = textPaint.measureText(baslik);
             float dpWidth = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().density;
+
             float oran = height / dpWidth;
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             {
@@ -1119,8 +1120,9 @@ public class MainActivity extends Activity
 
                         baslik = baslik.replaceFirst(atilacakKisim, UC_NOKTA);
 
-                        textPaint.getTextBounds(baslik, 0, baslik.length(), bounds);
-                        height = bounds.width();
+                        //textPaint.getTextBounds(baslik, 0, baslik.length(), bounds);
+                        //height = bounds.width();
+                        height = textPaint.measureText(baslik);
                         oran = height / dpWidth;
 
                         a = 6;
@@ -1142,8 +1144,9 @@ public class MainActivity extends Activity
                         String atilacakKisim = baslik.substring(0, yer + 1);
                         baslik = baslik.replaceFirst(atilacakKisim, UC_NOKTA);
 
-                        textPaint.getTextBounds(baslik, 0, baslik.length(), bounds);
-                        height = bounds.width();
+                        //textPaint.getTextBounds(baslik, 0, baslik.length(), bounds);
+                        //height = bounds.width();
+                        height = textPaint.measureText(baslik);
                         oran = height / dpWidth;
 
                         a = 6;
