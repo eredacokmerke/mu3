@@ -2696,7 +2696,7 @@ public class MainActivity extends Activity
         {
             LinearLayout ll = (LinearLayout) fragmentRootView.findViewById(R.id.al);
             ll.setBackgroundColor(Color.parseColor(seciliCRL.getRenk()));
-            ll.getBackground().setAlpha(128);
+            //ll.getBackground().setAlpha(128);
         }
 
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id)
