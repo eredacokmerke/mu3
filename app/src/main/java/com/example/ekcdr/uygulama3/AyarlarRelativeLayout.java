@@ -126,6 +126,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
         }
     }
 
+    //ayarlar ekranında renk dugmesine tıklandığı zaman açılan alert dialogtan renk secimi yapılınca buraya geliyor
     public void renkSecimiYapildi(String secilenRenk)
     {
         ImageButton im = (ImageButton) viewSecenek;

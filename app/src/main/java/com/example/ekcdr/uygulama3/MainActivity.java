@@ -94,6 +94,7 @@ public class MainActivity extends Activity
     private static final String XML_ALTPARCA = "altparca";
     private static final String XML_ID = "id";
     private static final String XML_DURUM = "durum";
+    private static final String XML_AYAR = "ayar";
     private static final String KATEGORI_ONTANIMLI_RENK = "#00FFFF";
     private static final String KAYIT_ONTANIMLI_RENK = "#009ED1";
     private static final String DURUM_YENI = "0";
@@ -131,6 +132,10 @@ public class MainActivity extends Activity
     private static final String ONTANIMLI_DEGER_AYAR_SIMGE_RENGI = "#FFFFFF";
     private static final int AYAR_ID_YAZI_RENGI = 5;
     private static final String ONTANIMLI_DEGER_AYAR_YAZI_RENGI = "#000000";
+    private static final int AYAR_ID_CERCEVE_GOZUKSUN = 6;
+    private static final String ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN = "1";
+    private static final int AYAR_ID_CERCEVE_RENGI = 7;
+    private static final String ONTANIMLI_DEGER_AYAR_CERCEVE_RENGI = "#000000";
     public static String xmlYedekKlasorYolu;
     public static int elemanEnUzunluğu;
     public static int elemanBoyUzunluğu;
@@ -139,6 +144,8 @@ public class MainActivity extends Activity
     public static String DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI;
     public static String DEGER_AYAR_SIMGE_RENGI;
     public static String DEGER_AYAR_YAZI_RENGI;
+    public static String DEGER_AYAR_CERCEVE_GOZUKSUN;
+    public static String DEGER_AYAR_CERCEVE_RENGI;
     public static Resources mResources;
     private static String xmlDosyaYolu;
     private static String xmlAyarDosyaYolu;
@@ -453,7 +460,7 @@ public class MainActivity extends Activity
 
         if (!xmldekiAyarlar.contains(AYAR_ID_SATIR_BASINA_KAYIT_SAYISI))
         {
-            Element elementAyar = documentAyar.createElement("ayar");//ayar isimli etiket olşuturuluyor
+            Element elementAyar = documentAyar.createElement(XML_AYAR);//ayar isimli etiket olşuturuluyor
             elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SATIR_BASINA_KAYIT_SAYISI));//ayar etiketine id veriliyor
             elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);//ayar etiketinin icerigi yazılıyor
             element.appendChild(elementAyar);//root etiketine ayar etiketi ekleniyor
@@ -461,7 +468,7 @@ public class MainActivity extends Activity
         }
         if (!xmldekiAyarlar.contains(AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN))
         {
-            Element elementAyar = documentAyar.createElement("ayar");
+            Element elementAyar = documentAyar.createElement(XML_AYAR);
             elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN));
             elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN);
             element.appendChild(elementAyar);
@@ -469,7 +476,7 @@ public class MainActivity extends Activity
         }
         if (!xmldekiAyarlar.contains(AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI))
         {
-            Element elementAyar = documentAyar.createElement("ayar");
+            Element elementAyar = documentAyar.createElement(XML_AYAR);
             elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI));
             elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI);
             element.appendChild(elementAyar);
@@ -477,7 +484,7 @@ public class MainActivity extends Activity
         }
         if (!xmldekiAyarlar.contains(AYAR_ID_SIMGE_RENGI))
         {
-            Element elementAyar = documentAyar.createElement("ayar");
+            Element elementAyar = documentAyar.createElement(XML_AYAR);
             elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_SIMGE_RENGI));
             elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_SIMGE_RENGI);
             element.appendChild(elementAyar);
@@ -485,9 +492,25 @@ public class MainActivity extends Activity
         }
         if (!xmldekiAyarlar.contains(AYAR_ID_YAZI_RENGI))
         {
-            Element elementAyar = documentAyar.createElement("ayar");
+            Element elementAyar = documentAyar.createElement(XML_AYAR);
             elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_YAZI_RENGI));
             elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_YAZI_RENGI);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+        if (!xmldekiAyarlar.contains(AYAR_ID_CERCEVE_GOZUKSUN))
+        {
+            Element elementAyar = documentAyar.createElement(XML_AYAR);
+            elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_CERCEVE_GOZUKSUN));
+            elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+        if (!xmldekiAyarlar.contains(AYAR_ID_CERCEVE_RENGI))
+        {
+            Element elementAyar = documentAyar.createElement(XML_AYAR);
+            elementAyar.setAttribute(XML_ID, String.valueOf(AYAR_ID_CERCEVE_RENGI));
+            elementAyar.setTextContent(ONTANIMLI_DEGER_AYAR_CERCEVE_RENGI);
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
@@ -558,6 +581,14 @@ public class MainActivity extends Activity
 
                 case AYAR_ID_YAZI_RENGI:
                     DEGER_AYAR_YAZI_RENGI = ayarDeger;
+                    break;
+
+                case AYAR_ID_CERCEVE_GOZUKSUN:
+                    DEGER_AYAR_CERCEVE_GOZUKSUN = ayarDeger;
+                    break;
+
+                case AYAR_ID_CERCEVE_RENGI:
+                    DEGER_AYAR_CERCEVE_RENGI = ayarDeger;
                     break;
 
                 default:
@@ -2433,14 +2464,40 @@ public class MainActivity extends Activity
             });
 
             AyarlarRelativeLayout arl4 = new AyarlarRelativeLayout(getActivity(), "simge rengi", DEGER_AYAR_SIMGE_RENGI, AYAR_ID_SIMGE_RENGI, SECENEK_BUTTON);
-            //arl4.setFrag(this);
             anaLayout.addView(arl4);
 
             AyarlarRelativeLayout arl5 = new AyarlarRelativeLayout(getActivity(), "yazı rengi", DEGER_AYAR_YAZI_RENGI, AYAR_ID_YAZI_RENGI, SECENEK_BUTTON);
-            //arl5.setFrag(this);
             anaLayout.addView(arl5);
+
+            AyarlarRelativeLayout arl6 = new AyarlarRelativeLayout(getActivity(), "çerçeve gözüksün", DEGER_AYAR_CERCEVE_GOZUKSUN, AYAR_ID_CERCEVE_GOZUKSUN, SECENEK_CHECKBOX);
+            anaLayout.addView(arl6);
+
+            final AyarlarRelativeLayout arl7 = new AyarlarRelativeLayout(getActivity(), "cerceve rengi", DEGER_AYAR_CERCEVE_RENGI, AYAR_ID_CERCEVE_RENGI, SECENEK_BUTTON);
+            anaLayout.addView(arl7);
+
+            if (DEGER_AYAR_CERCEVE_GOZUKSUN.equals("0"))//6. ayardaki checkbox secili değilse 7. ayar disable olsun
+            {
+                for (int i = 0; i < arl7.getChildCount(); i++)
+                {
+                    arl7.getChildAt(i).setEnabled(false);
+                }
+            }
+
+            //7. ayar için önce 6. ayardaki checkbox'ın isaretlenmesi gerek
+            ((CheckBox) arl6.getViewSecenek()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                {
+                    for (int i = 0; i < arl7.getChildCount(); i++)
+                    {
+                        arl7.getChildAt(i).setEnabled(b);
+                    }
+                }
+            });
         }
 
+        //ayarlar ekranıda secilen ayarları döndurur
         public String ayarDegeriniGetir(int ayarID)
         {
             switch (ayarID)
@@ -2476,6 +2533,23 @@ public class MainActivity extends Activity
                     AyarlarRelativeLayout arl5 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
                     return arl5.getSecilenRenk();
 
+                case AYAR_ID_CERCEVE_GOZUKSUN:
+                    AyarlarRelativeLayout arl6 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    boolean yeniDeger6 = ((CheckBox) arl6.getViewSecenek()).isChecked();
+
+                    if (yeniDeger6)
+                    {
+                        return "1";
+                    }
+                    else
+                    {
+                        return "0";
+                    }
+
+                case AYAR_ID_CERCEVE_RENGI:
+                    AyarlarRelativeLayout arl7 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    return arl7.getSecilenRenk();
+
                 default:
                     return "0";
             }
@@ -2503,7 +2577,8 @@ public class MainActivity extends Activity
                         }
                         break;
 
-                    case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN://checkbox olduğu için kontrole gerek yok
+                    case AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
+                        //checkbox olduğu için kontrole gerek yok
                         break;
 
                     case AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
@@ -2515,11 +2590,19 @@ public class MainActivity extends Activity
                         break;
 
                     case AYAR_ID_SIMGE_RENGI:
-                        //kontrol edecek birşey yok
+                        //önerilerden seciliği icin kontrol edecek birşey yok
                         break;
 
                     case AYAR_ID_YAZI_RENGI:
-                        //kontrol edecek birşey yok
+                        //önerilerden seciliği icin kontrol edecek birşey yok
+                        break;
+
+                    case AYAR_ID_CERCEVE_GOZUKSUN:
+                        //checkbox olduğu için kontrole gerek yok
+                        break;
+
+                    case AYAR_ID_CERCEVE_RENGI:
+                        //önerilerden seciliği icin kontrol edecek birşey yok
                         break;
 
                     default:
@@ -2577,6 +2660,16 @@ public class MainActivity extends Activity
                         DEGER_AYAR_YAZI_RENGI = yeniDeger;
                         break;
 
+                    case AYAR_ID_CERCEVE_GOZUKSUN:
+                        nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
+                        DEGER_AYAR_CERCEVE_GOZUKSUN = yeniDeger;
+                        break;
+
+                    case AYAR_ID_CERCEVE_RENGI:
+                        nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
+                        DEGER_AYAR_CERCEVE_RENGI = yeniDeger;
+                        break;
+
                     default:
                         ekranaHataYazdir("25", "hatalı ayar id, ayar id : " + ayarID);
                 }
@@ -2587,7 +2680,6 @@ public class MainActivity extends Activity
         //actionBar daki kategori basligini yazar
         public void kategoriBasliginiYaz()
         {
-            //if (xmlParcaID.equals("0"))
             if (seciliCRL.getId() == 0)
             {
                 getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);

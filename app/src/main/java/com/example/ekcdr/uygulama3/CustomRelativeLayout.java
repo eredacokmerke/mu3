@@ -91,12 +91,9 @@ public class CustomRelativeLayout extends RelativeLayout
                 this.addView(tvBaslik, lp2);
 
                 tvDuzenle = new ImageView(context);
-                //tvDuzenle.setImageResource(R.drawable.duzenle);
-
                 Drawable drawable = getResources().getDrawable(R.drawable.duzenle);
                 drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(MainActivity.DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_IN));
                 tvDuzenle.setImageDrawable(drawable);
-
                 tvDuzenle.setId(ID1);
                 RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -387,10 +384,13 @@ public class CustomRelativeLayout extends RelativeLayout
     public void arkaplanKategori()
     {
         GradientDrawable gd = new GradientDrawable();
-        //gd.setColor(0xFF00CED1);
         gd.setColor(Color.parseColor(renk));
-        gd.setStroke((int) dpGetir(2), 0xFF009095);
-        gd.setCornerRadius(dpGetir(7));
+
+        if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
+        {
+            gd.setStroke((int) dpGetir(2), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
+        }
+        gd.setCornerRadius(dpGetir(2));
         setBackground(gd);
         setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
     }
@@ -398,10 +398,12 @@ public class CustomRelativeLayout extends RelativeLayout
     public void arkaplanKayit()
     {
         GradientDrawable gd = new GradientDrawable();
-        //gd.setColor(0xFF009ED1);
         gd.setColor(Color.parseColor(renk));
-        gd.setStroke((int) dpGetir(2), 0xFF004095);
-        gd.setCornerRadius(dpGetir(7));
+        if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
+        {
+            gd.setStroke((int) dpGetir(2), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
+        }
+        gd.setCornerRadius(dpGetir(2));
         setBackground(gd);
         setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
     }
