@@ -30,6 +30,8 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int PADDING_DIKEY = 7;
     final static int PADDING_YATAY = 3;
     final static int PADDING_YAZI = 10;
+    final static int CERCEVE_KALINLIGI=2;
+    final static int CERCEVE_KOSE=2;
     private boolean crlSeciliMi = false;
     private TextView tvTik;
     private TextView tvBaslik;
@@ -375,8 +377,11 @@ public class CustomRelativeLayout extends RelativeLayout
     {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(0xFFFF2222);
-        gd.setStroke((int) dpGetir(2), 0xFF880000);
-        gd.setCornerRadius(dpGetir(7));
+        if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
+        {
+            gd.setStroke((int) dpGetir(CERCEVE_KALINLIGI), 0xFF880000);
+        }
+        gd.setCornerRadius(dpGetir(CERCEVE_KOSE));
         setBackground(gd);
         setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
     }
@@ -385,12 +390,11 @@ public class CustomRelativeLayout extends RelativeLayout
     {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(Color.parseColor(renk));
-
         if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
         {
-            gd.setStroke((int) dpGetir(2), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
+            gd.setStroke((int) dpGetir(CERCEVE_KALINLIGI), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
         }
-        gd.setCornerRadius(dpGetir(2));
+        gd.setCornerRadius(dpGetir(CERCEVE_KOSE));
         setBackground(gd);
         setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
     }
@@ -401,9 +405,9 @@ public class CustomRelativeLayout extends RelativeLayout
         gd.setColor(Color.parseColor(renk));
         if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
         {
-            gd.setStroke((int) dpGetir(2), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
+            gd.setStroke((int) dpGetir(CERCEVE_KALINLIGI), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
         }
-        gd.setCornerRadius(dpGetir(2));
+        gd.setCornerRadius(dpGetir(CERCEVE_KOSE));
         setBackground(gd);
         setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
     }
