@@ -66,7 +66,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
         LinearLayout alertLL = new LinearLayout(getContext());//alertDialoga eklenecek ana layout
         switch (tur)
         {
-            case MainActivity.ALERTDIALOG_EDITTEXT:
+            case Sabit.ALERTDIALOG_EDITTEXT:
             {
                 //alertdialog un içindeki ana LinearLayout
                 LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -84,7 +84,8 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
                 alertLL.addView(alertET);
                 break;
             }
-            case MainActivity.ALERTDIALOG_TEXTVIEW:
+
+            case Sabit.ALERTDIALOG_TEXTVIEW:
             {
                 //alertdialog un içindeki ana LinearLayout
                 LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -100,9 +101,9 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
                 alertTV.setText(yazi);
                 alertLL.addView(alertTV);
                 break;
-
             }
-            case MainActivity.ALERTDIALOG_CUSTOM_VIEW:
+
+            case Sabit.ALERTDIALOG_CUSTOM_VIEW:
                 alertLL = (LinearLayout) view;
                 break;
 

@@ -63,7 +63,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
     {
         switch (secenekTuru)
         {
-            case MainActivity.SECENEK_EDITTEXT:
+            case Sabit.SECENEK_EDITTEXT:
                 viewSecenek = new EditText(cnt);
                 EditText etSecenek = (EditText) viewSecenek;
                 RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams((ekranEnUzunluğu / 10) * 2, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -76,7 +76,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
                 this.addView(etSecenek);
                 break;
 
-            case MainActivity.SECENEK_CHECKBOX:
+            case Sabit.SECENEK_CHECKBOX:
                 LinearLayout ll = new LinearLayout(cnt);
                 ll.setGravity(Gravity.CENTER_HORIZONTAL);
                 viewSecenek = new CheckBox(cnt);
@@ -96,7 +96,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
                 this.addView(ll);
                 break;
 
-            case MainActivity.SECENEK_BUTTON:
+            case Sabit.SECENEK_BUTTON:
                 secilenRenk = deger;
                 viewSecenek = new ImageButton(cnt);
                 ImageButton im = (ImageButton) viewSecenek;
@@ -113,7 +113,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
                     {
                         RenkDugmeleri alertLL = new RenkDugmeleri(cnt, deger, MainActivity.getListeRenkler());
                         alertLL.setCagiranYer(alertLL.CAGIRAN_YER_AYARLAR, aa);
-                        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Renk", "İptal", alertLL, MainActivity.ALERTDIALOG_CUSTOM_VIEW);
+                        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Renk", "İptal", alertLL, Sabit.ALERTDIALOG_CUSTOM_VIEW);
                         alertRenk = builder.create();
                         alertRenk.setCanceledOnTouchOutside(true);
                         alertRenk.show();

@@ -30,8 +30,8 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int PADDING_DIKEY = 7;
     final static int PADDING_YATAY = 3;
     final static int PADDING_YAZI = 10;
-    final static int CERCEVE_KALINLIGI=2;
-    final static int CERCEVE_KOSE=2;
+    final static int CERCEVE_KALINLIGI = 2;
+    final static int CERCEVE_KOSE = 2;
     private boolean crlSeciliMi = false;
     private TextView tvTik;
     private TextView tvBaslik;
@@ -52,7 +52,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
         switch (elemanTur)
         {
-            case MainActivity.ELEMAN_TUR_KATEGORI:
+            case Sabit.ELEMAN_TUR_KATEGORI:
             {
                 RelativeLayout.LayoutParams pa;
                 if (MainActivity.DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("1"))
@@ -71,7 +71,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 viewBoyunuGetir(this, ylsm, crlID, pa);
 
                 arkaplanKategori();
-                crlTur = MainActivity.ELEMAN_TUR_KATEGORI;
+                crlTur = Sabit.ELEMAN_TUR_KATEGORI;
 
                 tvTik = new TextView(context);
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
@@ -161,7 +161,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 break;
             }
-            case MainActivity.ELEMAN_TUR_KAYIT:
+            case Sabit.ELEMAN_TUR_KAYIT:
             {
                 RelativeLayout.LayoutParams pa2;
                 if (MainActivity.DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("1"))
@@ -179,7 +179,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 viewBoyunuGetir(this, ylsm, crlID, pa2);
 
                 arkaplanKayit();
-                crlTur = MainActivity.ELEMAN_TUR_KAYIT;
+                crlTur = Sabit.ELEMAN_TUR_KAYIT;
 
                 tvTik = new TextView(context);
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
