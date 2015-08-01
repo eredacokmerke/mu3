@@ -233,6 +233,14 @@ public class MainActivity extends Activity
     }
 
     //actionbarın solundaki geri oku
+    public void geriSimgesiniEkle(String renk)
+    {
+        final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
+        upArrow.setColorFilter(Color.parseColor(renk), PorterDuff.Mode.SRC_ATOP);
+        getActionBar().setHomeAsUpIndicator(upArrow);
+    }
+
+    //actionbarın solundaki geri oku
     public void geriSimgesiniEkle()
     {
         final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
@@ -614,6 +622,7 @@ public class MainActivity extends Activity
         Toast.makeText(cnt, "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
+    //actionBar'ın arkaplan rengini degiştirir
     public void actionBarArkaPlanDegistir(String renk)
     {
         ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
@@ -720,9 +729,6 @@ public class MainActivity extends Activity
 
             if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
             {
-                //String kategoriRenk = kategoriRenkBilgisiniGetir(String.valueOf(kategoriID));
-                //seciliCRL.setRenk(kategoriRenk);
-                //ma.actionBarArkaPlanDegistir(kategoriRenk);
                 ma.actionBarArkaPlanDegistir(seciliCRL.getRenk());
             }
 
@@ -2705,6 +2711,22 @@ public class MainActivity extends Activity
             //ll.getBackground().setAlpha(128);
         }
 
+        //verilen renge göre ekran engini degistirir
+        public void ekranRenginiDegistir(String renk)
+        {
+            LinearLayout ll = (LinearLayout) fragmentRootView.findViewById(R.id.al);
+            ll.setBackgroundColor(Color.parseColor(renk));
+            //ll.getBackground().setAlpha(128);
+        }
+
+        //ikonu actionBara ekler, renk bilgisini disaridan alır
+        public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id, String renk)
+        {
+            drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(renk), PorterDuff.Mode.SRC_IN));
+            menu.add(0, id, 0, baslik).setIcon(drawable).setShowAsAction(Action);
+        }
+
+        //ikonu actionBara ekler
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id)
         {
             drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_IN));
@@ -2740,13 +2762,13 @@ public class MainActivity extends Activity
 
         public void menuYedek(Menu menu)
         {
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.sil), MenuItem.SHOW_AS_ACTION_ALWAYS, "Sil", Sabit.ACTION_YEDEK_SIL);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.sil), MenuItem.SHOW_AS_ACTION_ALWAYS, "Sil", Sabit.ACTION_YEDEK_SIL, Sabit.RENK_SIYAH);
         }
 
         public void menuAyar(Menu menu)
         {
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.ontanimli), MenuItem.SHOW_AS_ACTION_ALWAYS, "Sıfırla", Sabit.ACTION_AYAR_ONTANIMLI);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kaydet), MenuItem.SHOW_AS_ACTION_ALWAYS, "Kaydet", Sabit.ACTION_AYAR_KAYDET);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.ontanimli), MenuItem.SHOW_AS_ACTION_ALWAYS, "Sıfırla", Sabit.ACTION_AYAR_ONTANIMLI, Sabit.RENK_SIYAH);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kaydet), MenuItem.SHOW_AS_ACTION_ALWAYS, "Kaydet", Sabit.ACTION_AYAR_KAYDET, Sabit.RENK_SIYAH);
         }
 
         /*
@@ -2970,13 +2992,15 @@ public class MainActivity extends Activity
         {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             fragmentRootView = rootView;
-            ekranRenginiDegistir();
             anaLayout = (RelativeLayout) rootView.findViewById(R.id.anaLayout);
 
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case Sabit.FRAGMENT_KATEGORI_EKRANI:
                 {
+                    ekranRenginiDegistir();
+                    ma.geriSimgesiniEkle();
+
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
                         yeniYerlesimOlustur();
@@ -2994,6 +3018,9 @@ public class MainActivity extends Activity
 
                 case Sabit.FRAGMENT_KAYIT_EKRANI:
                 {
+                    ekranRenginiDegistir();
+                    ma.geriSimgesiniEkle();
+
                     RelativeLayout rl = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     etDegisecek = new EditText(getActivity());
@@ -3011,7 +3038,10 @@ public class MainActivity extends Activity
                 case Sabit.FRAGMENT_YEDEK_EKRANI:
                 {
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>yedek dosyaları</font>")));
+                    getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>yedek dosyaları</font>")));
+                    ekranRenginiDegistir(Sabit.RENK_BEYAZ);
+                    ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ);
+                    ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
 
                     /*
                     Spannable text = new SpannableString(getActivity().getActionBar().getTitle());
@@ -3040,8 +3070,10 @@ public class MainActivity extends Activity
                 case Sabit.FRAGMENT_AYAR_EKRANI:
                 {
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>ayarlar</font>")));
-
+                    getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>ayarlar</font>")));
+                    ekranRenginiDegistir(Sabit.RENK_BEYAZ);
+                    ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ);
+                    ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
                     ayarlariAyarEkraninaEkle();
 
                     return rootView;
