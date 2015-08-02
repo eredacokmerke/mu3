@@ -82,6 +82,8 @@ public class MainActivity extends Activity
     public static String DEGER_AYAR_YAZI_RENGI;
     public static String DEGER_AYAR_CERCEVE_GOZUKSUN;
     public static String DEGER_AYAR_CERCEVE_RENGI;
+    public static String DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN;
+    public static String DEGER_AYAR_ARKAPLAN_RENGI;
     public static Resources mResources;
     private static String xmlDosyaYolu;
     private static String xmlAyarDosyaYolu;
@@ -440,6 +442,23 @@ public class MainActivity extends Activity
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
+        if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN))
+        {
+            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN));
+            elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+        if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ARKAPLAN_RENGI))
+        {
+            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ARKAPLAN_RENGI));
+            elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+
         if (eksikAyarVarMi)
         {
             try
@@ -514,6 +533,14 @@ public class MainActivity extends Activity
 
                 case Sabit.AYAR_ID_CERCEVE_RENGI:
                     DEGER_AYAR_CERCEVE_RENGI = ayarDeger;
+                    break;
+
+                case Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN:
+                    DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN = ayarDeger;
+                    break;
+
+                case Sabit.AYAR_ID_ARKAPLAN_RENGI:
+                    DEGER_AYAR_ARKAPLAN_RENGI = ayarDeger;
                     break;
 
                 default:
@@ -704,7 +731,7 @@ public class MainActivity extends Activity
         private static MainActivity ma;//MainActivity fonksiyonlarını calistirabilmek için
         private AlertDialog alertRenk;//renkleri soran alertDialog. renk dugmesine dokunuca alertDialog^u kapatabilmek için
         private static int elemanTuru;
-        private View fragmentRootView;//fragment icindeki layoutlara ulasabilmek için fragment view ı
+        private static View fragmentRootView;//fragment icindeki layoutlara ulasabilmek için fragment view ı
 
         public PlaceholderFragment()
         {
@@ -2412,6 +2439,33 @@ public class MainActivity extends Activity
                     }
                 }
             });
+
+            AyarlarRelativeLayout arl8 = new AyarlarRelativeLayout(getActivity(), "ekran arkaplan rengi sabit olsun", DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.SECENEK_CHECKBOX);
+            anaLayout.addView(arl8);
+
+            final AyarlarRelativeLayout arl9 = new AyarlarRelativeLayout(getActivity(), "ekran arkaplan rengi", DEGER_AYAR_ARKAPLAN_RENGI, Sabit.AYAR_ID_ARKAPLAN_RENGI, Sabit.SECENEK_BUTTON);
+            anaLayout.addView(arl9);
+
+            if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))//8. ayardaki checkbox secili değilse 9. ayar disable olsun
+            {
+                for (int i = 0; i < arl9.getChildCount(); i++)
+                {
+                    arl9.getChildAt(i).setEnabled(false);
+                }
+            }
+
+            //9. ayar için önce 8. ayardaki checkbox'ın isaretlenmesi gerek
+            ((CheckBox) arl8.getViewSecenek()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                {
+                    for (int i = 0; i < arl9.getChildCount(); i++)
+                    {
+                        arl9.getChildAt(i).setEnabled(b);
+                    }
+                }
+            });
         }
 
         //ayarlar ekranıda secilen ayarları döndurur
@@ -2467,8 +2521,26 @@ public class MainActivity extends Activity
                     AyarlarRelativeLayout arl7 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
                     return arl7.getSecilenRenk();
 
+                case Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN:
+                    AyarlarRelativeLayout arl8 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    boolean yeniDeger8 = ((CheckBox) arl8.getViewSecenek()).isChecked();
+
+                    if (yeniDeger8)
+                    {
+                        return "1";
+                    }
+                    else
+                    {
+                        return "0";
+                    }
+
+                case Sabit.AYAR_ID_ARKAPLAN_RENGI:
+                    AyarlarRelativeLayout arl9 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    return arl9.getSecilenRenk();
+
                 default:
-                    return "0";
+                    ekranaHataYazdir("50", "hatalı ayar id, ayar id : " + ayarID);
+                    return "-1";
             }
         }
 
@@ -2483,47 +2555,61 @@ public class MainActivity extends Activity
                 Node nodeAyar = nodeList.item(i);
                 int ayarID = Integer.valueOf(nodeAyar.getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue());
                 String yeniDeger = ayarDegeriniGetir(ayarID);
-
-                switch (ayarID)
+                if (!yeniDeger.equals("-1"))//ayarDegeriniGetir'de hata oluşursa girmesin
                 {
-                    case Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
-                        if (Integer.valueOf(yeniDeger) < 1)
-                        {
-                            Toast.makeText(getActivity(), "satır başına kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
-                            sonuc = sonuc & false;
-                        }
-                        break;
+                    switch (ayarID)
+                    {
+                        case Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI:
+                            if (Integer.valueOf(yeniDeger) < 1)
+                            {
+                                Toast.makeText(getActivity(), "satır başına kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
+                                sonuc = sonuc & false;
+                            }
+                            break;
 
-                    case Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
-                        //checkbox olduğu için kontrole gerek yok
-                        break;
+                        case Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
+                            //checkbox olduğu için kontrole gerek yok
+                            break;
 
-                    case Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
-                        if (Integer.valueOf(yeniDeger) < 1)
-                        {
-                            Toast.makeText(getActivity(), "ekranda gösterilecek kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
-                            sonuc = sonuc & false;
-                        }
-                        break;
+                        case Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI:
+                            if (Integer.valueOf(yeniDeger) < 1)
+                            {
+                                Toast.makeText(getActivity(), "ekranda gösterilecek kayıt sayısı 1 den küçük olamaz", Toast.LENGTH_SHORT).show();
+                                sonuc = sonuc & false;
+                            }
+                            break;
 
-                    case Sabit.AYAR_ID_SIMGE_RENGI:
-                        //önerilerden seciliği icin kontrol edecek birşey yok
-                        break;
+                        case Sabit.AYAR_ID_SIMGE_RENGI:
+                            //önerilerden secildiği icin kontrol edecek birşey yok
+                            break;
 
-                    case Sabit.AYAR_ID_YAZI_RENGI:
-                        //önerilerden seciliği icin kontrol edecek birşey yok
-                        break;
+                        case Sabit.AYAR_ID_YAZI_RENGI:
+                            //önerilerden secildiği icin kontrol edecek birşey yok
+                            break;
 
-                    case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
-                        //checkbox olduğu için kontrole gerek yok
-                        break;
+                        case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
+                            //checkbox olduğu için kontrole gerek yok
+                            break;
 
-                    case Sabit.AYAR_ID_CERCEVE_RENGI:
-                        //önerilerden seciliği icin kontrol edecek birşey yok
-                        break;
+                        case Sabit.AYAR_ID_CERCEVE_RENGI:
+                            //önerilerden secildiği icin kontrol edecek birşey yok
+                            break;
 
-                    default:
-                        ekranaHataYazdir("24", "hatalı ayar id, ayar id : " + ayarID);
+                        case Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN:
+                            //checkbox olduğu için kontrole gerek yok
+                            break;
+
+                        case Sabit.AYAR_ID_ARKAPLAN_RENGI:
+                            //önerilerden secildiği icin kontrol edecek birşey yok
+                            break;
+
+                        default:
+                            ekranaHataYazdir("24", "hatalı ayar id, ayar id : " + ayarID);
+                    }
+                }
+                else//ayar degeri getirilirken hata oluştu.
+                {
+                    return false;
                 }
             }
 
@@ -2585,6 +2671,16 @@ public class MainActivity extends Activity
                     case Sabit.AYAR_ID_CERCEVE_RENGI:
                         nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
                         DEGER_AYAR_CERCEVE_RENGI = yeniDeger;
+                        break;
+
+                    case Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN:
+                        nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
+                        DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN = yeniDeger;
+                        break;
+
+                    case Sabit.AYAR_ID_ARKAPLAN_RENGI:
+                        nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
+                        DEGER_AYAR_ARKAPLAN_RENGI = yeniDeger;
                         break;
 
                     default:
@@ -2712,7 +2808,7 @@ public class MainActivity extends Activity
         }
 
         //verilen renge göre ekran engini degistirir
-        public void ekranRenginiDegistir(String renk)
+        public static void ekranRenginiDegistir(String renk)
         {
             LinearLayout ll = (LinearLayout) fragmentRootView.findViewById(R.id.al);
             ll.setBackgroundColor(Color.parseColor(renk));
@@ -2998,7 +3094,14 @@ public class MainActivity extends Activity
             {
                 case Sabit.FRAGMENT_KATEGORI_EKRANI:
                 {
-                    ekranRenginiDegistir();
+                    if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        ekranRenginiDegistir();
+                    }
+                    else
+                    {
+                        ekranRenginiDegistir(DEGER_AYAR_ARKAPLAN_RENGI);
+                    }
                     ma.geriSimgesiniEkle();
 
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
@@ -3018,7 +3121,10 @@ public class MainActivity extends Activity
 
                 case Sabit.FRAGMENT_KAYIT_EKRANI:
                 {
-                    ekranRenginiDegistir();
+                    if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        ekranRenginiDegistir();
+                    }
                     ma.geriSimgesiniEkle();
 
                     RelativeLayout rl = new RelativeLayout(getActivity());

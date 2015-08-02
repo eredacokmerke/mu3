@@ -66,6 +66,10 @@ public class Sabit
     public static final String ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN = "1";
     public static final int AYAR_ID_CERCEVE_RENGI = 7;
     public static final String ONTANIMLI_DEGER_AYAR_CERCEVE_RENGI = "#000000";
+    public static final int AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN = 8;
+    public static final String ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN = "0";
+    public static final int AYAR_ID_ARKAPLAN_RENGI = 9;
+    public static final String ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI = "#FFFFFF";
     public static final int ACTION_ANA_EKRAN_KATEGORI_EKLE = 0;
     public static final int ACTION_ANA_EKRAN_KAYIT_EKLE = 1;
     public static final int ACTION_ANA_EKRAN_RENK_DEGISTIR = 2;
