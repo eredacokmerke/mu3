@@ -84,6 +84,8 @@ public class MainActivity extends Activity
     public static String DEGER_AYAR_CERCEVE_RENGI;
     public static String DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN;
     public static String DEGER_AYAR_ARKAPLAN_RENGI;
+    public static String DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN;
+    public static String DEGER_AYAR_ACTIONBAR_RENGI;
     public static Resources mResources;
     private static String xmlDosyaYolu;
     private static String xmlAyarDosyaYolu;
@@ -193,7 +195,14 @@ public class MainActivity extends Activity
                         getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, 0, crl), Sabit.FRAGMENT_TAG).commit();
                     }
 
-                    actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir("0"));
+                    if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir("0"));
+                    }
+                    else
+                    {
+                        actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                    }
                     getActionBar().setDisplayUseLogoEnabled(false);
                     getActionBar().setDisplayShowHomeEnabled(false);
 
@@ -458,6 +467,22 @@ public class MainActivity extends Activity
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
+        if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN))
+        {
+            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN));
+            elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
+        if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ACTIONBAR_RENGI))
+        {
+            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ACTIONBAR_RENGI));
+            elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ACTIONBAR_RENGI);
+            element.appendChild(elementAyar);
+            eksikAyarVarMi = true;
+        }
 
         if (eksikAyarVarMi)
         {
@@ -541,6 +566,14 @@ public class MainActivity extends Activity
 
                 case Sabit.AYAR_ID_ARKAPLAN_RENGI:
                     DEGER_AYAR_ARKAPLAN_RENGI = ayarDeger;
+                    break;
+
+                case Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN:
+                    DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN = ayarDeger;
+                    break;
+
+                case Sabit.AYAR_ID_ACTIONBAR_RENGI:
+                    DEGER_AYAR_ACTIONBAR_RENGI = ayarDeger;
                     break;
 
                 default:
@@ -756,7 +789,14 @@ public class MainActivity extends Activity
 
             if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
             {
-                ma.actionBarArkaPlanDegistir(seciliCRL.getRenk());
+                if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                {
+                    ma.actionBarArkaPlanDegistir(seciliCRL.getRenk());
+                }
+                else
+                {
+                    ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                }
             }
 
             return fragment;
@@ -782,8 +822,14 @@ public class MainActivity extends Activity
             listSeciliCRL = new ArrayList<>();
             elemanTuru = Sabit.ELEMAN_TUR_KAYIT;
 
-            ma.actionBarArkaPlanDegistir(kayitRenkBilgisiniGetir(String.valueOf(crl.getId())));
-
+            if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+            {
+                ma.actionBarArkaPlanDegistir(kayitRenkBilgisiniGetir(String.valueOf(crl.getId())));
+            }
+            else
+            {
+                ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+            }
             return fragment;
         }
 
@@ -1000,10 +1046,6 @@ public class MainActivity extends Activity
                         listSeciliCRL.add(crl);
                         crl.arkaplanSecili();
                         crl.setCrlSeciliMi(true);
-                        //actionBarDegistir(Sabit.ACTIONBAR_SECIM);
-                        //TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
-
-                        //actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
 
                         if (TIKLAMA_OLAYI != Sabit.OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
                         {
@@ -1028,7 +1070,6 @@ public class MainActivity extends Activity
                     if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
                     {
                         getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(Sabit.FRAGMENT_KAYIT_EKRANI, yazi, crl)).addToBackStack(null).commit();
-                        //ma.actionBarArkaPlanDegistir(ACTIONBAR_ARKAPLAN_KAYIT);
                     }
                     else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
                     {
@@ -1157,7 +1198,6 @@ public class MainActivity extends Activity
                     if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
                     {
                         getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, kategoriID, crl), Sabit.FRAGMENT_TAG).commit();
-                        //ma.actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir(String.valueOf(kategoriID)));
                     }
                     else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
                     {
@@ -1355,7 +1395,14 @@ public class MainActivity extends Activity
             listSeciliCRL.clear();
             listSeciliElemanDurumu.clear();
 
-            ma.actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir(xmlParcaID));
+            if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+            {
+                ma.actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir(xmlParcaID));
+            }
+            else
+            {
+                ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+            }
             actionBarDegistir(Sabit.ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
             duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
@@ -2385,7 +2432,6 @@ public class MainActivity extends Activity
 
             final AyarlarRelativeLayout arl3 = new AyarlarRelativeLayout(getActivity(), "ekranda gösterilecek satir sayisi", DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI, Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, Sabit.SECENEK_EDITTEXT);
             anaLayout.addView(arl3);
-
             if (DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("0"))//2. ayardaki checkbox secili değilse 3. ayar disable olsun
             {
                 for (int i = 0; i < arl3.getChildCount(); i++)
@@ -2418,7 +2464,6 @@ public class MainActivity extends Activity
 
             final AyarlarRelativeLayout arl7 = new AyarlarRelativeLayout(getActivity(), "cerceve rengi", DEGER_AYAR_CERCEVE_RENGI, Sabit.AYAR_ID_CERCEVE_RENGI, Sabit.SECENEK_BUTTON);
             anaLayout.addView(arl7);
-
             if (DEGER_AYAR_CERCEVE_GOZUKSUN.equals("0"))//6. ayardaki checkbox secili değilse 7. ayar disable olsun
             {
                 for (int i = 0; i < arl7.getChildCount(); i++)
@@ -2445,7 +2490,6 @@ public class MainActivity extends Activity
 
             final AyarlarRelativeLayout arl9 = new AyarlarRelativeLayout(getActivity(), "ekran arkaplan rengi", DEGER_AYAR_ARKAPLAN_RENGI, Sabit.AYAR_ID_ARKAPLAN_RENGI, Sabit.SECENEK_BUTTON);
             anaLayout.addView(arl9);
-
             if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))//8. ayardaki checkbox secili değilse 9. ayar disable olsun
             {
                 for (int i = 0; i < arl9.getChildCount(); i++)
@@ -2466,6 +2510,32 @@ public class MainActivity extends Activity
                     }
                 }
             });
+
+            AyarlarRelativeLayout arl10 = new AyarlarRelativeLayout(getActivity(), "actionbar arkaplan rengi sabit olsun", DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.SECENEK_CHECKBOX);
+            anaLayout.addView(arl10);
+
+            final AyarlarRelativeLayout arl11 = new AyarlarRelativeLayout(getActivity(), "actionbar arkaplan rengi", DEGER_AYAR_ACTIONBAR_RENGI, Sabit.AYAR_ID_ACTIONBAR_RENGI, Sabit.SECENEK_BUTTON);
+            anaLayout.addView(arl11);
+            if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))//10. ayardaki checkbox secili değilse 11. ayar disable olsun
+            {
+                for (int i = 0; i < arl11.getChildCount(); i++)
+                {
+                    arl11.getChildAt(i).setEnabled(false);
+                }
+            }
+
+            //11. ayar için önce 10. ayardaki checkbox'ın isaretlenmesi gerek
+            ((CheckBox) arl10.getViewSecenek()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                {
+                    for (int i = 0; i < arl11.getChildCount(); i++)
+                    {
+                        arl11.getChildAt(i).setEnabled(b);
+                    }
+                }
+            });
         }
 
         //ayarlar ekranıda secilen ayarları döndurur
@@ -2481,7 +2551,6 @@ public class MainActivity extends Activity
                 case Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN:
                     AyarlarRelativeLayout arl2 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
                     boolean yeniDeger2 = ((CheckBox) arl2.getViewSecenek()).isChecked();
-
                     if (yeniDeger2)
                     {
                         return "1";
@@ -2507,7 +2576,6 @@ public class MainActivity extends Activity
                 case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
                     AyarlarRelativeLayout arl6 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
                     boolean yeniDeger6 = ((CheckBox) arl6.getViewSecenek()).isChecked();
-
                     if (yeniDeger6)
                     {
                         return "1";
@@ -2524,7 +2592,6 @@ public class MainActivity extends Activity
                 case Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN:
                     AyarlarRelativeLayout arl8 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
                     boolean yeniDeger8 = ((CheckBox) arl8.getViewSecenek()).isChecked();
-
                     if (yeniDeger8)
                     {
                         return "1";
@@ -2537,6 +2604,22 @@ public class MainActivity extends Activity
                 case Sabit.AYAR_ID_ARKAPLAN_RENGI:
                     AyarlarRelativeLayout arl9 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
                     return arl9.getSecilenRenk();
+
+                case Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN:
+                    AyarlarRelativeLayout arl10 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    boolean yeniDeger10 = ((CheckBox) arl10.getViewSecenek()).isChecked();
+                    if (yeniDeger10)
+                    {
+                        return "1";
+                    }
+                    else
+                    {
+                        return "0";
+                    }
+
+                case Sabit.AYAR_ID_ACTIONBAR_RENGI:
+                    AyarlarRelativeLayout arl11 = (AyarlarRelativeLayout) anaLayout.findViewById(ayarID);
+                    return arl11.getSecilenRenk();
 
                 default:
                     ekranaHataYazdir("50", "hatalı ayar id, ayar id : " + ayarID);
@@ -2600,6 +2683,14 @@ public class MainActivity extends Activity
                             break;
 
                         case Sabit.AYAR_ID_ARKAPLAN_RENGI:
+                            //önerilerden secildiği icin kontrol edecek birşey yok
+                            break;
+
+                        case Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN:
+                            //checkbox olduğu için kontrole gerek yok
+                            break;
+
+                        case Sabit.AYAR_ID_ACTIONBAR_RENGI:
                             //önerilerden secildiği icin kontrol edecek birşey yok
                             break;
 
@@ -2683,6 +2774,16 @@ public class MainActivity extends Activity
                         DEGER_AYAR_ARKAPLAN_RENGI = yeniDeger;
                         break;
 
+                    case Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN:
+                        nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
+                        DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN = yeniDeger;
+                        break;
+
+                    case Sabit.AYAR_ID_ACTIONBAR_RENGI:
+                        nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
+                        DEGER_AYAR_ACTIONBAR_RENGI = yeniDeger;
+                        break;
+
                     default:
                         ekranaHataYazdir("25", "hatalı ayar id, ayar id : " + ayarID);
                 }
@@ -2734,14 +2835,28 @@ public class MainActivity extends Activity
             {
                 case Sabit.ELEMAN_TUR_KATEGORI:
                     kategorininRenkBilgisiniGuncelle(secilenRenk);
-                    ma.actionBarArkaPlanDegistir(secilenRenk);
+                    if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        ma.actionBarArkaPlanDegistir(secilenRenk);
+                    }
+                    else
+                    {
+                        ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                    }
                     seciliCRL.setRenk(secilenRenk);
                     ekranRenginiDegistir();
                     break;
 
                 case Sabit.ELEMAN_TUR_KAYIT:
                     kaydinRenkBilgisiniGuncelle(secilenRenk);
-                    ma.actionBarArkaPlanDegistir(secilenRenk);
+                    if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        ma.actionBarArkaPlanDegistir(secilenRenk);
+                    }
+                    else
+                    {
+                        ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                    }
                     seciliCRL.setRenk(secilenRenk);
                     ekranRenginiDegistir();
                     break;
