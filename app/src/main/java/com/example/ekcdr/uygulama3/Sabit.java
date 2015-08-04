@@ -94,6 +94,7 @@ public class Sabit
     public static final int ACTION_AYAR_KAYDET = 17;
     public static final String RENK_SIYAH = "#000000";
     public static final String RENK_BEYAZ = "#FFFFFF";
+    public static final String RENK_BEYAZ2 = "#E9E9E9";
     public static final String RENK_ACIK_GRI = "#D8D8D8";
     public static final String RENK_KAPALI_GRI = "#404040";
     public static final String RENK_MAVI = "#0000FF";

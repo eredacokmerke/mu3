@@ -100,6 +100,8 @@ public class MainActivity extends Activity
     private static int actionBarBoy;
     public static Context cnt;
     private static List<String> listeRenkler;
+    private static String kategoriBasligi = "";//kayıt ekranındayken ekran dönerse baslik siliniyor. tekrar yazırabilmek için
+
 
     public static List<String> getListeRenkler()
     {
@@ -787,18 +789,6 @@ public class MainActivity extends Activity
             listSeciliCRL = new ArrayList<>();
             elemanTuru = Sabit.ELEMAN_TUR_KATEGORI;
 
-            if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
-            {
-                if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
-                {
-                    ma.actionBarArkaPlanDegistir(seciliCRL.getRenk());
-                }
-                else
-                {
-                    ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
-                }
-            }
-
             return fragment;
         }
 
@@ -813,7 +803,6 @@ public class MainActivity extends Activity
 
             ACTIONBAR_TUR = Sabit.ACTIONBAR_DEGISTIR;
             seciliCRL = crl;
-            //seciliCRL.setDurum(durum);
 
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
 
@@ -822,14 +811,6 @@ public class MainActivity extends Activity
             listSeciliCRL = new ArrayList<>();
             elemanTuru = Sabit.ELEMAN_TUR_KAYIT;
 
-            if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
-            {
-                ma.actionBarArkaPlanDegistir(kayitRenkBilgisiniGetir(String.valueOf(crl.getId())));
-            }
-            else
-            {
-                ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
-            }
             return fragment;
         }
 
@@ -1173,6 +1154,8 @@ public class MainActivity extends Activity
                     }
                 }
             }
+
+            kategoriBasligi = baslik;
 
             return baslik;
         }
@@ -3209,6 +3192,17 @@ public class MainActivity extends Activity
             {
                 case Sabit.FRAGMENT_KATEGORI_EKRANI:
                 {
+                    if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
+                    {
+                        if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                        {
+                            ma.actionBarArkaPlanDegistir(seciliCRL.getRenk());
+                        }
+                        else
+                        {
+                            ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                        }
+                    }
                     if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))
                     {
                         ekranRenginiDegistir();
@@ -3236,11 +3230,25 @@ public class MainActivity extends Activity
 
                 case Sabit.FRAGMENT_KAYIT_EKRANI:
                 {
+                    if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        ma.actionBarArkaPlanDegistir(kayitRenkBilgisiniGetir(String.valueOf(seciliCRL.getId())));
+                    }
+                    else
+                    {
+                        ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                    }
+
                     if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))
                     {
                         ekranRenginiDegistir();
                     }
                     ma.geriSimgesiniEkle();
+
+                    //ekran dondugu zaman actionbar guncellensin
+                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    getActivity().getActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + kategoriBasligi + "</font>"));
+                    //////////
 
                     RelativeLayout rl = new RelativeLayout(getActivity());
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -3260,8 +3268,8 @@ public class MainActivity extends Activity
                 {
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
                     getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>yedek dosyaları</font>")));
-                    ekranRenginiDegistir(Sabit.RENK_BEYAZ);
-                    ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ);
+                    ekranRenginiDegistir(Sabit.RENK_BEYAZ2);
+                    ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ2);
                     ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
 
                     /*
@@ -3292,8 +3300,8 @@ public class MainActivity extends Activity
                 {
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
                     getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>ayarlar</font>")));
-                    ekranRenginiDegistir(Sabit.RENK_BEYAZ);
-                    ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ);
+                    ekranRenginiDegistir(Sabit.RENK_BEYAZ2);
+                    ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ2);
                     ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
                     ayarlariAyarEkraninaEkle();
 
