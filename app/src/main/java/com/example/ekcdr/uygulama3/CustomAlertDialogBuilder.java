@@ -17,6 +17,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
     private String olumsuzDugmeYazi;
     private EditText alertET;
     private View view;
+    private Context cnt;
 
     //olumlu ve olumsuz seceneklerin oldugu dialog
     public CustomAlertDialogBuilder(Context context, String baslik, String olumsuzDugmeYazi, String olumluDugmeYazi, String yazi, int tur)
@@ -26,6 +27,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
         this.olumsuzDugmeYazi = olumsuzDugmeYazi;
         this.olumluDugmeYazi = olumluDugmeYazi;
         this.yazi = yazi;
+        this.cnt = context;
 
         alertDialogOlustur(tur);
 
@@ -41,6 +43,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
         this.olumsuzDugmeYazi = "";
         this.olumluDugmeYazi = olumluDugmeYazi;
         this.yazi = yazi;
+        this.cnt = context;
 
         alertDialogOlustur(tur);
 
@@ -108,7 +111,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
                 break;
 
             default:
-                ekranaHataYazdir("39", "hatalı alert dialog türü : " + tur);
+                ekranaHataYazdir("39", cnt.getString(R.string.hatali_alertdialog_turu) + " : " + tur);
                 break;
         }
 
@@ -122,7 +125,7 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder
 
     public void ekranaHataYazdir(String id, String hata)
     {
-        Toast.makeText(getContext(), "hata[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), cnt.getString(R.string.hata) + "[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
     public EditText getAlertET()

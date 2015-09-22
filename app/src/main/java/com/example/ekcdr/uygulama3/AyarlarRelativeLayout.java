@@ -113,7 +113,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
                     {
                         RenkDugmeleri alertLL = new RenkDugmeleri(cnt, deger, MainActivity.getListeRenkler());
                         alertLL.setCagiranYer(alertLL.CAGIRAN_YER_AYARLAR, aa);
-                        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Renk", "İptal", alertLL, Sabit.ALERTDIALOG_CUSTOM_VIEW);
+                        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, cnt.getString(R.string.renk), cnt.getString(R.string.iptal), alertLL, Sabit.ALERTDIALOG_CUSTOM_VIEW);
                         alertRenk = builder.create();
                         alertRenk.setCanceledOnTouchOutside(true);
                         alertRenk.show();
@@ -122,7 +122,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
                 break;
 
             default:
-                MainActivity.ekranaHataYazdir("51", "hatalı ayar türü, tür: " + secenekTuru);
+                MainActivity.ekranaHataYazdir("51", cnt.getString(R.string.hatali_ayar_turu) + " : " + secenekTuru);
         }
     }
 

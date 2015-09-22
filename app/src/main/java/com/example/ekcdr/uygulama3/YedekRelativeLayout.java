@@ -73,13 +73,13 @@ public class YedekRelativeLayout extends RelativeLayout
             @Override
             public void onClick(View view)
             {
-                File xmlDosyasi = new File(MainActivity.xmlYedekKlasorYolu + "/" + yedekIsmi + ".xml");
+                File xmlDosyasi = new File(MainActivity.xmlYedekKlasorYolu + "/" + yedekIsmi + "." + Sabit.XML_DOSYA_UZANTISI);
                 long olusturma = xmlDosyasi.lastModified();
                 Date date = new Date(olusturma);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String formattedDate = sdf.format(date);
 
-                final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, "Onay", "Tamam", "\nOluşturulma : " + formattedDate + "\nBoyut : " + xmlDosyasi.length(), Sabit.ALERTDIALOG_TEXTVIEW);
+                final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(cnt, cnt.getString(R.string.onay), cnt.getString(R.string.tamam), "\n" + cnt.getString(R.string.olusturma) + " : " + formattedDate + "\n" + cnt.getString(R.string.boyut) + " : " + xmlDosyasi.length(), Sabit.ALERTDIALOG_TEXTVIEW);
                 final AlertDialog alert = builder.create();
                 alert.show();
 

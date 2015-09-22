@@ -41,7 +41,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private String renk;
     private int satirBasinaKayitSayisi;
 
-    public CustomRelativeLayout(Context context, final String baslik, int elemanTur, final int crlID, String durum, String renk, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
+    public CustomRelativeLayout(final Context context, final String baslik, int elemanTur, final int crlID, String durum, String renk, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
     {
         super(context);
         setCrlSeciliMi(false);
@@ -123,11 +123,11 @@ public class CustomRelativeLayout extends RelativeLayout
                         alertLL.addView(alertET);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Kategori Adı");
+                        builder.setTitle(context.getString(R.string.kategori_adi));
                         builder.setView(alertLL);
 
-                        builder.setPositiveButton("Tamam", null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
-                        builder.setNegativeButton("İptal", null);
+                        builder.setPositiveButton(context.getString(R.string.tamam), null);//dugmeye tıklama olayını aşağıda yakaladığım için buraya null değeri giriyorum
+                        builder.setNegativeButton(context.getString(R.string.iptal), null);
                         final AlertDialog alert = builder.create();
                         alert.show();
 

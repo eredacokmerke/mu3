@@ -16,11 +16,13 @@ public class RenkDugmeleri extends LinearLayout
     public MainActivity.PlaceholderFragment frag;
     public AyarlarRelativeLayout arl;
     public int cagiranYer;//renkDugmeleri nereden cagrildi
+    public Context cnt;
 
     //public RenkDugmeleri(Context context, String seciliRenk, List<String> listeRenkler, MainActivity.PlaceholderFragment frag)
     public RenkDugmeleri(Context context, String seciliRenk, List<String> listeRenkler)
     {
         super(context);
+        this.cnt = context;
 
         setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -115,7 +117,7 @@ public class RenkDugmeleri extends LinearLayout
                 break;
 
             default:
-                MainActivity.ekranaHataYazdir("50", "cağıran sınıf hatalı, id : " + cagiranYer);
+                MainActivity.ekranaHataYazdir("50", cnt.getString(R.string.hatali_sinif) + " : " + cagiranYer);
         }
     }
 

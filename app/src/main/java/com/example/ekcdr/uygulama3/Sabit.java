@@ -2,6 +2,9 @@ package com.example.ekcdr.uygulama3;
 
 public class Sabit
 {
+    public static final String XML_DOSYA_UZANTISI = "xml";
+    public static final String XML_DOSYA_ADI = "new." + XML_DOSYA_UZANTISI;
+    public static final String XML_AYAR_DOSYA_ADI = "opt." + XML_DOSYA_UZANTISI;
     public static final int ELEMAN_TUR_KAYIT = 0;
     public static final int ELEMAN_TUR_KATEGORI = 1;
     public static final int ELEMAN_TUR_YEDEK = 2;
@@ -19,7 +22,7 @@ public class Sabit
     public static final String XML_BASLIK = "baslik";
     public static final String XML_YAZILAR = "yazilar";
     public static final String XML_YAZI = "yazi";
-    //public static final String XML_ROOT = "root";
+    public static final String XML_ROOT = "root";
     public static final String XML_KAYIT = "kayit";
     public static final String XML_ALTPARCA = "altparca";
     public static final String XML_ID = "id";
