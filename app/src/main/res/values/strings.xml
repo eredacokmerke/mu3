@@ -62,6 +62,9 @@
     <string name="hata">error</string>
     <string name="olusturma">created</string>
     <string name="boyut">size</string>
+    <string name="baslik">title</string>
+    <string name="not">note</string>
+    <string name="yeni_not">new note</string>
     <string name="secilen_kayitlar_silinsin_mi">Delete selected records ?</string>
     <string name="kayit_silinsin_mi">Delete record ?</string>
     <string name="sutun_sayisi">column number</string>

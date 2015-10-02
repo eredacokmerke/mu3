@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
@@ -41,7 +42,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private String renk;
     private int satirBasinaKayitSayisi;
 
-    public CustomRelativeLayout(final Context context, final String baslik, int elemanTur, final int crlID, String durum, String renk, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
+    public CustomRelativeLayout(final Context context, final String baslik, final String kayit, int elemanTur, final int crlID, String durum, String renk, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
     {
         super(context);
         setCrlSeciliMi(false);
@@ -77,12 +78,13 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvTik.setId(ID0);
                 tvTik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
-                RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp3.addRule(RelativeLayout.CENTER_VERTICAL);
                 this.addView(tvTik, lp3);
 
                 tvBaslik = new TextView(context);
+                tvBaslik.setId(10004);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
@@ -191,13 +193,25 @@ public class CustomRelativeLayout extends RelativeLayout
                 this.addView(tvTik, lp4);
 
                 tvBaslik = new TextView(context);
+                tvBaslik.setId(10005);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
-                RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                tvBaslik.setTypeface(null, Typeface.BOLD_ITALIC);
+                RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                 this.addView(tvBaslik, lp5);
+
+                TextView tvBaslik2 = new TextView(context);
+                tvBaslik2.setTextSize(YAZI_BUYUKLUGU_KAYIT);
+                tvBaslik2.setText(kayit);
+                tvBaslik2.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvBaslik2.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
+                RelativeLayout.LayoutParams lp6 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
+                lp6.addRule(RelativeLayout.BELOW, tvBaslik.getId());
+                this.addView(tvBaslik2, lp6);
 
                 break;
             }
