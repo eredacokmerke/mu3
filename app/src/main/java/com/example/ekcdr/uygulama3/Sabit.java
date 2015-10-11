@@ -34,7 +34,6 @@ public class Sabit
     public static final String DURUM_YENI = "0";
     public static final String DURUM_TAMAMLANDI = "1";
     public static final String FRAGMENT_TAG = "fragment_tag";
-    public static final String FRAGMENT_YAZI = "fragment_yazi";//kayıt içindeki yazi
     public static final int ACTIONBAR_EKLE = 0;
     //public static final int ACTIONBAR_ONAY = 1;
     public static final int ACTIONBAR_SECIM = 2;

@@ -36,6 +36,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private boolean crlSeciliMi = false;
     private TextView tvTik;
     private TextView tvBaslik;
+    private TextView tvYazi;
     private ImageView tvDuzenle;
     private int crlTur;
     private String durum;
@@ -203,15 +204,15 @@ public class CustomRelativeLayout extends RelativeLayout
                 lp5.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                 this.addView(tvBaslik, lp5);
 
-                TextView tvBaslik2 = new TextView(context);
-                tvBaslik2.setTextSize(YAZI_BUYUKLUGU_KAYIT);
-                tvBaslik2.setText(kayit);
-                tvBaslik2.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
-                tvBaslik2.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
+                tvYazi = new TextView(context);
+                tvYazi.setTextSize(YAZI_BUYUKLUGU_KAYIT);
+                tvYazi.setText(kayit);
+                tvYazi.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvYazi.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp6 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
                 lp6.addRule(RelativeLayout.BELOW, tvBaslik.getId());
-                this.addView(tvBaslik2, lp6);
+                this.addView(tvYazi, lp6);
 
                 break;
             }
@@ -435,6 +436,11 @@ public class CustomRelativeLayout extends RelativeLayout
     public TextView getTvBaslik()
     {
         return tvBaslik;
+    }
+
+    public TextView getTvYazi()
+    {
+        return tvYazi;
     }
 
     public TextView getTvTik()
