@@ -10,6 +10,7 @@ public class Sabit
     public static final int ELEMAN_TUR_YEDEK = 2;
     public static final int ELEMAN_TUR_AYARLAR = 3;
     public static final int ELEMAN_TUR_YENI_KAYIT = 4;
+    public static final int ELEMAN_TUR_YENI_KATEGORI = 5;
     public static final int ALERTDIALOG_EDITTEXT = 0;//alertdialog ta edittex cikacak
     public static final int ALERTDIALOG_TEXTVIEW = 1;//alertdialog ta textview cikacak
     public static final int ALERTDIALOG_CUSTOM_VIEW = 2;//alertdialog ta hazırlanmış view gosterilecek
@@ -41,6 +42,7 @@ public class Sabit
     public static final int ACTIONBAR_YEDEK = 4;
     public static final int ACTIONBAR_AYAR = 5;
     public static final int ACTIONBAR_YENI_KAYIT = 6;
+    public static final int ACTIONBAR_YENI_KATEGORI = 7;
     public static final int SECIM_YAPILDI = 1;
     public static final int SECIM_IPTAL_EDILDI = 0;
     public static final int FRAGMENT_KATEGORI_EKRANI = 0;
@@ -48,6 +50,7 @@ public class Sabit
     public static final int FRAGMENT_YEDEK_EKRANI = 2;
     public static final int FRAGMENT_AYAR_EKRANI = 3;
     public static final int FRAGMENT_YENI_KAYIT_EKRANI = 4;
+    public static final int FRAGMENT_YENI_KATEGORI_EKRANI = 5;
     public static final int OLAY_ICINE_GIR = 0;//tıklama elemanın içine girer
     public static final int OLAY_SECIM_YAP = 1;//tıklama elemanı seçer
     public static final String TIK_UNICODE = "\u2714";
@@ -99,6 +102,8 @@ public class Sabit
     public static final int ACTION_AYAR_KAYDET = 17;
     public static final int ACTION_YENI_KAYIT_KAYDET = 18;
     public static final int ACTION_YENI_KAYIT_RENK_DEGISTIR = 19;
+    public static final int ACTION_YENI_KATEGORI_KAYDET = 20;
+    public static final int ACTION_YENI_KATEGORI_RENK_DEGISTIR = 21;
     public static final String RENK_SIYAH = "#000000";
     public static final String RENK_BEYAZ = "#FFFFFF";
     public static final String RENK_BEYAZ2 = "#E9E9E9";

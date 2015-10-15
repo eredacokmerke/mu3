@@ -65,6 +65,7 @@
     <string name="baslik">title</string>
     <string name="not">note</string>
     <string name="yeni_not">new note</string>
+    <string name="yeni_kategori">new category</string>
     <string name="secilen_kayitlar_silinsin_mi">Delete selected records ?</string>
     <string name="kayit_silinsin_mi">Delete record ?</string>
     <string name="sutun_sayisi">column number</string>
