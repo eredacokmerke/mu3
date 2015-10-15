@@ -25,7 +25,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
     private AlertDialog alertRenk;//renkleri soran alertDialog. renk dugmesine dokunuca alertDialogu kapatabilmek için
     private String secilenRenk;
 
-    public AyarlarRelativeLayout(Context context, String metin, String deger, int ayarID, int secenekTuru)
+    public AyarlarRelativeLayout(Context context, String metin, String deger, int ayarID, int oncekiAyarID, int secenekTuru)
     {
         super(context);
         this.metin = metin;
@@ -38,9 +38,8 @@ public class AyarlarRelativeLayout extends RelativeLayout
 
         if (ayarID != 1)//ilk ayar için layoutParam a gerek yok
         {
-            int oncekiID = ayarID - 1;
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.BELOW, oncekiID);
+            lp.addRule(RelativeLayout.BELOW, oncekiAyarID);
             this.setLayoutParams(lp);
         }
     }

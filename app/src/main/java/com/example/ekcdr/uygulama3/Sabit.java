@@ -65,8 +65,8 @@ public class Sabit
     public static final String ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = "5";
     public static final int AYAR_ID_SIMGE_RENGI = 4;
     public static final String ONTANIMLI_DEGER_AYAR_SIMGE_RENGI = "#FF8000";
-    public static final int AYAR_ID_YAZI_RENGI = 5;
-    public static final String ONTANIMLI_DEGER_AYAR_YAZI_RENGI = "#FF8000";
+    //public static final int AYAR_ID_YAZI_RENGI = 5;
+    //public static final String ONTANIMLI_DEGER_AYAR_YAZI_RENGI = "#FF8000";
     public static final int AYAR_ID_CERCEVE_GOZUKSUN = 6;
     public static final String ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN = "1";
     public static final int AYAR_ID_CERCEVE_RENGI = 7;

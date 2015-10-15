@@ -82,7 +82,7 @@ public class MainActivity extends Activity
     public static String DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN;
     public static String DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI;
     public static String DEGER_AYAR_SIMGE_RENGI;
-    public static String DEGER_AYAR_YAZI_RENGI;
+    //public static String DEGER_AYAR_YAZI_RENGI;
     public static String DEGER_AYAR_CERCEVE_GOZUKSUN;
     public static String DEGER_AYAR_CERCEVE_RENGI;
     public static String DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN;
@@ -473,6 +473,7 @@ public class MainActivity extends Activity
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
+        /*
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_YAZI_RENGI))
         {
             Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
@@ -481,6 +482,7 @@ public class MainActivity extends Activity
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
+        */
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_CERCEVE_GOZUKSUN))
         {
             Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
@@ -594,9 +596,11 @@ public class MainActivity extends Activity
                     DEGER_AYAR_SIMGE_RENGI = ayarDeger;
                     break;
 
+                /*
                 case Sabit.AYAR_ID_YAZI_RENGI:
                     DEGER_AYAR_YAZI_RENGI = ayarDeger;
                     break;
+                */
 
                 case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
                     DEGER_AYAR_CERCEVE_GOZUKSUN = ayarDeger;
@@ -723,7 +727,7 @@ public class MainActivity extends Activity
                     "<ayar id=\"" + Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN + "</ayar>" +
                     "<ayar id=\"" + Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI + "</ayar>" +
                     "<ayar id=\"" + Sabit.AYAR_ID_SIMGE_RENGI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SIMGE_RENGI + "</ayar>" +
-                    "<ayar id=\"" + Sabit.AYAR_ID_YAZI_RENGI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_YAZI_RENGI + "</ayar>" +
+                    //"<ayar id=\"" + Sabit.AYAR_ID_YAZI_RENGI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_YAZI_RENGI + "</ayar>" +
                     "</root>");
             out.close();
         }
@@ -2543,13 +2547,13 @@ public class MainActivity extends Activity
         //ayar ekranina ayar metinlerini ekler
         public void ayarlariAyarEkraninaEkle()
         {
-            AyarlarRelativeLayout arl1 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.sutun_sayisi), DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI, Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI, Sabit.SECENEK_EDITTEXT);
+            AyarlarRelativeLayout arl1 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.sutun_sayisi), DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI, Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI, 0, Sabit.SECENEK_EDITTEXT);
             anaRelativeLayout.addView(arl1);
 
-            AyarlarRelativeLayout arl2 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.satir_boyu_sabit_olsun), DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, Sabit.SECENEK_CHECKBOX);
+            AyarlarRelativeLayout arl2 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.satir_boyu_sabit_olsun), DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI, Sabit.SECENEK_CHECKBOX);
             anaRelativeLayout.addView(arl2);
 
-            final AyarlarRelativeLayout arl3 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.satir_sayisi), DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI, Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, Sabit.SECENEK_EDITTEXT);
+            final AyarlarRelativeLayout arl3 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.satir_sayisi), DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI, Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN, Sabit.SECENEK_EDITTEXT);
             anaRelativeLayout.addView(arl3);
             if (DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN.equals("0"))//2. ayardaki checkbox secili değilse 3. ayar disable olsun
             {
@@ -2572,16 +2576,18 @@ public class MainActivity extends Activity
                 }
             });
 
-            AyarlarRelativeLayout arl4 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.simge_rengi), DEGER_AYAR_SIMGE_RENGI, Sabit.AYAR_ID_SIMGE_RENGI, Sabit.SECENEK_BUTTON);
+            AyarlarRelativeLayout arl4 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.simge_rengi), DEGER_AYAR_SIMGE_RENGI, Sabit.AYAR_ID_SIMGE_RENGI, Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl4);
 
-            AyarlarRelativeLayout arl5 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.yazı_rengi), DEGER_AYAR_YAZI_RENGI, Sabit.AYAR_ID_YAZI_RENGI, Sabit.SECENEK_BUTTON);
+            /*
+            AyarlarRelativeLayout arl5 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.yazı_rengi), DEGER_AYAR_YAZI_RENGI, Sabit.AYAR_ID_YAZI_RENGI,Sabit.AYAR_ID_SIMGE_RENGI Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl5);
+            */
 
-            AyarlarRelativeLayout arl6 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_gozuksun), DEGER_AYAR_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_CERCEVE_GOZUKSUN, Sabit.SECENEK_CHECKBOX);
+            AyarlarRelativeLayout arl6 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_gozuksun), DEGER_AYAR_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_SIMGE_RENGI, Sabit.SECENEK_CHECKBOX);
             anaRelativeLayout.addView(arl6);
 
-            final AyarlarRelativeLayout arl7 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_rengi), DEGER_AYAR_CERCEVE_RENGI, Sabit.AYAR_ID_CERCEVE_RENGI, Sabit.SECENEK_BUTTON);
+            final AyarlarRelativeLayout arl7 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_rengi), DEGER_AYAR_CERCEVE_RENGI, Sabit.AYAR_ID_CERCEVE_RENGI, Sabit.AYAR_ID_CERCEVE_GOZUKSUN, Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl7);
             if (DEGER_AYAR_CERCEVE_GOZUKSUN.equals("0"))//6. ayardaki checkbox secili değilse 7. ayar disable olsun
             {
@@ -2604,10 +2610,10 @@ public class MainActivity extends Activity
                 }
             });
 
-            AyarlarRelativeLayout arl8 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.arkaplan_rengi_sabit_olsun), DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.SECENEK_CHECKBOX);
+            AyarlarRelativeLayout arl8 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.arkaplan_rengi_sabit_olsun), DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_CERCEVE_RENGI, Sabit.SECENEK_CHECKBOX);
             anaRelativeLayout.addView(arl8);
 
-            final AyarlarRelativeLayout arl9 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.arkaplan_rengi), DEGER_AYAR_ARKAPLAN_RENGI, Sabit.AYAR_ID_ARKAPLAN_RENGI, Sabit.SECENEK_BUTTON);
+            final AyarlarRelativeLayout arl9 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.arkaplan_rengi), DEGER_AYAR_ARKAPLAN_RENGI, Sabit.AYAR_ID_ARKAPLAN_RENGI, Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN, Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl9);
             if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))//8. ayardaki checkbox secili değilse 9. ayar disable olsun
             {
@@ -2630,10 +2636,10 @@ public class MainActivity extends Activity
                 }
             });
 
-            AyarlarRelativeLayout arl10 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.actionbar_rengi_sabit_olsun), DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.SECENEK_CHECKBOX);
+            AyarlarRelativeLayout arl10 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.actionbar_rengi_sabit_olsun), DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.AYAR_ID_ARKAPLAN_RENGI, Sabit.SECENEK_CHECKBOX);
             anaRelativeLayout.addView(arl10);
 
-            final AyarlarRelativeLayout arl11 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.actionbar_rengi), DEGER_AYAR_ACTIONBAR_RENGI, Sabit.AYAR_ID_ACTIONBAR_RENGI, Sabit.SECENEK_BUTTON);
+            final AyarlarRelativeLayout arl11 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.actionbar_rengi), DEGER_AYAR_ACTIONBAR_RENGI, Sabit.AYAR_ID_ACTIONBAR_RENGI, Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN, Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl11);
             if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))//10. ayardaki checkbox secili değilse 11. ayar disable olsun
             {
@@ -2688,9 +2694,11 @@ public class MainActivity extends Activity
                     AyarlarRelativeLayout arl4 = (AyarlarRelativeLayout) anaRelativeLayout.findViewById(ayarID);
                     return arl4.getSecilenRenk();
 
+                /*
                 case Sabit.AYAR_ID_YAZI_RENGI:
                     AyarlarRelativeLayout arl5 = (AyarlarRelativeLayout) anaRelativeLayout.findViewById(ayarID);
                     return arl5.getSecilenRenk();
+                */
 
                 case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
                     AyarlarRelativeLayout arl6 = (AyarlarRelativeLayout) anaRelativeLayout.findViewById(ayarID);
@@ -2785,9 +2793,11 @@ public class MainActivity extends Activity
                             //önerilerden secildiği icin kontrol edecek birşey yok
                             break;
 
+                        /*
                         case Sabit.AYAR_ID_YAZI_RENGI:
                             //önerilerden secildiği icin kontrol edecek birşey yok
                             break;
+                        */
 
                         case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
                             //checkbox olduğu için kontrole gerek yok
@@ -2868,10 +2878,12 @@ public class MainActivity extends Activity
                         ma.geriSimgesiniEkle();
                         break;
 
+                    /*
                     case Sabit.AYAR_ID_YAZI_RENGI:
                         nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
                         DEGER_AYAR_YAZI_RENGI = yeniDeger;
                         break;
+                    */
 
                     case Sabit.AYAR_ID_CERCEVE_GOZUKSUN:
                         nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor

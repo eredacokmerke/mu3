@@ -51,6 +51,16 @@ public class CustomRelativeLayout extends RelativeLayout
         this.renk = renk;
         this.setId(crlID);
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
+        int yaziRengi;
+
+        if (renkKoyuMu(renk))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+        {
+            yaziRengi = Color.WHITE;
+        }
+        else
+        {
+            yaziRengi = Color.BLACK;
+        }
 
         switch (elemanTur)
         {
@@ -78,7 +88,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvTik = new TextView(context);
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvTik.setId(ID0);
-                tvTik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvTik.setTextColor(yaziRengi);
                 RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp3.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -88,7 +98,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik.setId(10004);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvBaslik.setText(baslik);
-                tvBaslik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvBaslik.setTextColor(yaziRengi);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
@@ -187,7 +197,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvTik = new TextView(context);
                 tvTik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvTik.setId(ID2);
-                tvTik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvTik.setTextColor(yaziRengi);
                 RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp4.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -197,7 +207,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik.setId(10005);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvBaslik.setText(baslik);
-                tvBaslik.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvBaslik.setTextColor(yaziRengi);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 tvBaslik.setTypeface(null, Typeface.BOLD_ITALIC);
                 RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -207,7 +217,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvYazi = new TextView(context);
                 tvYazi.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvYazi.setText(kayit);
-                tvYazi.setTextColor(Color.parseColor(MainActivity.DEGER_AYAR_YAZI_RENGI));
+                tvYazi.setTextColor(yaziRengi);
                 tvYazi.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp6 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
@@ -486,5 +496,20 @@ public class CustomRelativeLayout extends RelativeLayout
     public void setRenk(String renk)
     {
         this.renk = renk;
+    }
+
+    //verilen rengin koyu,açık bilgisini döndürür
+    public boolean renkKoyuMu(String renk)
+    {
+        int irenk = Color.parseColor(renk);
+        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
+        if (darkness < 0.5)
+        {
+            return false; //açık renk
+        }
+        else
+        {
+            return true; //koyu renk
+        }
     }
 }
