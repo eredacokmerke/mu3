@@ -783,7 +783,7 @@ public class MainActivity extends Activity
         private static int elemanTuru;
         private static View fragmentRootView;//fragment icindeki layoutlara ulasabilmek için fragment view ı
         private static View fragmentRootViewYeniKayit;//fragment icindeki layoutlara ulasabilmek için fragment view ı
-        private static LinearLayout anaLinearLayout;//scrollview ın içine yerleşeceği linear layout
+        private static RelativeLayout anaLinearLayout;//scrollview ın içine yerleşeceği linear layout
         private RelativeLayout anaRelativeLayout;//scrollview ın içinde viewların içine yerleşeceği relative layout
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
@@ -1480,8 +1480,8 @@ public class MainActivity extends Activity
             basligiEskiYerineAl();
         }
 
-        //ana ekrana ve xml'e kategori ekler(parca)
-        public void kategoriKaydet()
+        //yeni kategori fragmentini acar
+        public void yeniKategoriEkranininAc()
         {
             getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceYeni(Sabit.ELEMAN_TUR_YENI_KATEGORI), Sabit.FRAGMENT_TAG).commit();
 
@@ -1658,8 +1658,8 @@ public class MainActivity extends Activity
             return xmlEnBuyukID;
         }
 
-        //ana ekrana ve xml'e kayıt ekler
-        public void yaziyiKaydet()
+        //yeni kayit fragmentini acar
+        public void yeniKayitEkraniniAc()
         {
             getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceYeni(Sabit.ELEMAN_TUR_YENI_KAYIT), Sabit.FRAGMENT_TAG).commit();
 
@@ -3094,8 +3094,8 @@ public class MainActivity extends Activity
         public void menuAnaEkran(Menu menu)
         {
             menuIkonEkle(menu, getResources().getDrawable(R.drawable.renk_degistir), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.renk_degistir), Sabit.ACTION_ANA_EKRAN_RENK_DEGISTIR);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kategori_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kategori_ekle), Sabit.ACTION_ANA_EKRAN_KATEGORI_EKLE);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kayit_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kayit_ekle), Sabit.ACTION_ANA_EKRAN_KAYIT_EKLE);
+            //menuIkonEkle(menu, getResources().getDrawable(R.drawable.kategori_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kategori_ekle), Sabit.ACTION_ANA_EKRAN_KATEGORI_EKLE);
+            //menuIkonEkle(menu, getResources().getDrawable(R.drawable.kayit_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kayit_ekle), Sabit.ACTION_ANA_EKRAN_KAYIT_EKLE);
             menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLE, 0, cnt.getString(R.string.yedekle));
             menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEGI_YUKLE, 0, cnt.getString(R.string.yedegi_yukle));
             menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLERI_GOSTER, 0, cnt.getString(R.string.yedek_dosyalari));
@@ -3226,11 +3226,11 @@ public class MainActivity extends Activity
             {
                 //ana ekran
                 case Sabit.ACTION_ANA_EKRAN_KATEGORI_EKLE:
-                    kategoriKaydet();
+                    yeniKategoriEkranininAc();
                     return true;
 
                 case Sabit.ACTION_ANA_EKRAN_KAYIT_EKLE:
-                    yaziyiKaydet();
+                    yeniKayitEkraniniAc();
                     //actionBarDegistir(ACTIONBAR_ONAY);
                     //etEklenecek = yaziAlaniOlustur();
                     //klavyeAc(getActivity().getApplicationContext(), etEklenecek);
@@ -3372,7 +3372,7 @@ public class MainActivity extends Activity
 
                 /*
                 case R.id.action_onay_kaydet:
-                    //yaziyiKaydet(etEklenecek);
+                    //yeniKayitEkraniniAc(etEklenecek);
                     //actionBarDegistir(Sabit.ACTIONBAR_EKLE);
                     return true;
                 case R.id.action_onay_iptal:
@@ -3510,7 +3510,7 @@ public class MainActivity extends Activity
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     fragmentRootView = rootView;
-                    anaLinearLayout = (LinearLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
+                    anaLinearLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
                     if (ma != null)//ilk açılışta null geliyor. o zaman activity'nin içinde actionbar rengini değiştiriyorum
@@ -3545,6 +3545,9 @@ public class MainActivity extends Activity
                         yeniYerlesimOlustur();
                         kategoriBasliginiYaz();
                     }
+
+                    new FloatingActionButton(fAct, anaLinearLayout, this);//ekrana floatinActionButton ekleniyopr
+
                     return rootView;
                 }
 
@@ -3643,7 +3646,7 @@ public class MainActivity extends Activity
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     fragmentRootView = rootView;
-                    anaLinearLayout = (LinearLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
+                    anaLinearLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -3680,7 +3683,7 @@ public class MainActivity extends Activity
                 {
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     fragmentRootView = rootView;
-                    anaLinearLayout = (LinearLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
+                    anaLinearLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
                     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
