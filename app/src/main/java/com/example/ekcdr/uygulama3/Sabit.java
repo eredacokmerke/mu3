@@ -36,8 +36,8 @@ public class Sabit
     public static final String RENK_YESIL = "#03C03C";
     public static final String RENK_SARI = "#FDFD96";
     public static final String RENK_TURUNCU = "#FFB347";
-    public static final String RENK_MOR = "#966FD6";
-    public static final String RENK_TURKUAZ = "#00FFFF";
+    public static final String RENK_MOR = "#880088";
+    public static final String RENK_KAHVE = "#836953";
 
     //icine girilen elemanin turu
     public static final int ELEMAN_TUR_KAYIT = 0;

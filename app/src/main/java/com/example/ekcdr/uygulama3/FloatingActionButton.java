@@ -1,8 +1,6 @@
 package com.example.ekcdr.uygulama3;
 
 import android.app.Activity;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -11,11 +9,11 @@ import android.widget.RelativeLayout;
 
 public class FloatingActionButton
 {
+    public MainActivity.PlaceholderFragment frag;//fragment fonksiyonlarina erisebilmek icin
     Activity act;//ana activity nesnesi
     boolean acikMi;//secenek tuslari acik mi
     int boyut;//tuslarin boyutlari
     int padding;//tuslarin paddingleri
-    public MainActivity.PlaceholderFragment frag;//fragment fonksiyonlarina erisebilmek icin
 
     public FloatingActionButton(final Activity act, final RelativeLayout anaLayout, final MainActivity.PlaceholderFragment frag)
     {
@@ -53,7 +51,7 @@ public class FloatingActionButton
             @Override
             public void onClick(View view)
             {
-                if (!acikMi)//secenek tusari kapali acilacak
+                if (!acikMi)//secenek tuslari kapali, acilacak
                 {
                     btnKategoriEkle.setId(Button.generateViewId());
                     btnKategoriEkle.setImageResource(R.drawable.kategori_ekle);
@@ -99,7 +97,7 @@ public class FloatingActionButton
 
                     acikMi = true;
                 }
-                else//secenek tuslari acik kapanacak
+                else//secenek tuslari acik, kapanacak
                 {
                     anaLayout.removeView(btnKategoriEkle);
                     anaLayout.removeView(btnKayitEkle);

@@ -16,7 +16,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +34,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -71,7 +76,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-public class MainActivity extends Activity
+public class MainActivity extends ActionBarActivity
 {
     public static String xmlYedekKlasorYolu;
     public static int tumEkranEnUzunlugu;
@@ -103,10 +108,14 @@ public class MainActivity extends Activity
     private static Document documentAyar;
     private static int actionBarBoy;
     private static List<String> listeRenkler;
-    private static String kategoriBasligi = "";//kayıt ekranındayken ekran dönerse baslik siliniyor. tekrar yazırabilmek için
+    //private static String kategoriBasligi = "";//kayıt ekranındayken ekran dönerse baslik siliniyor. tekrar yazırabilmek için
     private static int llBaslikID = 1000;
     private static int etBaslikID = 1001;
     private static int etKayitID = 1002;
+    private static PlaceholderFragment frag;
+    private static ActionBarDrawerToggle mDrawerToggle;
+    private static DrawerLayout mDrawer;//yan panel
+    private static LinearLayout mDrawerLayout;//yan panel içindeki layout
 
     public static List<String> getListeRenkler()
     {
@@ -206,8 +215,95 @@ public class MainActivity extends Activity
                 return nodeList.item(i);
             }
         }
-
         return null;
+    }
+
+    public void yanEkraniOlustur()
+    {
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (LinearLayout) findViewById(R.id.left_drawer);
+
+        Button btnYedekle = new Button(this);
+        btnYedekle.setAllCaps(false);
+        btnYedekle.setText(getString(R.string.yedekle));
+        btnYedekle.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                frag.xmlYedekle();
+                mDrawer.closeDrawers();
+            }
+        });
+        mDrawerLayout.addView(btnYedekle);
+
+        Button btnYedegiYukle = new Button(this);
+        btnYedegiYukle.setAllCaps(false);
+        btnYedegiYukle.setText(getString(R.string.yedegi_yukle));
+        mDrawerLayout.addView(btnYedegiYukle);
+        btnYedegiYukle.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                frag.xmlYedektenYukle();
+                mDrawer.closeDrawers();
+            }
+        });
+
+        Button btnYedekDosyalari = new Button(this);
+        btnYedekDosyalari.setText(getString(R.string.yedek_dosyalari));
+        btnYedekDosyalari.setAllCaps(false);
+        mDrawerLayout.addView(btnYedekDosyalari);
+        btnYedekDosyalari.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                frag.actionBarDegistir(Sabit.ACTIONBAR_YEDEK);
+                frag.yedekDosyalariGoster();
+                mDrawer.closeDrawers();
+            }
+        });
+
+        Button btnAyarlar = new Button(this);
+        btnAyarlar.setAllCaps(false);
+        btnAyarlar.setText(getString(R.string.ayarlar));
+        mDrawerLayout.addView(btnAyarlar);
+        btnAyarlar.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                frag.ayarEkraniniAc();
+                mDrawer.closeDrawers();
+            }
+        });
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawer,         /* DrawerLayout object */
+                R.drawable.menu,  /* nav drawer icon to replace 'Up' caret */
+                R.string.dosya,  /* "open drawer" description */
+                R.string.kaydet  /* "close drawer" description */
+        )
+        {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view)
+            {
+                //getSupportActionBar().setTitle(mTitle);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView)
+            {
+                //getSupportActionBar().setTitle(mTitle);
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawer.setDrawerListener(mDrawerToggle);
     }
 
     @Override
@@ -215,6 +311,9 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        yanEkraniOlustur();
+
 
         File uygulamaKlasoru;
         File xmlYedekKlasoru;
@@ -249,8 +348,8 @@ public class MainActivity extends Activity
                     {
                         actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
                     }
-                    getActionBar().setDisplayUseLogoEnabled(false);
-                    getActionBar().setDisplayShowHomeEnabled(false);
+                    getSupportActionBar().setDisplayUseLogoEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
 
                     actionBarBoyUzunlugunuGetir();
                     elemanEniniHesapla();
@@ -264,11 +363,11 @@ public class MainActivity extends Activity
                     listeRenkler.add(Sabit.RENK_MAVI);
                     listeRenkler.add(Sabit.RENK_MOR);
                     listeRenkler.add(Sabit.RENK_SARI);
-                    listeRenkler.add(Sabit.RENK_TURKUAZ);
+                    listeRenkler.add(Sabit.RENK_KAHVE);
                     listeRenkler.add(Sabit.RENK_TURUNCU);
                     listeRenkler.add(Sabit.RENK_YESIL);
 
-                    geriSimgesiniEkle();
+                    //geriSimgesiniEkle();
                 }
                 else
                 {
@@ -289,12 +388,27 @@ public class MainActivity extends Activity
         }
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
     //actionbarın solundaki geri oku
     public void geriSimgesiniEkle(String renk)
     {
         final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
         upArrow.setColorFilter(Color.parseColor(renk), PorterDuff.Mode.SRC_ATOP);
-        getActionBar().setHomeAsUpIndicator(upArrow);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 
     //actionbarın solundaki geri oku
@@ -302,16 +416,21 @@ public class MainActivity extends Activity
     {
         final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
         upArrow.setColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_ATOP);
-        getActionBar().setHomeAsUpIndicator(upArrow);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+    }
+
+    public void menuSimgesiEkle()
+    {
+        final Drawable upArrow = getResources().getDrawable(R.drawable.menu);
+        upArrow.setColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 
     public void actionBarBoyUzunlugunuGetir()
     {
         TypedValue tv = new TypedValue();
         getApplicationContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
-        int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
-
-        actionBarBoy = actionBarHeight;
+        actionBarBoy = getResources().getDimensionPixelSize(tv.resourceId);
     }
 
     //xml in duracagı klasoru olusturur
@@ -741,7 +860,7 @@ public class MainActivity extends Activity
     public void actionBarArkaPlanDegistir(String renk)
     {
         ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
-        getActionBar().setBackgroundDrawable(actionBarArkaPlan);
+        getSupportActionBar().setBackgroundDrawable(actionBarArkaPlan);
     }
 
     @Override
@@ -757,6 +876,8 @@ public class MainActivity extends Activity
                 break;
 
             case Sabit.FRAGMENT_KAYIT_EKRANI:
+            case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
+            case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
                 fr.ustSeviyeyiGetir();
                 break;
 
@@ -793,6 +914,7 @@ public class MainActivity extends Activity
 
         public PlaceholderFragment()
         {
+            frag = this;
         }
 
         public static PlaceholderFragment newInstanceKategori(int secim, int kategoriID, CustomRelativeLayout crl)
@@ -878,10 +1000,7 @@ public class MainActivity extends Activity
         public static PlaceholderFragment newInstanceYedek(int secim)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
-            //Bundle args = new Bundle();
-            //args.putInt(FRAGMENT_SECIM, secim);
             FRAGMENT_ETKIN_EKRAN = secim;
-            //fragment.setArguments(args);
             fragment.setHasOptionsMenu(true);
 
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
@@ -898,12 +1017,11 @@ public class MainActivity extends Activity
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            //args.putInt(FRAGMENT_SECIM, secim);
             FRAGMENT_ETKIN_EKRAN = secim;
             fragment.setArguments(args);
             fragment.setHasOptionsMenu(true);
 
-            //TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
+            ACTIONBAR_TUR = Sabit.ACTIONBAR_AYAR;
 
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
@@ -1108,22 +1226,27 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
                     {
-                        listSeciliCRL.add(crl);
-                        crl.arkaplanSecili();
-                        crl.setCrlSeciliMi(true);
-
-                        if (TIKLAMA_OLAYI != Sabit.OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
+                        if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                         {
-                            actionBarDegistir(Sabit.ACTIONBAR_SECIM);
-                            TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
-                            ma.actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
-                            duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
-                            basligiDuzenleninYaninaAl();
+                            listSeciliCRL.add(crl);
+                            crl.arkaplanSecili();
+                            crl.setCrlSeciliMi(true);
+
+                            if (TIKLAMA_OLAYI != Sabit.OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
+                            {
+                                actionBarDegistir(Sabit.ACTIONBAR_SECIM);
+                                TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
+                                ma.actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
+                                duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+                                basligiDuzenleninYaninaAl();
+                            }
+
+                            secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
                         }
 
-                        secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
+
                     }
 
                     return true;
@@ -1134,34 +1257,37 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
                     {
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(crl)).addToBackStack(null).commit();
-                    }
-                    else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
-                    {
-                        if (crl.isCrlSeciliMi())
+                        if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
                         {
-                            listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
-                            crl.arkaplanKayit();
-                            crl.setCrlSeciliMi(false);
-
-                            if (seciliElemanSayisi() == 0)
+                            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKayit(crl)).addToBackStack(null).commit();
+                        }
+                        else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
+                        {
+                            if (crl.isCrlSeciliMi())
                             {
-                                seciliElemanListeleriniSifirla();
+                                listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
+                                crl.arkaplanKayit();
+                                crl.setCrlSeciliMi(false);
+
+                                if (seciliElemanSayisi() == 0)
+                                {
+                                    seciliElemanListeleriniSifirla();
+                                }
+                                else
+                                {
+                                    secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_IPTAL_EDILDI);
+                                }
                             }
                             else
                             {
-                                secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_IPTAL_EDILDI);
-                            }
-                        }
-                        else
-                        {
-                            listSeciliCRL.add(crl);
-                            crl.arkaplanSecili();
-                            crl.setCrlSeciliMi(true);
+                                listSeciliCRL.add(crl);
+                                crl.arkaplanSecili();
+                                crl.setCrlSeciliMi(true);
 
-                            secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
+                                secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
+                            }
                         }
                     }
                 }
@@ -1241,7 +1367,7 @@ public class MainActivity extends Activity
                 }
             }
 
-            kategoriBasligi = baslik;
+            //kategoriBasligi = baslik;
 
             return baslik;
         }
@@ -1264,34 +1390,39 @@ public class MainActivity extends Activity
                 @Override
                 public void onClick(View view)
                 {
-                    if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
-                    {
-                        getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, kategoriID, crl), Sabit.FRAGMENT_TAG).commit();
-                    }
-                    else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
-                    {
-                        if (crl.isCrlSeciliMi())
-                        {
-                            listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
-                            crl.arkaplanKategori();
-                            crl.setCrlSeciliMi(false);
+                    Log.d("uyg", "mDrawer : " + mDrawer.isDrawerOpen(mDrawerLayout));
 
-                            if (seciliElemanSayisi() == 0)
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
+                    {
+                        if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
+                        {
+                            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, kategoriID, crl), Sabit.FRAGMENT_TAG).commit();
+                        }
+                        else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
+                        {
+                            if (crl.isCrlSeciliMi())
                             {
-                                seciliElemanListeleriniSifirla();
+                                listSeciliCRL.remove(listSeciliCRL.indexOf(crl));
+                                crl.arkaplanKategori();
+                                crl.setCrlSeciliMi(false);
+
+                                if (seciliElemanSayisi() == 0)
+                                {
+                                    seciliElemanListeleriniSifirla();
+                                }
+                                else
+                                {
+                                    secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_IPTAL_EDILDI);
+                                }
                             }
                             else
                             {
-                                secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_IPTAL_EDILDI);
-                            }
-                        }
-                        else
-                        {
-                            listSeciliCRL.add(crl);
-                            crl.arkaplanSecili();
-                            crl.setCrlSeciliMi(true);
+                                listSeciliCRL.add(crl);
+                                crl.arkaplanSecili();
+                                crl.setCrlSeciliMi(true);
 
-                            secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
+                                secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
+                            }
                         }
                     }
                 }
@@ -1301,23 +1432,25 @@ public class MainActivity extends Activity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
                     {
-                        listSeciliCRL.add(crl);
-                        crl.arkaplanSecili();
-                        crl.setCrlSeciliMi(true);
-
-                        if (TIKLAMA_OLAYI != Sabit.OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
+                        if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                         {
-                            actionBarDegistir(Sabit.ACTIONBAR_SECIM);
-                            TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
-                            ma.actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
-                            duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
-                            basligiDuzenleninYaninaAl();
-                        }
-                        secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
-                    }
+                            listSeciliCRL.add(crl);
+                            crl.arkaplanSecili();
+                            crl.setCrlSeciliMi(true);
 
+                            if (TIKLAMA_OLAYI != Sabit.OLAY_SECIM_YAP)//ilk uzun basmada yapılacak işlemler
+                            {
+                                actionBarDegistir(Sabit.ACTIONBAR_SECIM);
+                                TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
+                                ma.actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
+                                duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+                                basligiDuzenleninYaninaAl();
+                            }
+                            secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
+                        }
+                    }
                     return true;
                 }
             });
@@ -2223,7 +2356,7 @@ public class MainActivity extends Activity
         {
             String zaman = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), cnt.getString(R.string.onay), cnt.getString(R.string.iptal), cnt.getString(R.string.tamam), zaman, Sabit.ALERTDIALOG_EDITTEXT);
+            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), getString(R.string.onay), getString(R.string.iptal), getString(R.string.tamam), zaman, Sabit.ALERTDIALOG_EDITTEXT);
             final AlertDialog alert = builder.create();
             alert.setCanceledOnTouchOutside(true);
             alert.show();
@@ -2238,7 +2371,7 @@ public class MainActivity extends Activity
                     final String yedekAdi = builder.getAlertET().getText().toString();
                     if (yedekAdi.isEmpty())//edittext boşken tamam'a tıklandı
                     {
-                        Toast.makeText(getActivity(), cnt.getString(R.string.yedek_adi_bos_olamaz), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.yedek_adi_bos_olamaz), Toast.LENGTH_LONG).show();
                     }
                     else
                     {
@@ -2248,7 +2381,7 @@ public class MainActivity extends Activity
                         File fileHedef = new File(hedefDosya);
                         if (fileHedef.exists())
                         {
-                            CustomAlertDialogBuilder builder2 = new CustomAlertDialogBuilder(getActivity(), cnt.getString(R.string.onay), cnt.getString(R.string.iptal), cnt.getString(R.string.tamam), cnt.getString(R.string.bu_isme_sahip_dosya_var_uzerine_yazilsin_mi), Sabit.ALERTDIALOG_TEXTVIEW);
+                            CustomAlertDialogBuilder builder2 = new CustomAlertDialogBuilder(getActivity(), getString(R.string.onay), getString(R.string.iptal), getString(R.string.tamam), getString(R.string.bu_isme_sahip_dosya_var_uzerine_yazilsin_mi), Sabit.ALERTDIALOG_TEXTVIEW);
                             final AlertDialog alert2 = builder2.create();
                             alert2.show();
 
@@ -2905,13 +3038,13 @@ public class MainActivity extends Activity
         {
             if (seciliCRL.getId() == 0)
             {
-                getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-                getActivity().getActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>/</font>"));
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>/</font>"));
             }
             else
             {
-                getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                getActivity().getActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + kategoriYolunuGetir(String.valueOf(seciliCRL.getId())) + "</font>"));
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + kategoriYolunuGetir(String.valueOf(seciliCRL.getId())) + "</font>"));
                 //getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
             }
         }
@@ -2928,7 +3061,6 @@ public class MainActivity extends Activity
         //actionbar da renk tusuna dokunulduğu zaman ekrana gelen alertdialogu olusturur
         public void renkDialogunuOlustur()
         {
-            //LinearLayout alertLL = new RenkDugmeleri(getActivity(), seciliCRL.getRenk(), listeRenkler, this);
             RenkDugmeleri alertLL = new RenkDugmeleri(getActivity(), seciliCRL.getRenk(), listeRenkler);
             alertLL.setCagiranYer(alertLL.CAGIRAN_YER_FRAGMENT, this);
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), cnt.getString(R.string.renk), cnt.getString(R.string.iptal), alertLL, Sabit.ALERTDIALOG_CUSTOM_VIEW);
@@ -3029,26 +3161,6 @@ public class MainActivity extends Activity
             }
         }
 
-        /*
-        public void kaydinRenkBilgisiniGuncelle(String secilenRenk)
-        {
-            alertRenk.dismiss();
-            Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
-            //Node nodeRenk = element.getChildNodes().item(1);
-
-            Node nodeRenk = etiketiGetir(element, Sabit.XML_RENK);
-            if (nodeRenk == null)
-            {
-                ekranaHataYazdir("46", cnt.getString(R.string.xml_renk_etiketi_getirilemedi));
-            }
-            else
-            {
-                nodeRenk.setTextContent(secilenRenk);
-                documentToFile(Sabit.DOCUMENT_ASIL);
-            }
-        }
-        */
-
         //icine girilen kategori ve kayıt rengine göre ekranın rengini degistirir
         public void ekranRenginiDegistir()
         {
@@ -3096,10 +3208,10 @@ public class MainActivity extends Activity
             menuIkonEkle(menu, getResources().getDrawable(R.drawable.renk_degistir), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.renk_degistir), Sabit.ACTION_ANA_EKRAN_RENK_DEGISTIR);
             //menuIkonEkle(menu, getResources().getDrawable(R.drawable.kategori_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kategori_ekle), Sabit.ACTION_ANA_EKRAN_KATEGORI_EKLE);
             //menuIkonEkle(menu, getResources().getDrawable(R.drawable.kayit_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kayit_ekle), Sabit.ACTION_ANA_EKRAN_KAYIT_EKLE);
-            menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLE, 0, cnt.getString(R.string.yedekle));
-            menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEGI_YUKLE, 0, cnt.getString(R.string.yedegi_yukle));
-            menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLERI_GOSTER, 0, cnt.getString(R.string.yedek_dosyalari));
-            menu.add(0, Sabit.ACTION_ANA_EKRAN_AYARLAR, 0, cnt.getString(R.string.ayarlar));
+            //menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLE, 0, cnt.getString(R.string.yedekle));
+            //menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEGI_YUKLE, 0, cnt.getString(R.string.yedegi_yukle));
+            //menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLERI_GOSTER, 0, cnt.getString(R.string.yedek_dosyalari));
+            //menu.add(0, Sabit.ACTION_ANA_EKRAN_AYARLAR, 0, cnt.getString(R.string.ayarlar));
         }
 
         public void menuSecim(Menu menu)
@@ -3349,6 +3461,7 @@ public class MainActivity extends Activity
                 case Sabit.ACTION_YENI_KATEGORI_RENK_DEGISTIR:
                     renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
                     return true;
+
                 case Sabit.ACTION_YENI_KATEGORI_KAYDET:
                 {
                     klavyeKapat();
@@ -3361,13 +3474,23 @@ public class MainActivity extends Activity
                     kategoriyiAnaEkranaEkle(etBaslik.getText().toString(), eklenenID, Sabit.DURUM_YENI, Sabit.KAYIT_ONTANIMLI_RENK, globalYerlesim);
                     ustSeviyeyiGetir();
                 }
-
                 return true;
                 //yeni kategori
 
                 case android.R.id.home:
-                    klavyeKapat();
-                    ustSeviyeyiGetir();
+                    switch (FRAGMENT_ETKIN_EKRAN)
+                    {
+                        case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
+                        case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
+                        case Sabit.FRAGMENT_AYAR_EKRANI:
+                        case Sabit.FRAGMENT_YEDEK_EKRANI:
+                            klavyeKapat();
+                            ustSeviyeyiGetir();
+                            break;
+
+                        default:
+                            mDrawerToggle.onOptionsItemSelected(item);
+                    }
                     break;
 
                 /*
@@ -3446,8 +3569,9 @@ public class MainActivity extends Activity
                     yeniKayitRelativeLayout.addView(llKayit);
 
                     ma.geriSimgesiniEkle();
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + cnt.getString(R.string.yeni_kategori) + "</font>"));
+
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + cnt.getString(R.string.yeni_kategori) + "</font>"));
 
                     return rootView;
                 }
@@ -3501,8 +3625,8 @@ public class MainActivity extends Activity
                     yeniKayitRelativeLayout.addView(llKayit);
 
                     ma.geriSimgesiniEkle();
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + cnt.getString(R.string.yeni_not) + "</font>"));
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + cnt.getString(R.string.yeni_not) + "</font>"));
 
                     return rootView;
                 }
@@ -3532,7 +3656,7 @@ public class MainActivity extends Activity
                     {
                         ekranRenginiDegistir(DEGER_AYAR_ARKAPLAN_RENGI);
                     }
-                    ma.geriSimgesiniEkle();
+                    ma.menuSimgesiEkle();
 
                     if (xmlEnBuyukID > 0)//xml de kayıt varsa ekrana eklesin
                     {
@@ -3598,8 +3722,8 @@ public class MainActivity extends Activity
                     yeniKayitRelativeLayout.addView(llBaslik);
                     yeniKayitRelativeLayout.addView(llKayit);
 
-                    ma.geriSimgesiniEkle();
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                    ma.menuSimgesiEkle();
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                     /*
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -3649,8 +3773,8 @@ public class MainActivity extends Activity
                     anaLinearLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.yedek_dosyalari) + "</font>")));
+                    //((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    //((ActionBarActivity)getActivity()).getSupportActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.yedek_dosyalari) + "</font>")));
                     ekranRenginiDegistir(Sabit.RENK_BEYAZ2);
                     ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ2);
                     ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
@@ -3686,8 +3810,8 @@ public class MainActivity extends Activity
                     anaLinearLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.ayarlar) + "</font>")));
+                    //((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    //((ActionBarActivity)getActivity()).getSupportActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.ayarlar) + "</font>")));
                     ekranRenginiDegistir(Sabit.RENK_BEYAZ2);
                     ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ2);
                     ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
