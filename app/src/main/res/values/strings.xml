@@ -9,7 +9,6 @@
     <!--hata mesajları-->
     <string name="xml_document_olusamadi">can not create data document</string>
     <string name="xml_ayar_document_olusamadi">can not create options data document</string>
-    <string name="xml_renk_etiketi_getirilemedi">can not find data color tag</string>
     <string name="xml_hata_olustu">an error occurred about data files, app closed</string>
     <string name="uygulama_klasoru_yok">application folder is not exist</string>
     <string name="klasor_hata_olustu">an error occurred about folders, app closed</string>
@@ -27,6 +26,7 @@
     <string name="kategori_adi_bos_olamaz">category name can not be empty</string>
     <string name="hatali_kayit_turu">wrong record type</string>
     <string name="hatali_kayit_durumu_turu">wrong record status type</string>
+    <string name="hatali_kategori_durumu_turu">wrong category status type</string>
     <string name="xml_silinirken_hata_olustu">error occurred while deleting file</string>
     <string name="yedek_silinirken_hata_olustu">error occurred while deleting backup file</string>
     <string name="hatali_actionbar_turu">wrong actionbar type</string>
@@ -34,6 +34,7 @@
     <string name="hatali_alertdialog_turu">wrong alertdialog type</string>
     <string name="bos_nesne">null object</string>
     <string name="hatali_sinif">wrong class</string>
+    <string name="hatali_action_id">wrong action id</string>
 
     <string name="renk">color</string>
     <string name="dosya">file</string>
@@ -66,6 +67,7 @@
     <string name="not">note</string>
     <string name="yeni_not">new note</string>
     <string name="yeni_kategori">new category</string>
+    <string name="duzenle">edit</string>
     <string name="secilen_kayitlar_silinsin_mi">Delete selected records ?</string>
     <string name="kayit_silinsin_mi">Delete record ?</string>
     <string name="sutun_sayisi">column number</string>

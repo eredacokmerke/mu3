@@ -20,7 +20,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -187,6 +186,7 @@ public class MainActivity extends ActionBarActivity
         Toast.makeText(cnt, cnt.getString(R.string.hata) + "[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 
+    /*
     //kategorinin renk degerinin dondurur
     public static String kategoriRenkBilgisiniGetir(String kategoriID)
     {
@@ -201,6 +201,21 @@ public class MainActivity extends ActionBarActivity
         else
         {
             return nodeRenk.getTextContent();
+        }
+    }
+    */
+
+    public static String etiketBilgisiniGetir(Element element, String xmlEtiketi)
+    {
+        Node node = etiketiGetir(element, xmlEtiketi);
+        if (node == null)
+        {
+            ekranaHataYazdir("39", cnt.getString(R.string.xml_etiket_okunamadi) + " : " + xmlEtiketi);
+            return "";
+        }
+        else
+        {
+            return node.getTextContent();
         }
     }
 
@@ -314,7 +329,6 @@ public class MainActivity extends ActionBarActivity
 
         yanEkraniOlustur();
 
-
         File uygulamaKlasoru;
         File xmlYedekKlasoru;
         mResources = getResources();
@@ -334,15 +348,20 @@ public class MainActivity extends ActionBarActivity
 
                 if (xmlDosyasiKontrolEt() && xmlAyarDosyasiKontrolEt())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
                 {
+                    Element element = document.getElementById("0");
                     if (savedInstanceState == null)
                     {
-                        CustomRelativeLayout crl = new CustomRelativeLayout(cnt, kategoriRenkBilgisiniGetir("0"), 0);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-                        getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, 0, crl), Sabit.FRAGMENT_TAG).commit();
-                    }
+                        String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
+                        String baslik = etiketBilgisiniGetir(element, Sabit.XML_BASLIK);
+                        String durum = etiketBilgisiniGetir(element, Sabit.XML_DURUM);
 
+                        CustomRelativeLayout crl = new CustomRelativeLayout(cnt, baslik, renk, durum, 0);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                        getFragmentManager().beginTransaction().add(R.id.container, PlaceholderFragment.newInstanceKategori(crl), Sabit.FRAGMENT_TAG).commit();
+                    }
                     if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
                     {
-                        actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir("0"));
+                        String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
+                        actionBarArkaPlanDegistir(renk);
                     }
                     else
                     {
@@ -809,21 +828,13 @@ public class MainActivity extends ActionBarActivity
         {
             //string i xml dosyasına yazıyor
             BufferedWriter out = new BufferedWriter(new FileWriter(xmlDosyaYolu));
-            /*
-            out.write("<?xml version=\"1.0\"?><root>" +
-                    "<parca id=\"0\" durum=\"0\">" +
-                    "<baslik/>" +
-                    "<renk>" + Sabit.KATEGORI_ONTANIMLI_RENK + "</renk>" +
-                    "<yazilar/>" +
-                    "<altparca/>" +
-                    "</parca>" +
-                    "</root>");
-            */
+
             out.write("<?xml version=\"1.0\"?><" + Sabit.XML_ROOT + ">" +
-                    "<" + Sabit.XML_PARCA + " " + Sabit.XML_ID + "=\"0\" " + Sabit.XML_DURUM + "=\"0\">" +
+                    "<" + Sabit.XML_PARCA + " " + Sabit.XML_ID + "=\"0\">" +
                     "<" + Sabit.XML_BASLIK + "/>" +
                     "<" + Sabit.XML_RENK + ">" + Sabit.KATEGORI_ONTANIMLI_RENK + "</" + Sabit.XML_RENK + ">" +
                     "<" + Sabit.XML_YAZILAR + "/>" +
+                    "<" + Sabit.XML_DURUM + ">" + Sabit.DURUM_YENI + "</" + Sabit.XML_DURUM + ">" +
                     "<" + Sabit.XML_ALTPARCA + "/>" +
                     "</" + Sabit.XML_PARCA + ">" +
                     "</" + Sabit.XML_ROOT + ">");
@@ -915,21 +926,39 @@ public class MainActivity extends ActionBarActivity
         public PlaceholderFragment()
         {
             frag = this;
-        }
-
-        public static PlaceholderFragment newInstanceKategori(int secim, int kategoriID, CustomRelativeLayout crl)
-        {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            FRAGMENT_ETKIN_EKRAN = secim;
-            xmlParcaID = String.valueOf(kategoriID);
-            fragment.setHasOptionsMenu(true);
-
-            TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
-            seciliCRL = crl;
-
             listSeciliElemanDurumu = new ArrayList<>();
             listSeciliYedek = new ArrayList<>();
             listSeciliCRL = new ArrayList<>();
+        }
+
+        public static PlaceholderFragment newInstanceKategori(CustomRelativeLayout crl)
+        {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            //FRAGMENT_ETKIN_EKRAN = secim;
+            FRAGMENT_ETKIN_EKRAN = Sabit.FRAGMENT_KATEGORI_EKRANI;
+
+            xmlParcaID = String.valueOf(crl.getId());
+            fragment.setHasOptionsMenu(true);
+
+            ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+            TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
+            seciliCRL = crl;
+            elemanTuru = Sabit.ELEMAN_TUR_KATEGORI;
+
+            return fragment;
+        }
+
+        public static PlaceholderFragment newInstanceKategoriDuzenle()
+        {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            FRAGMENT_ETKIN_EKRAN = Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI;
+
+            //xmlParcaID = String.valueOf(crl.getId());
+            fragment.setHasOptionsMenu(true);
+
+            ACTIONBAR_TUR = Sabit.ACTIONBAR_KATEGORI_DEGISTIR;
+            TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
+            //seciliCRL = crl;
             elemanTuru = Sabit.ELEMAN_TUR_KATEGORI;
 
             return fragment;
@@ -943,12 +972,7 @@ public class MainActivity extends ActionBarActivity
 
             ACTIONBAR_TUR = Sabit.ACTIONBAR_DEGISTIR;
             seciliCRL = crl;
-
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
-
-            listSeciliElemanDurumu = new ArrayList<>();
-            listSeciliYedek = new ArrayList<>();
-            listSeciliCRL = new ArrayList<>();
             elemanTuru = Sabit.ELEMAN_TUR_KAYIT;
 
             return fragment;
@@ -959,10 +983,6 @@ public class MainActivity extends ActionBarActivity
             PlaceholderFragment fragment = new PlaceholderFragment();
             fragment.setHasOptionsMenu(true);
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
-
-            listSeciliElemanDurumu = new ArrayList<>();
-            listSeciliYedek = new ArrayList<>();
-            listSeciliCRL = new ArrayList<>();
 
             switch (tur)
             {
@@ -997,35 +1017,27 @@ public class MainActivity extends ActionBarActivity
             return fragment;
         }
 
-        public static PlaceholderFragment newInstanceYedek(int secim)
+        public static PlaceholderFragment newInstanceYedek()
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
-            FRAGMENT_ETKIN_EKRAN = secim;
+            FRAGMENT_ETKIN_EKRAN = Sabit.FRAGMENT_YEDEK_EKRANI;
             fragment.setHasOptionsMenu(true);
 
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
-
-            listSeciliElemanDurumu = new ArrayList<>();
-            listSeciliYedek = new ArrayList<>();
-            listSeciliCRL = new ArrayList<>();
             elemanTuru = Sabit.ELEMAN_TUR_YEDEK;
 
             return fragment;
         }
 
-        public static PlaceholderFragment newInstanceAyarlar(int secim)
+        public static PlaceholderFragment newInstanceAyarlar()
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            FRAGMENT_ETKIN_EKRAN = secim;
-            fragment.setArguments(args);
+            //Bundle args = new Bundle();
+            FRAGMENT_ETKIN_EKRAN = Sabit.FRAGMENT_AYAR_EKRANI;
+            //fragment.setArguments(args);
             fragment.setHasOptionsMenu(true);
 
             ACTIONBAR_TUR = Sabit.ACTIONBAR_AYAR;
-
-            listSeciliElemanDurumu = new ArrayList<>();
-            listSeciliYedek = new ArrayList<>();
-            listSeciliCRL = new ArrayList<>();
             elemanTuru = Sabit.ELEMAN_TUR_AYARLAR;
 
             return fragment;
@@ -1093,6 +1105,12 @@ public class MainActivity extends ActionBarActivity
                     {
                         Node nodeKayit = nodeListKayitlar.item(j);
 
+                        String kayitBaslik = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_BASLIK);
+                        String kayitRenk = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_RENK);
+                        String kayitYazi = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_YAZI);
+                        String kayitDurum = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_DURUM);
+
+                        /*
                         String kayitBaslik = "";
                         String kayitYazi = "";
                         String kayitRenk = Sabit.KAYIT_ONTANIMLI_RENK;
@@ -1124,6 +1142,8 @@ public class MainActivity extends ActionBarActivity
                             kayitRenk = nodeRenk.getTextContent();
                         }
                         String kayitDurum = nodeKayit.getAttributes().getNamedItem(Sabit.XML_DURUM).getNodeValue();
+                        */
+
                         String kayitID = nodeKayit.getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue();
 
                         kayitlariAnaEkranaEkle(kayitBaslik, kayitYazi, Integer.parseInt(kayitID), kayitDurum, kayitRenk, globalYerlesim);
@@ -1137,6 +1157,13 @@ public class MainActivity extends ActionBarActivity
                     for (int j = 0; j < nodeListParcalar.getLength(); j++)
                     {
                         Node nodeParca = nodeListParcalar.item(j);
+
+                        String kategoriBaslik = etiketBilgisiniGetir((Element) nodeParca, Sabit.XML_BASLIK);
+                        String kategoriRenk = etiketBilgisiniGetir((Element) nodeParca, Sabit.XML_RENK);
+                        String kategoriDurum = etiketBilgisiniGetir((Element) nodeParca, Sabit.XML_DURUM);
+
+
+                        /*
                         Node nodeBaslik = etiketiGetir((Element) nodeParca, Sabit.XML_BASLIK);
 
                         String kategoriBaslik = "";
@@ -1159,8 +1186,9 @@ public class MainActivity extends ActionBarActivity
                         {
                             kategoriRenk = nodeRenk.getTextContent();
                         }
+                        */
 
-                        String kategoriDurum = nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).getNodeValue();
+                        //String kategoriDurum = nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).getNodeValue();
                         String kategoriID = nodeParca.getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue();
 
                         kategoriyiAnaEkranaEkle(kategoriBaslik, Integer.parseInt(kategoriID), kategoriDurum, kategoriRenk, globalYerlesim);
@@ -1373,7 +1401,7 @@ public class MainActivity extends ActionBarActivity
         }
 
         //xml okunduktan xml deki bilgilere göre bir üst seviye alanlarını oluşturuyor
-        public void kategoriyiAnaEkranaEkle(final String baslik, final int kategoriID, final String durum, String renk, Yerlesim ylsm)
+        public void kategoriyiAnaEkranaEkle(final String baslik, int kategoriID, final String durum, String renk, Yerlesim ylsm)
         {
             final CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, "", Sabit.ELEMAN_TUR_KATEGORI, kategoriID, durum, renk, this, ylsm);//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
 
@@ -1390,13 +1418,11 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view)
                 {
-                    Log.d("uyg", "mDrawer : " + mDrawer.isDrawerOpen(mDrawerLayout));
-
                     if (!mDrawer.isDrawerOpen(mDrawerLayout))
                     {
                         if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
                         {
-                            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, kategoriID, crl), Sabit.FRAGMENT_TAG).commit();
+                            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(crl), Sabit.FRAGMENT_TAG).commit();
                         }
                         else if (TIKLAMA_OLAYI == Sabit.OLAY_SECIM_YAP)
                         {
@@ -1569,21 +1595,28 @@ public class MainActivity extends ActionBarActivity
                     Node nodeAltparca = nodeParcaCocuklari.item(i);//altparcaya giriliyor
                     Element yeniNodeParca = document.createElement(Sabit.XML_PARCA);//parca isimli etiket olşuturuluyor
                     yeniNodeParca.setAttribute(Sabit.XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
-                    yeniNodeParca.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);//parca ya id özelliği ekleniyor
+                    //yeniNodeParca.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);//parca ya id özelliği ekleniyor
                     nodeAltparca.appendChild(yeniNodeParca);//altparca etiketine parca ekleniyor
 
                     Node nodeParca = document.getElementById(String.valueOf(xmlEnBuyukID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
+
                     Element yeniNodeBaslik = document.createElement(Sabit.XML_BASLIK);//baslik etiketi oluşturuluyor
                     yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
 
                     Element yeniNodeRenk = document.createElement(Sabit.XML_RENK);//renk etiketi oluşturuluyor
                     yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
+
+                    Element yeniNodeDurum = document.createElement(Sabit.XML_DURUM);//durum etiketi oluşturuluyor
+                    yeniNodeDurum.setTextContent(Sabit.DURUM_YENI);//durum etiketine durum değeri giriliyor
+
                     Element yeniNodeYazi = document.createElement(Sabit.XML_YAZILAR);//yazi etiketi oluşturuluyor
+
                     Element yeniNodeAltparca = document.createElement(Sabit.XML_ALTPARCA);//altparca etiketi oluşturuluyor
 
                     nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
                     nodeParca.appendChild(yeniNodeRenk);//parca etiketine renk etiketi ekleniyor
                     nodeParca.appendChild(yeniNodeYazi);//parca etiketine yazi etiketi ekleniyor
+                    nodeParca.appendChild(yeniNodeDurum);//parca etiketine durum etiketi ekleniyor
                     nodeParca.appendChild(yeniNodeAltparca);//parca etiketine altparca etiketi ekleniyor
                     break;
                 }
@@ -1601,7 +1634,10 @@ public class MainActivity extends ActionBarActivity
 
             if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
             {
-                ma.actionBarArkaPlanDegistir(kategoriRenkBilgisiniGetir(xmlParcaID));
+                Element element = document.getElementById(xmlParcaID);
+                String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
+
+                ma.actionBarArkaPlanDegistir(renk);
             }
             else
             {
@@ -1677,10 +1713,20 @@ public class MainActivity extends ActionBarActivity
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case Sabit.FRAGMENT_KAYIT_EKRANI:
+                case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
+                case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
+                case Sabit.FRAGMENT_YEDEK_EKRANI:
+                case Sabit.FRAGMENT_AYAR_EKRANI:
+                case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
                 {
-                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), Sabit.FRAGMENT_TAG).commit();
-                    ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+                    Element element = document.getElementById(xmlParcaID);
+                    String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
+                    String baslik = etiketBilgisiniGetir(element, Sabit.XML_BASLIK);
+                    String durum = etiketBilgisiniGetir(element, Sabit.XML_DURUM);
+
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, renk, durum, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(crl), Sabit.FRAGMENT_TAG).commit();
+                    //ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
                     /*
                     FragmentManager fm = getFragmentManager();
 
@@ -1692,23 +1738,31 @@ public class MainActivity extends ActionBarActivity
 
                     break;
                 }
+
                 case Sabit.FRAGMENT_KATEGORI_EKRANI:
                 {
                     Element element = document.getElementById(xmlParcaID);
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue();
                     xmlParcaID = ustSeviyeID;
-                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    element = document.getElementById(xmlParcaID);//ust seviye id yi alinca yeni element olusturuluyor
 
-                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), Sabit.FRAGMENT_TAG).commit();
-                    ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+                    String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
+                    String baslik = etiketBilgisiniGetir(element, Sabit.XML_BASLIK);
+                    String durum = etiketBilgisiniGetir(element, Sabit.XML_DURUM);
+
+                    CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, renk, durum, Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    //CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(crl), Sabit.FRAGMENT_TAG).commit();
+                    //ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
 
                     break;
                 }
+                /*
                 case Sabit.FRAGMENT_YEDEK_EKRANI:
                 {
                     CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), Sabit.FRAGMENT_TAG).commit();
-                    ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+                    //ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
 
                     break;
                 }
@@ -1716,7 +1770,7 @@ public class MainActivity extends ActionBarActivity
                 {
                     CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), Sabit.FRAGMENT_TAG).commit();
-                    ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+                    //ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
 
                     break;
                 }
@@ -1724,7 +1778,7 @@ public class MainActivity extends ActionBarActivity
                 {
                     CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), Sabit.FRAGMENT_TAG).commit();
-                    ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+                    //ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
 
                     break;
                 }
@@ -1732,10 +1786,11 @@ public class MainActivity extends ActionBarActivity
                 {
                     CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir(xmlParcaID), Integer.parseInt(xmlParcaID));//tamam'a tıklanıldığı zaman ana ekrana eklenecek küçük ekran
                     getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, Integer.parseInt(xmlParcaID), crl), Sabit.FRAGMENT_TAG).commit();
-                    ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
+                    //ACTIONBAR_TUR = Sabit.ACTIONBAR_EKLE;
 
                     break;
                 }
+                */
                 default:
                     ekranaHataYazdir("14", cnt.getString(R.string.hatali_fragment_id) + " : " + FRAGMENT_ETKIN_EKRAN);
             }
@@ -1745,7 +1800,9 @@ public class MainActivity extends ActionBarActivity
         public int xmlDosyasinaKayitEkle(String baslik, String yazi, String renk)
         {
             xmlEnBuyukID++;
-            kategoriDurumunuGuncelle(xmlParcaID, Sabit.DURUM_YENI);
+            //kategoriDurumunuGuncelle(xmlParcaID, Sabit.DURUM_YENI);
+            Element element = document.getElementById(String.valueOf(xmlParcaID));
+            etiketiGuncelle(element, Sabit.DURUM_YENI, Sabit.XML_DURUM);
 
             Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
             NodeList nodeParcaCocuklari = nodeMevcutParca.getChildNodes();//parcanın cocuk etiketleri alnıyor
@@ -1753,10 +1810,10 @@ public class MainActivity extends ActionBarActivity
             {
                 if (nodeParcaCocuklari.item(i).getNodeName().equals(Sabit.XML_YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
                 {
-                    int eklenenID = xmlEnBuyukID;
+                    //int eklenenID = xmlEnBuyukID;
                     Element yeniNodeKayit = document.createElement(Sabit.XML_KAYIT);//kayıt etiketi olusturuyor
                     yeniNodeKayit.setAttribute(Sabit.XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
-                    yeniNodeKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);//parca ya durum özelliği ekleniyor
+                    //yeniNodeKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);//parca ya durum özelliği ekleniyor
 
                     StringBuilder str = new StringBuilder(yazi);//alt satıra geçmeyi anlayabilmek için \n <br> ile değiştiriliyor
                     int sayac = 0;
@@ -1780,6 +1837,10 @@ public class MainActivity extends ActionBarActivity
                     Element yeniNodeRenk = document.createElement(Sabit.XML_RENK);//renk etiketi oluşturuluyor
                     yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
                     yeniNodeKayit.appendChild(yeniNodeRenk);
+
+                    Element yeniNodeDurum = document.createElement(Sabit.XML_DURUM);//renk etiketi oluşturuluyor
+                    yeniNodeDurum.setTextContent(Sabit.DURUM_YENI);//renk etiketine renk değeri giriliyor
+                    yeniNodeKayit.appendChild(yeniNodeDurum);
 
                     nodeParcaCocuklari.item(i).appendChild(yeniNodeKayit);//yazilar etiketinin içine kayit etiketini ekliyor
 
@@ -1845,7 +1906,7 @@ public class MainActivity extends ActionBarActivity
         }
 
         //sil tusuna basıldığı zaman secili elemanları siler
-        public void seciliElemanlariSil()
+        public void seciliElemanlariSilDiyaloguOlustur()
         {
             final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), cnt.getString(R.string.onay), cnt.getString(R.string.iptal), cnt.getString(R.string.tamam), cnt.getString(R.string.secilen_kayitlar_silinsin_mi), Sabit.ALERTDIALOG_TEXTVIEW);
             final AlertDialog alert = builder.create();
@@ -1858,6 +1919,40 @@ public class MainActivity extends ActionBarActivity
                 {
                     seciliElemanlariSil(listSeciliCRL);
                     seciliElemanListeleriniSifirla();
+                    alert.dismiss();
+                }
+            });
+            alert.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    alert.dismiss();
+                }
+            });
+        }
+
+        public void kategoriSilDiyaloguOlustur()
+        {
+            final CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getActivity(), cnt.getString(R.string.onay), cnt.getString(R.string.iptal), cnt.getString(R.string.tamam), cnt.getString(R.string.secilen_kayitlar_silinsin_mi), Sabit.ALERTDIALOG_TEXTVIEW);
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
+
+                    String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue();
+                    xmlParcaID = ustSeviyeID;
+
+                    element.getParentNode().removeChild(element);
+                    documentToFile(Sabit.DOCUMENT_ASIL);
+
+                    ustSeviyeyiGetir();
+
                     alert.dismiss();
                 }
             });
@@ -1899,7 +1994,8 @@ public class MainActivity extends ActionBarActivity
                     }
                 });
 
-                klavyeKapat(etDegisecek.getWindowToken());
+                //klavyeKapat(etDegisecek.getWindowToken());
+                klavyeKapat();
             }
             else
             {
@@ -1950,7 +2046,7 @@ public class MainActivity extends ActionBarActivity
                             break;
 
                         case Sabit.ELEMAN_TUR_KATEGORI:
-                            kategoriCocuklarDurum(element, Sabit.DURUM_YENI);
+                            kategoriCocuklariniDurumunuGuncelle(element, Sabit.DURUM_YENI);
                             crl.arkaplanKategori();
                             break;
 
@@ -1983,7 +2079,7 @@ public class MainActivity extends ActionBarActivity
                     switch (crl.getCrlTur())
                     {
                         case Sabit.ELEMAN_TUR_KATEGORI:
-                            kategoriCocuklarDurum(element, Sabit.DURUM_TAMAMLANDI);
+                            kategoriCocuklariniDurumunuGuncelle(element, Sabit.DURUM_TAMAMLANDI);
                             crl.arkaplanKategori();
                             break;
 
@@ -2009,7 +2105,8 @@ public class MainActivity extends ActionBarActivity
             documentToFile(Sabit.DOCUMENT_ASIL);
         }
 
-        public void kategoriCocuklarDurum(Element elementKategori, String durum)
+        //kategori altındaki bilesenlerin durumlarını gunceller
+        public void kategoriCocuklariniDurumunuGuncelle(Element elementKategori, String durum)
         {
             NodeList nodeList = elementKategori.getChildNodes();
 
@@ -2020,7 +2117,8 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListKayitlar = nodeList.item(i).getChildNodes();
                     for (int j = 0; j < nodeListKayitlar.getLength(); j++)
                     {
-                        nodeListKayitlar.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(durum);
+                        etiketiGuncelle((Element) nodeListKayitlar.item(j), durum, Sabit.XML_DURUM);
+                        //nodeListKayitlar.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(durum);
                     }
                 }
                 else if (nodeList.item(i).getNodeName().equals(Sabit.XML_ALTPARCA))
@@ -2028,18 +2126,21 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListAltParca = nodeList.item(i).getChildNodes();
                     for (int j = 0; j < nodeListAltParca.getLength(); j++)
                     {
-                        nodeListAltParca.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(durum);
-                        kategoriCocuklarDurum((Element) nodeListAltParca.item(j), durum);
+                        //nodeListAltParca.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(durum);
+                        etiketiGuncelle((Element) nodeListAltParca.item(j), durum, Sabit.XML_DURUM);
+                        kategoriCocuklariniDurumunuGuncelle((Element) nodeListAltParca.item(j), durum);
                     }
                 }
             }
         }
 
+        /*
         public void kategoriDurumunuGuncelle(String id, String durum)
         {
             Element elementKayit = document.getElementById(id);
             elementKayit.setAttribute(Sabit.XML_DURUM, durum);
         }
+        */
 
         //parcanın yazilarini ve altparcalarını kontrol eder. hepsi tamamlanmiş ise parcayı tamamlandı olarak işaretler
         public boolean parcayiIsaretleTamamlandi(Node nodeParca)
@@ -2058,11 +2159,19 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListKayit = nodeYazilar.getChildNodes();
                     for (int j = 0; j < nodeListKayit.getLength(); j++)
                     {
+                        if (etiketiGetir((Element) nodeListKayit.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
+                        {
+                            sonucYazilar = false;
+                            break;
+                        }
+
+                        /*
                         if (nodeListKayit.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).getNodeValue().equals(Sabit.DURUM_YENI))
                         {
                             sonucYazilar = false;
                             break;
                         }
+                        */
                     }
                 }
                 else if (nodeListParca.item(i).getNodeName().equals(Sabit.XML_ALTPARCA))
@@ -2070,11 +2179,19 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListAltParca = nodeListParca.item(i).getChildNodes();
                     for (int j = 0; j < nodeListAltParca.getLength(); j++)
                     {
+                        if (etiketiGetir((Element) nodeListAltParca.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
+                        {
+                            sonucAltParcalar = false;
+                            break;
+                        }
+
+                        /*
                         if (nodeListAltParca.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).getNodeValue().equals(Sabit.DURUM_YENI))
                         {
                             sonucAltParcalar = false;
                             break;
                         }
+                        */
                     }
                 }
             }
@@ -2086,7 +2203,9 @@ public class MainActivity extends ActionBarActivity
             {
                 if (sonucYazilar && sonucAltParcalar)//butun kayitlar ve kategoriler tamamlandı olarak işaretlenmiş. parca da tamamlandı olarak işaretlenecek
                 {
-                    nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(Sabit.DURUM_TAMAMLANDI);
+                    etiketiGuncelle((Element) nodeParca, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
+
+                    //nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(Sabit.DURUM_TAMAMLANDI);
                     documentToFile(Sabit.DOCUMENT_ASIL);
 
                     return true;
@@ -2108,7 +2227,9 @@ public class MainActivity extends ActionBarActivity
             }
             else
             {
-                nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(Sabit.DURUM_YENI);
+                etiketiGuncelle((Element) nodeParca, Sabit.DURUM_YENI, Sabit.XML_DURUM);
+
+//                nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(Sabit.DURUM_YENI);
                 documentToFile(Sabit.DOCUMENT_ASIL);
 
                 return true;
@@ -2133,9 +2254,13 @@ public class MainActivity extends ActionBarActivity
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(Sabit.DURUM_YENI);
-            //seciliCRL.setDurum(Sabit.DURUM_YENI);
+
             Element elementKayit = document.getElementById(idd);
-            elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);
+            //elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);
+
+            etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
+
+
             documentToFile(Sabit.DOCUMENT_ASIL);
 
             return elementKayit;
@@ -2148,7 +2273,10 @@ public class MainActivity extends ActionBarActivity
             {
                 seciliCRL.setDurum(Sabit.DURUM_YENI);
                 Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
-                elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);
+                //elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);
+
+                etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
+
                 documentToFile(Sabit.DOCUMENT_ASIL);
 
                 return elementKayit;
@@ -2172,7 +2300,8 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
-        public void kayitDegistir()
+        //kayit degistime ekraninda kaydete basıldı
+        public void kayitDegistirKaydet()
         {
             EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
             EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);//kayit degistirme ekranındaki yazi bilgisi
@@ -2184,6 +2313,30 @@ public class MainActivity extends ActionBarActivity
             etiketiGuncelle(elementKayit, etBaslik.getText().toString(), Sabit.XML_BASLIK);
             etiketiGuncelle(elementKayit, etYazi.getText().toString(), Sabit.XML_YAZI);
             etiketiGuncelle(elementKayit, renkKodu, Sabit.XML_RENK);
+            etiketiGuncelle(elementKayit, seciliCRL.getDurum(), Sabit.XML_DURUM);
+
+            //final int eklenenID = xmlDosyasinaKayitEkle(etBaslik.getText().toString(), etKayit.getText().toString(), renkKodu2);
+            //anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
+            //kayitlariAnaEkranaEkle(etBaslik.getText().toString(), etKayit.getText().toString(), eklenenID, Sabit.DURUM_YENI, Sabit.KAYIT_ONTANIMLI_RENK, globalYerlesim);
+
+            documentToFile(Sabit.DOCUMENT_ASIL);
+
+            ustSeviyeyiGetir();
+        }
+
+        public void kategoriDegistirKaydet()
+        {
+            EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
+            //EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);//kayit degistirme ekranındaki yazi bilgisi
+            LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+            String renkKodu = arkaplanRenginiGetir(llBaslik2);
+
+            Element elementKategori = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
+
+            etiketiGuncelle(elementKategori, etBaslik.getText().toString(), Sabit.XML_BASLIK);
+            //etiketiGuncelle(elementKategori, etYazi.getText().toString(), Sabit.XML_YAZI);
+            etiketiGuncelle(elementKategori, renkKodu, Sabit.XML_RENK);
+            etiketiGuncelle(elementKategori, seciliCRL.getDurum(), Sabit.XML_DURUM);
 
             //final int eklenenID = xmlDosyasinaKayitEkle(etBaslik.getText().toString(), etKayit.getText().toString(), renkKodu2);
             //anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
@@ -2213,10 +2366,12 @@ public class MainActivity extends ActionBarActivity
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(Sabit.DURUM_TAMAMLANDI);
-            //seciliCRL.setDurum(Sabit.DURUM_TAMAMLANDI);
             Element elementKayit = document.getElementById(idd);
-            elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_TAMAMLANDI);
-            documentToFile(Sabit.DOCUMENT_ASIL);
+            ////elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_TAMAMLANDI);
+
+            //etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
+
+            //documentToFile(Sabit.DOCUMENT_ASIL);
 
             return elementKayit;
         }
@@ -2228,8 +2383,11 @@ public class MainActivity extends ActionBarActivity
             {
                 seciliCRL.setDurum(Sabit.DURUM_TAMAMLANDI);
                 Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
-                elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_TAMAMLANDI);
-                documentToFile(Sabit.DOCUMENT_ASIL);
+                ////elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_TAMAMLANDI);
+
+                //etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
+
+                //documentToFile(Sabit.DOCUMENT_ASIL);
 
                 return elementKayit;
             }
@@ -2241,18 +2399,38 @@ public class MainActivity extends ActionBarActivity
         }
 
         //duruma göre actionbarDegistirdeki simgeleri gösterir, gizler
-        public void actionBarDegistirSimgeDurumu(String durum)
+        public void actionBarDurumSimgesiDegistirKayit(String durum)
         {
             switch (durum)
             {
                 case Sabit.DURUM_TAMAMLANDI:
-                    menuActionBar.findItem(Sabit.ACTION_DEGISTIR_TAMAM).setVisible(false);
-                    menuActionBar.findItem(Sabit.ACTION_DEGISTIR_YENI).setVisible(true);
+                    menuActionBar.findItem(Sabit.ACTION_KAYIT_DEGISTIR_TAMAM).setVisible(false);
+                    menuActionBar.findItem(Sabit.ACTION_KAYIT_DEGISTIR_YENI).setVisible(true);
                     break;
 
                 case Sabit.DURUM_YENI:
-                    menuActionBar.findItem(Sabit.ACTION_DEGISTIR_TAMAM).setVisible(true);
-                    menuActionBar.findItem(Sabit.ACTION_DEGISTIR_YENI).setVisible(false);
+                    menuActionBar.findItem(Sabit.ACTION_KAYIT_DEGISTIR_TAMAM).setVisible(true);
+                    menuActionBar.findItem(Sabit.ACTION_KAYIT_DEGISTIR_YENI).setVisible(false);
+                    break;
+
+                default:
+                    ekranaHataYazdir("36", cnt.getString(R.string.hatali_kayit_durumu_turu) + " : " + durum);
+            }
+        }
+
+        //duruma göre actionbarDegistirdeki simgeleri gösterir, gizler
+        public void actionBarDurumSimgesiDegistirKategori(String durum)
+        {
+            switch (durum)
+            {
+                case Sabit.DURUM_TAMAMLANDI:
+                    menuActionBar.findItem(Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM).setVisible(false);
+                    menuActionBar.findItem(Sabit.ACTION_KATEGORI_DEGISTIR_YENI).setVisible(true);
+                    break;
+
+                case Sabit.DURUM_YENI:
+                    menuActionBar.findItem(Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM).setVisible(true);
+                    menuActionBar.findItem(Sabit.ACTION_KATEGORI_DEGISTIR_YENI).setVisible(false);
                     break;
 
                 default:
@@ -2499,8 +2677,14 @@ public class MainActivity extends ActionBarActivity
                                 dosyaKopyala(xmlYedekKlasorYolu + "/" + vv.getText() + "." + Sabit.XML_DOSYA_UZANTISI, xmlDosyaYolu);
 
                                 document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-                                CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), kategoriRenkBilgisiniGetir("0"), 0);
-                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(Sabit.FRAGMENT_KATEGORI_EKRANI, 0, crl), Sabit.FRAGMENT_TAG).commit();
+
+                                Element element = document.getElementById("0");
+                                String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
+                                String baslik = etiketBilgisiniGetir(element, Sabit.XML_BASLIK);
+                                String durum = etiketBilgisiniGetir(element, Sabit.XML_DURUM);
+
+                                CustomRelativeLayout crl = new CustomRelativeLayout(getActivity(), baslik, renk, durum, 0);
+                                getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategori(crl), Sabit.FRAGMENT_TAG).commit();
 
                                 /*
                                 anaRelativeLayout.removeAllViews();
@@ -2546,7 +2730,7 @@ public class MainActivity extends ActionBarActivity
         //sistemdeki xml yedeklerini gosterir
         public void yedekDosyalariGoster()
         {
-            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceYedek(Sabit.FRAGMENT_YEDEK_EKRANI), Sabit.FRAGMENT_TAG).commit();
+            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceYedek(), Sabit.FRAGMENT_TAG).commit();
         }
 
         public void seciliYedekDosyalariniSil()
@@ -2619,7 +2803,7 @@ public class MainActivity extends ActionBarActivity
 
         public void ayarEkraniniAc()
         {
-            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceAyarlar(Sabit.FRAGMENT_AYAR_EKRANI)).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceAyarlar()).addToBackStack(null).commit();
         }
 
         //ayar degerlerini öntanımlı değerler yapar
@@ -3085,7 +3269,23 @@ public class MainActivity extends ActionBarActivity
             switch (getElemanTuru())
             {
                 case Sabit.ELEMAN_TUR_KATEGORI:
+                {
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
+                    alertRenk.dismiss();
 
+                    //actionbar rengi sabit ise degistirilmesin
+                    if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
+                    {
+                        ma.actionBarArkaPlanDegistir(secilenRenk);
+                    }
+                    else
+                    {
+                        ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
+                    }
+                }
+
+                    /*
                     alertRenk.dismiss();
 
                     Element element = document.getElementById(String.valueOf(xmlParcaID));
@@ -3109,8 +3309,9 @@ public class MainActivity extends ActionBarActivity
                     }
 
                     seciliCRL.setRenk(secilenRenk);
+                    */
 
-                    break;
+                break;
 
                 case Sabit.ELEMAN_TUR_KAYIT:
                 {
@@ -3205,7 +3406,7 @@ public class MainActivity extends ActionBarActivity
 
         public void menuAnaEkran(Menu menu)
         {
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.renk_degistir), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.renk_degistir), Sabit.ACTION_ANA_EKRAN_RENK_DEGISTIR);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.duzenle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.duzenle), Sabit.ACTION_KATEGORI_DUZENLE);
             //menuIkonEkle(menu, getResources().getDrawable(R.drawable.kategori_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kategori_ekle), Sabit.ACTION_ANA_EKRAN_KATEGORI_EKLE);
             //menuIkonEkle(menu, getResources().getDrawable(R.drawable.kayit_ekle), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kayit_ekle), Sabit.ACTION_ANA_EKRAN_KAYIT_EKLE);
             //menu.add(0, Sabit.ACTION_ANA_EKRAN_YEDEKLE, 0, cnt.getString(R.string.yedekle));
@@ -3223,11 +3424,20 @@ public class MainActivity extends ActionBarActivity
 
         public void menuKayitDegistir(Menu menu)
         {
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.renk_degistir), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.renk_degistir), Sabit.ACTION_DEGISTIR_RENK_DEGISTIR);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kaydet), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kaydet), Sabit.ACTION_DEGISTIR_KAYDET);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.tamam), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.tamamla), Sabit.ACTION_DEGISTIR_TAMAM);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.yeni), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.yeni), Sabit.ACTION_DEGISTIR_YENI);
-            menuIkonEkle(menu, getResources().getDrawable(R.drawable.sil), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.sil), Sabit.ACTION_DEGISTIR_SIL);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.renk_degistir), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.renk_degistir), Sabit.ACTION_KAYIT_DEGISTIR_RENK_DEGISTIR);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kaydet), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kaydet), Sabit.ACTION_KAYIT_DEGISTIR_KAYDET);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.tamam), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.tamamla), Sabit.ACTION_KAYIT_DEGISTIR_TAMAM);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.yeni), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.yeni), Sabit.ACTION_KAYIT_DEGISTIR_YENI);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.sil), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.sil), Sabit.ACTION_KAYIT_DEGISTIR_SIL);
+        }
+
+        public void menuKategoriDegistir(Menu menu)
+        {
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.renk_degistir), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.renk_degistir), Sabit.ACTION_KATEGORI_DEGISTIR_RENK_DEGISTIR);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.kaydet), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kaydet), Sabit.ACTION_KATEGORI_DEGISTIR_KAYDET);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.tamam), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.tamamla), Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.yeni), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.yeni), Sabit.ACTION_KATEGORI_DEGISTIR_YENI);
+            menuIkonEkle(menu, getResources().getDrawable(R.drawable.sil), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.sil), Sabit.ACTION_KATEGORI_DEGISTIR_SIL);
         }
 
         public void menuYedek(Menu menu)
@@ -3306,11 +3516,28 @@ public class MainActivity extends ActionBarActivity
                     switch (seciliCRL.getDurum())
                     {
                         case Sabit.DURUM_TAMAMLANDI:
-                            menu.findItem(Sabit.ACTION_DEGISTIR_TAMAM).setVisible(false);
+                            menu.findItem(Sabit.ACTION_KAYIT_DEGISTIR_TAMAM).setVisible(false);
                             break;
 
                         case Sabit.DURUM_YENI:
-                            menu.findItem(Sabit.ACTION_DEGISTIR_YENI).setVisible(false);
+                            menu.findItem(Sabit.ACTION_KAYIT_DEGISTIR_YENI).setVisible(false);
+                            break;
+
+                        default:
+                            ekranaHataYazdir("26", cnt.getString(R.string.hatali_kategori_durumu_turu) + " : " + seciliCRL.getDurum());
+                    }
+                    break;
+
+                case Sabit.ACTIONBAR_KATEGORI_DEGISTIR:
+                    menuKategoriDegistir(menu);
+                    switch (seciliCRL.getDurum())
+                    {
+                        case Sabit.DURUM_TAMAMLANDI:
+                            menu.findItem(Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM).setVisible(false);
+                            break;
+
+                        case Sabit.DURUM_YENI:
+                            menu.findItem(Sabit.ACTION_KATEGORI_DEGISTIR_YENI).setVisible(false);
                             break;
 
                         default:
@@ -3369,6 +3596,10 @@ public class MainActivity extends ActionBarActivity
                     actionBarDegistir(Sabit.ACTIONBAR_AYAR);
                     ayarEkraniniAc();
                     return true;
+
+                case Sabit.ACTION_KATEGORI_DUZENLE:
+                    getFragmentManager().beginTransaction().replace(R.id.container, PlaceholderFragment.newInstanceKategoriDuzenle()).addToBackStack(null).commit();
+                    return true;
                 //ana ekran
                 //secim
                 case Sabit.ACTION_SECIM_TAMAM:
@@ -3382,43 +3613,80 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_SECIM_SIL:
-                    seciliElemanlariSil();
+                    seciliElemanlariSilDiyaloguOlustur();
                     return true;
                 //secim
-                //degistir
-                case Sabit.ACTION_DEGISTIR_SIL:
+                //kayit degistir
+                case Sabit.ACTION_KAYIT_DEGISTIR_SIL:
                     kayitSilDiyaloguOlustur();
                     return true;
 
-                case Sabit.ACTION_DEGISTIR_TAMAM:
+                case Sabit.ACTION_KAYIT_DEGISTIR_TAMAM:
                     Element elementKayitTamam = kayitDurumunuTamamlandiYap();
                     if (elementKayitTamam != null)
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
-                        actionBarDegistirSimgeDurumu(Sabit.DURUM_TAMAMLANDI);
+                        actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_TAMAMLANDI);
                         Toast.makeText(getActivity(), cnt.getString(R.string.kayit_tamamlandi_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
                     }
                     return true;
 
-                case Sabit.ACTION_DEGISTIR_YENI:
+                case Sabit.ACTION_KAYIT_DEGISTIR_YENI:
                     Element elementKayitYeni = kayitDurumunuYeniYap();
                     if (elementKayitYeni != null)
                     {
                         ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
-                        actionBarDegistirSimgeDurumu(Sabit.DURUM_YENI);
+                        actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_YENI);
                         Toast.makeText(getActivity(), cnt.getString(R.string.kayit_yeni_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
                     }
                     return true;
 
-                case Sabit.ACTION_DEGISTIR_KAYDET:
-                    kayitDegistir();
+                case Sabit.ACTION_KAYIT_DEGISTIR_KAYDET:
+                    kayitDegistirKaydet();
                     klavyeKapat();
                     return true;
 
-                case Sabit.ACTION_DEGISTIR_RENK_DEGISTIR:
+                case Sabit.ACTION_KAYIT_DEGISTIR_RENK_DEGISTIR:
                     renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
                     return true;
-                //degistir
+                //kayit degistir
+                //kategori degistir
+                case Sabit.ACTION_KATEGORI_DEGISTIR_SIL:
+                    kategoriSilDiyaloguOlustur();
+                    return true;
+
+                case Sabit.ACTION_KATEGORI_DEGISTIR_RENK_DEGISTIR:
+                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
+                    return true;
+
+                case Sabit.ACTION_KATEGORI_DEGISTIR_KAYDET:
+                    kategoriDegistirKaydet();
+                    klavyeKapat();
+                    return true;
+
+                case Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM:
+                    Element elementKategoriTamam = kayitDurumunuTamamlandiYap();
+                    if (elementKategoriTamam != null)
+                    {
+                        ustParcaDurumunuKontrolEtTamamla(elementKategoriTamam);
+                        kategoriCocuklariniDurumunuGuncelle(elementKategoriTamam, Sabit.DURUM_TAMAMLANDI);
+                        actionBarDurumSimgesiDegistirKategori(Sabit.DURUM_TAMAMLANDI);
+                        Toast.makeText(getActivity(), cnt.getString(R.string.kayit_tamamlandi_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+
+                case Sabit.ACTION_KATEGORI_DEGISTIR_YENI:
+                    Element elementKategoriYeni = kayitDurumunuYeniYap();
+                    if (elementKategoriYeni != null)
+                    {
+                        ustParcaDurumunuKontrolEtYeni(elementKategoriYeni);
+                        kategoriCocuklariniDurumunuGuncelle(elementKategoriYeni, Sabit.DURUM_YENI);
+                        actionBarDurumSimgesiDegistirKategori(Sabit.DURUM_YENI);
+                        Toast.makeText(getActivity(), cnt.getString(R.string.kayit_yeni_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+
+                //kategori degistir
                 //yedek
                 case Sabit.ACTION_YEDEK_SIL:
                     seciliYedekDosyalariniSil();
@@ -3469,6 +3737,7 @@ public class MainActivity extends ActionBarActivity
                     EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);
                     LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
                     String renkKodu = arkaplanRenginiGetir(llBaslik);
+
                     int eklenenID = xmlDosyasinaKategoriEkle(etBaslik.getText().toString(), renkKodu);
                     anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
                     kategoriyiAnaEkranaEkle(etBaslik.getText().toString(), eklenenID, Sabit.DURUM_YENI, Sabit.KAYIT_ONTANIMLI_RENK, globalYerlesim);
@@ -3480,10 +3749,12 @@ public class MainActivity extends ActionBarActivity
                 case android.R.id.home:
                     switch (FRAGMENT_ETKIN_EKRAN)
                     {
+                        //case girdigi ekranlarda ustsol tus ust seviyeyi getirir, diger durumda yan paneli acar
                         case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
                         case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
                         case Sabit.FRAGMENT_AYAR_EKRANI:
                         case Sabit.FRAGMENT_YEDEK_EKRANI:
+                        case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
                             klavyeKapat();
                             ustSeviyeyiGetir();
                             break;
@@ -3492,6 +3763,10 @@ public class MainActivity extends ActionBarActivity
                             mDrawerToggle.onOptionsItemSelected(item);
                     }
                     break;
+
+                default:
+                    ekranaHataYazdir("55", cnt.getString(R.string.hatali_action_id) + " : " + item.getItemId());
+
 
                 /*
                 case R.id.action_onay_kaydet:
@@ -3520,6 +3795,62 @@ public class MainActivity extends ActionBarActivity
         {
             switch (FRAGMENT_ETKIN_EKRAN)
             {
+                case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
+                {
+                    View rootView = inflater.inflate(R.layout.fragment_yeni_kayit, container, false);
+                    fragmentRootViewYeniKayit = rootView;
+                    RelativeLayout yeniKayitRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.yeniKayitRelativeLayout);
+
+                    //klavye acilinca ekran yukarı dogru kaymasın sadece edittext oynasın
+                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+                    //yeni kayıt fragmentinde baslik kısmı
+                    LinearLayout llBaslik = new LinearLayout(getActivity());
+                    llBaslik.setId(llBaslikID);
+                    llBaslik.setBackgroundColor(Color.parseColor(seciliCRL.getRenk()));
+                    EditText etBaslik = new EditText(getActivity());
+                    etBaslik.setId(etBaslikID);
+                    etBaslik.setSingleLine(true);
+                    etBaslik.setHint(cnt.getString(R.string.baslik));
+                    etBaslik.setBackground(null);//edittext te altcizgi cikmasin
+                    etBaslik.setText(seciliCRL.getBaslik());
+                    LinearLayout.LayoutParams lpBaslik = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    lpBaslik.setMargins((int) dpGetir(20), (int) dpGetir(40), (int) dpGetir(20), (int) dpGetir(40));
+                    etBaslik.setLayoutParams(lpBaslik);
+                    llBaslik.addView(etBaslik);
+                    RelativeLayout.LayoutParams lpBaslik2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lpBaslik2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                    llBaslik.setLayoutParams(lpBaslik2);
+
+                    //yeni kayıt fragmentinde yazı kısmı
+                    LinearLayout llKayit = new LinearLayout(getActivity());
+                    EditText etKayit = new EditText(getActivity());
+                    etKayit.setId(etKayitID);
+                    etKayit.setHint(cnt.getString(R.string.not));
+                    etKayit.setBackground(null);//edittext te altcigi cikmasin
+                    LinearLayout.LayoutParams lpKayit = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    lpKayit.setMargins((int) dpGetir(20), 0, (int) dpGetir(20), 0);
+                    etKayit.setLayoutParams(lpKayit);
+                    llKayit.addView(etKayit);
+                    RelativeLayout.LayoutParams lpKayit2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lpKayit2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    lpKayit2.addRule(RelativeLayout.BELOW, llBaslik.getId());
+                    llKayit.setLayoutParams(lpKayit2);
+
+                    LinearLayout llYeniKayit = new LinearLayout(getActivity());
+                    llYeniKayit.setOrientation(LinearLayout.VERTICAL);
+                    RelativeLayout.LayoutParams lpYeniKayit = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    llYeniKayit.setLayoutParams(lpYeniKayit);
+                    yeniKayitRelativeLayout.addView(llBaslik);
+                    yeniKayitRelativeLayout.addView(llKayit);
+
+                    ma.geriSimgesiniEkle();
+
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + seciliCRL.getBaslik() + "</font>"));
+
+                    return rootView;
+                }
                 case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
                 {
                     View rootView = inflater.inflate(R.layout.fragment_yeni_kayit, container, false);

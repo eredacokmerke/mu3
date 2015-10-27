@@ -54,6 +54,7 @@ public class Sabit
     public static final int FRAGMENT_AYAR_EKRANI = 3;
     public static final int FRAGMENT_YENI_KAYIT_EKRANI = 4;
     public static final int FRAGMENT_YENI_KATEGORI_EKRANI = 5;
+    public static final int FRAGMENT_KATEGORI_DUZENLE_EKRANI = 6;
 
     //actionbar turu
     public static final int ACTIONBAR_EKLE = 0;
@@ -64,6 +65,7 @@ public class Sabit
     public static final int ACTIONBAR_AYAR = 5;
     public static final int ACTIONBAR_YENI_KAYIT = 6;
     public static final int ACTIONBAR_YENI_KATEGORI = 7;
+    public static final int ACTIONBAR_KATEGORI_DEGISTIR = 8;
 
     //elemana tıklandigi zaman yapilacak islemler
     public static final int OLAY_ICINE_GIR = 0;//tıklama elemanın içine girer
@@ -135,11 +137,11 @@ public class Sabit
     public static final int ACTION_SECIM_SIL = 7;
     public static final int ACTION_SECIM_YENI = 8;
     public static final int ACTION_SECIM_TAMAM = 9;
-    public static final int ACTION_DEGISTIR_RENK_DEGISTIR = 10;
-    public static final int ACTION_DEGISTIR_KAYDET = 11;
-    public static final int ACTION_DEGISTIR_YENI = 12;
-    public static final int ACTION_DEGISTIR_TAMAM = 13;
-    public static final int ACTION_DEGISTIR_SIL = 14;
+    public static final int ACTION_KAYIT_DEGISTIR_RENK_DEGISTIR = 10;
+    public static final int ACTION_KAYIT_DEGISTIR_KAYDET = 11;
+    public static final int ACTION_KAYIT_DEGISTIR_YENI = 12;
+    public static final int ACTION_KAYIT_DEGISTIR_TAMAM = 13;
+    public static final int ACTION_KAYIT_DEGISTIR_SIL = 14;
     public static final int ACTION_YEDEK_SIL = 15;
     public static final int ACTION_AYAR_ONTANIMLI = 16;
     public static final int ACTION_AYAR_KAYDET = 17;
@@ -147,4 +149,10 @@ public class Sabit
     public static final int ACTION_YENI_KAYIT_RENK_DEGISTIR = 19;
     public static final int ACTION_YENI_KATEGORI_KAYDET = 20;
     public static final int ACTION_YENI_KATEGORI_RENK_DEGISTIR = 21;
+    public static final int ACTION_KATEGORI_DUZENLE = 22;
+    public static final int ACTION_KATEGORI_DEGISTIR_RENK_DEGISTIR = 23;
+    public static final int ACTION_KATEGORI_DEGISTIR_KAYDET = 24;
+    public static final int ACTION_KATEGORI_DEGISTIR_YENI = 25;
+    public static final int ACTION_KATEGORI_DEGISTIR_TAMAM = 26;
+    public static final int ACTION_KATEGORI_DEGISTIR_SIL = 27;
 }
