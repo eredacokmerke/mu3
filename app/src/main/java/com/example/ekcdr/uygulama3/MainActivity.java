@@ -3804,6 +3804,9 @@ public class MainActivity extends ActionBarActivity
                     //klavye acilinca ekran yukarı dogru kaymasın sadece edittext oynasın
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+                    new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI);
+
+                    /*
                     //yeni kayıt fragmentinde baslik kısmı
                     LinearLayout llBaslik = new LinearLayout(getActivity());
                     llBaslik.setId(llBaslikID);
@@ -3843,6 +3846,7 @@ public class MainActivity extends ActionBarActivity
                     llYeniKayit.setLayoutParams(lpYeniKayit);
                     yeniKayitRelativeLayout.addView(llBaslik);
                     yeniKayitRelativeLayout.addView(llKayit);
+                    */
 
                     ma.geriSimgesiniEkle();
 
@@ -3860,6 +3864,9 @@ public class MainActivity extends ActionBarActivity
                     //klavye acilinca ekran yukarı dogru kaymasın sadece edittext oynasın
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+                    new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI);
+
+                    /*
                     //yeni kayıt fragmentinde baslik kısmı
                     LinearLayout llBaslik = new LinearLayout(getActivity());
                     llBaslik.setId(llBaslikID);
@@ -3898,6 +3905,7 @@ public class MainActivity extends ActionBarActivity
                     llYeniKayit.setLayoutParams(lpYeniKayit);
                     yeniKayitRelativeLayout.addView(llBaslik);
                     yeniKayitRelativeLayout.addView(llKayit);
+                    */
 
                     ma.geriSimgesiniEkle();
 
@@ -3916,6 +3924,9 @@ public class MainActivity extends ActionBarActivity
                     //klavye acilinca ekran yukarı dogru kaymasın sadece edittext oynasın
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+                    new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_YENI_KAYIT_EKRANI);
+
+                    /*
                     //yeni kayıt fragmentinde baslik kısmı
                     LinearLayout llBaslik = new LinearLayout(getActivity());
                     llBaslik.setId(llBaslikID);
@@ -3954,6 +3965,7 @@ public class MainActivity extends ActionBarActivity
                     llYeniKayit.setLayoutParams(lpYeniKayit);
                     yeniKayitRelativeLayout.addView(llBaslik);
                     yeniKayitRelativeLayout.addView(llKayit);
+                    */
 
                     ma.geriSimgesiniEkle();
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -4012,6 +4024,9 @@ public class MainActivity extends ActionBarActivity
                     fragmentRootViewYeniKayit = rootView;
                     RelativeLayout yeniKayitRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.yeniKayitRelativeLayout);
 
+                    new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_KAYIT_EKRANI);
+
+                    /*
                     //kayıt fragmentinde baslik kısmı
                     LinearLayout llBaslik = new LinearLayout(getActivity());
                     llBaslik.setId(llBaslikID);
@@ -4052,6 +4067,7 @@ public class MainActivity extends ActionBarActivity
                     llYeniKayit.setLayoutParams(lpYeniKayit);
                     yeniKayitRelativeLayout.addView(llBaslik);
                     yeniKayitRelativeLayout.addView(llKayit);
+                    */
 
                     ma.menuSimgesiEkle();
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
