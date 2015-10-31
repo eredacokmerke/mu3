@@ -15,7 +15,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -2438,6 +2437,7 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
+        /*
         public void klavyeAc(Context c, EditText et)
         {
             et.requestFocus();
@@ -2457,7 +2457,8 @@ public class MainActivity extends ActionBarActivity
             //imm.showSoftInput(et, 0);
             //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
-
+        */
+        /*
         public void klavyeKapat(IBinder windowToken)
         {
             InputMethodManager mgr = (InputMethodManager) fAct.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2475,6 +2476,7 @@ public class MainActivity extends ActionBarActivity
             //mgr.hideSoftInputFromWindow(windowToken, 0);
             //mgr.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
+        */
 
         public void klavyeAc()
         {
@@ -3336,17 +3338,41 @@ public class MainActivity extends ActionBarActivity
 
                 case Sabit.ELEMAN_TUR_YENI_KAYIT:
                 {
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);
                     LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
+
+                    if (renkKoyuMu(arkaplanRenginiGetir(llBaslik)))
+                    {
+                        etBaslik.setHintTextColor(Color.LTGRAY);
+                        etBaslik.setTextColor(Color.WHITE);
+                    }
+                    else
+                    {
+                        etBaslik.setHintTextColor(Color.DKGRAY);
+                        etBaslik.setTextColor(Color.BLACK);
+                    }
                 }
                 break;
 
                 case Sabit.ELEMAN_TUR_YENI_KATEGORI:
                 {
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);
                     LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
+
+                    if (renkKoyuMu(arkaplanRenginiGetir(llBaslik)))
+                    {
+                        etBaslik.setHintTextColor(Color.LTGRAY);
+                        etBaslik.setTextColor(Color.WHITE);
+                    }
+                    else
+                    {
+                        etBaslik.setHintTextColor(Color.DKGRAY);
+                        etBaslik.setTextColor(Color.BLACK);
+                    }
                 }
                 break;
 
@@ -3376,6 +3402,21 @@ public class MainActivity extends ActionBarActivity
             renkKodu = renkKodu.substring(2, 8);//alfa degerini siliyorum
             renkKodu = "#" + renkKodu;
             return renkKodu;
+        }
+
+        //verilen rengin koyu,açık bilgisini döndürür
+        public boolean renkKoyuMu(String renk)
+        {
+            int irenk = Color.parseColor(renk);
+            double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
+            if (darkness < 0.5)
+            {
+                return false; //açık renk
+            }
+            else
+            {
+                return true; //koyu renk
+            }
         }
 
         //ikonu actionBara ekler, renk bilgisini disaridan alır
