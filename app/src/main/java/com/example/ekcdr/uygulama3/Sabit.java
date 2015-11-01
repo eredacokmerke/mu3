@@ -80,7 +80,7 @@ public class Sabit
     public static final int SECIM_IPTAL_EDILDI = 0;
 
     //ontanimli renkler
-    public static final String KATEGORI_ONTANIMLI_RENK = "#000000";
+    public static final String KATEGORI_ONTANIMLI_RENK = RENK_MOR;
     public static final String KAYIT_ONTANIMLI_RENK = RENK_YESIL;
     public static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
 
@@ -109,8 +109,8 @@ public class Sabit
     public static final String ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = "0";
     public static final int AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI = 3;
     public static final String ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = "5";
-    public static final int AYAR_ID_SIMGE_RENGI = 4;
-    public static final String ONTANIMLI_DEGER_AYAR_SIMGE_RENGI = RENK_TURUNCU;
+    //public static final int AYAR_ID_SIMGE_RENGI = 4;
+    //public static final String ONTANIMLI_DEGER_AYAR_SIMGE_RENGI = RENK_TURUNCU;
     //public static final int AYAR_ID_YAZI_RENGI = 5;
     //public static final String ONTANIMLI_DEGER_AYAR_YAZI_RENGI = RENK_TURUNCU;
     public static final int AYAR_ID_CERCEVE_GOZUKSUN = 6;
@@ -155,4 +155,9 @@ public class Sabit
     public static final int ACTION_KATEGORI_DEGISTIR_YENI = 25;
     public static final int ACTION_KATEGORI_DEGISTIR_TAMAM = 26;
     public static final int ACTION_KATEGORI_DEGISTIR_SIL = 27;
+
+    //yeni eleman ekleme ekranı bilesen idleri
+    public static int llBaslikID = 1000;
+    public static int etBaslikID = 1001;
+    public static int etKayitID = 1002;
 }

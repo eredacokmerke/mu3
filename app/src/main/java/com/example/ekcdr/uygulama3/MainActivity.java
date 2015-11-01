@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity
     public static String DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI;
     public static String DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN;
     public static String DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI;
-    public static String DEGER_AYAR_SIMGE_RENGI;
+    //public static String DEGER_AYAR_SIMGE_RENGI;
     //public static String DEGER_AYAR_YAZI_RENGI;
     public static String DEGER_AYAR_CERCEVE_GOZUKSUN;
     public static String DEGER_AYAR_CERCEVE_RENGI;
@@ -107,13 +107,11 @@ public class MainActivity extends ActionBarActivity
     private static int actionBarBoy;
     private static List<String> listeRenkler;
     //private static String kategoriBasligi = "";//kayıt ekranındayken ekran dönerse baslik siliniyor. tekrar yazırabilmek için
-    private static int llBaslikID = 1000;
-    private static int etBaslikID = 1001;
-    private static int etKayitID = 1002;
     private static PlaceholderFragment frag;
     private static ActionBarDrawerToggle mDrawerToggle;
     private static DrawerLayout mDrawer;//yan panel
     private static LinearLayout mDrawerLayout;//yan panel içindeki layout
+    private static String ACTION_BAR_ARKAPLAN_RENGI;//action bar arkaplan rengi
 
     public static List<String> getListeRenkler()
     {
@@ -230,6 +228,21 @@ public class MainActivity extends ActionBarActivity
             }
         }
         return null;
+    }
+
+    //verilen rengin koyu,açık bilgisini döndürür
+    public static boolean renkKoyuMu(String renk)
+    {
+        int irenk = Color.parseColor(renk);
+        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
+        if (darkness < 0.5)
+        {
+            return false; //açık renk
+        }
+        else
+        {
+            return true; //koyu renk
+        }
     }
 
     public void yanEkraniOlustur()
@@ -427,20 +440,43 @@ public class MainActivity extends ActionBarActivity
         final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
         upArrow.setColorFilter(Color.parseColor(renk), PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        ACTION_BAR_ARKAPLAN_RENGI = renk;
     }
 
     //actionbarın solundaki geri oku
     public void geriSimgesiniEkle()
     {
         final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
-        upArrow.setColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_ATOP);
+        int yaziRengi;
+
+        if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+        {
+            yaziRengi = Color.WHITE;
+        }
+        else
+        {
+            yaziRengi = Color.BLACK;
+        }
+        //upArrow.setColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_ATOP);
+        upArrow.setColorFilter(yaziRengi, PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 
     public void menuSimgesiEkle()
     {
         final Drawable upArrow = getResources().getDrawable(R.drawable.menu);
-        upArrow.setColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_ATOP);
+        int yaziRengi;
+
+        if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+        {
+            yaziRengi = Color.WHITE;
+        }
+        else
+        {
+            yaziRengi = Color.BLACK;
+        }
+        //upArrow.setColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_ATOP);
+        upArrow.setColorFilter(yaziRengi, PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 
@@ -602,6 +638,7 @@ public class MainActivity extends ActionBarActivity
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
+        /*
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_SIMGE_RENGI))
         {
             Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
@@ -610,6 +647,7 @@ public class MainActivity extends ActionBarActivity
             element.appendChild(elementAyar);
             eksikAyarVarMi = true;
         }
+        */
         /*
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_YAZI_RENGI))
         {
@@ -729,9 +767,11 @@ public class MainActivity extends ActionBarActivity
                     DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = ayarDeger;
                     break;
 
+                /*
                 case Sabit.AYAR_ID_SIMGE_RENGI:
                     DEGER_AYAR_SIMGE_RENGI = ayarDeger;
                     break;
+                */
 
                 /*
                 case Sabit.AYAR_ID_YAZI_RENGI:
@@ -855,7 +895,7 @@ public class MainActivity extends ActionBarActivity
                     "<ayar id=\"" + Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI + "</ayar>" +
                     "<ayar id=\"" + Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN + "</ayar>" +
                     "<ayar id=\"" + Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI + "</ayar>" +
-                    "<ayar id=\"" + Sabit.AYAR_ID_SIMGE_RENGI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SIMGE_RENGI + "</ayar>" +
+                    //"<ayar id=\"" + Sabit.AYAR_ID_SIMGE_RENGI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_SIMGE_RENGI + "</ayar>" +
                     //"<ayar id=\"" + Sabit.AYAR_ID_YAZI_RENGI + "\">" + Sabit.ONTANIMLI_DEGER_AYAR_YAZI_RENGI + "</ayar>" +
                     "</root>");
             out.close();
@@ -869,6 +909,7 @@ public class MainActivity extends ActionBarActivity
     //actionBar'ın arkaplan rengini degiştirir
     public void actionBarArkaPlanDegistir(String renk)
     {
+        ACTION_BAR_ARKAPLAN_RENGI = renk;
         ColorDrawable actionBarArkaPlan = new ColorDrawable(Color.parseColor(renk));
         getSupportActionBar().setBackgroundDrawable(actionBarArkaPlan);
     }
@@ -1253,7 +1294,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))//yan panel açıkken kayıtlara tıklanamasın
                     {
                         if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                         {
@@ -1272,10 +1313,7 @@ public class MainActivity extends ActionBarActivity
 
                             secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
                         }
-
-
                     }
-
                     return true;
                 }
             });
@@ -1284,7 +1322,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view)
                 {
-                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))//yan panel açıkken kayıtlara tıklanamasın
                     {
                         if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
                         {
@@ -1417,7 +1455,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view)
                 {
-                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))//yan panel açıkken kategoriye tıklanamasın
                     {
                         if (TIKLAMA_OLAYI == Sabit.OLAY_ICINE_GIR)
                         {
@@ -1457,7 +1495,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public boolean onLongClick(View view)
                 {
-                    if (!mDrawer.isDrawerOpen(mDrawerLayout))
+                    if (!mDrawer.isDrawerOpen(mDrawerLayout))//yan panel açıkken kategoriye tıklanamasın
                     {
                         if (!crl.isCrlSeciliMi())//secili eleman tekrar secilemesin
                         {
@@ -2302,9 +2340,9 @@ public class MainActivity extends ActionBarActivity
         //kayit degistime ekraninda kaydete basıldı
         public void kayitDegistirKaydet()
         {
-            EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
-            EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);//kayit degistirme ekranındaki yazi bilgisi
-            LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+            EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
+            EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etKayitID);//kayit degistirme ekranındaki yazi bilgisi
+            LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
             String renkKodu = arkaplanRenginiGetir(llBaslik2);
 
             Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
@@ -2325,9 +2363,9 @@ public class MainActivity extends ActionBarActivity
 
         public void kategoriDegistirKaydet()
         {
-            EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
+            EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
             //EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);//kayit degistirme ekranındaki yazi bilgisi
-            LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+            LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
             String renkKodu = arkaplanRenginiGetir(llBaslik2);
 
             Element elementKategori = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
@@ -2873,15 +2911,17 @@ public class MainActivity extends ActionBarActivity
                 }
             });
 
+            /*
             AyarlarRelativeLayout arl4 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.simge_rengi), DEGER_AYAR_SIMGE_RENGI, Sabit.AYAR_ID_SIMGE_RENGI, Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl4);
+            */
 
             /*
             AyarlarRelativeLayout arl5 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.yazı_rengi), DEGER_AYAR_YAZI_RENGI, Sabit.AYAR_ID_YAZI_RENGI,Sabit.AYAR_ID_SIMGE_RENGI Sabit.SECENEK_BUTTON);
             anaRelativeLayout.addView(arl5);
             */
 
-            AyarlarRelativeLayout arl6 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_gozuksun), DEGER_AYAR_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_SIMGE_RENGI, Sabit.SECENEK_CHECKBOX);
+            AyarlarRelativeLayout arl6 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_gozuksun), DEGER_AYAR_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_CERCEVE_GOZUKSUN, Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI, Sabit.SECENEK_CHECKBOX);
             anaRelativeLayout.addView(arl6);
 
             final AyarlarRelativeLayout arl7 = new AyarlarRelativeLayout(getActivity(), cnt.getString(R.string.cerceve_rengi), DEGER_AYAR_CERCEVE_RENGI, Sabit.AYAR_ID_CERCEVE_RENGI, Sabit.AYAR_ID_CERCEVE_GOZUKSUN, Sabit.SECENEK_BUTTON);
@@ -2987,9 +3027,11 @@ public class MainActivity extends ActionBarActivity
                     String yeniDeger3 = ((EditText) arl3.getViewSecenek()).getText().toString();
                     return yeniDeger3;
 
+                /*
                 case Sabit.AYAR_ID_SIMGE_RENGI:
                     AyarlarRelativeLayout arl4 = (AyarlarRelativeLayout) anaRelativeLayout.findViewById(ayarID);
                     return arl4.getSecilenRenk();
+                */
 
                 /*
                 case Sabit.AYAR_ID_YAZI_RENGI:
@@ -3086,9 +3128,11 @@ public class MainActivity extends ActionBarActivity
                             }
                             break;
 
+                        /*
                         case Sabit.AYAR_ID_SIMGE_RENGI:
                             //önerilerden secildiği icin kontrol edecek birşey yok
                             break;
+                        */
 
                         /*
                         case Sabit.AYAR_ID_YAZI_RENGI:
@@ -3169,11 +3213,13 @@ public class MainActivity extends ActionBarActivity
                         }
                         break;
 
+                    /*
                     case Sabit.AYAR_ID_SIMGE_RENGI:
                         nodeAyar.setTextContent(yeniDeger);//xml i degistiriyor
                         DEGER_AYAR_SIMGE_RENGI = yeniDeger;
                         ma.geriSimgesiniEkle();
                         break;
+                    */
 
                     /*
                     case Sabit.AYAR_ID_YAZI_RENGI:
@@ -3222,15 +3268,25 @@ public class MainActivity extends ActionBarActivity
         //actionBar daki kategori basligini yazar
         public void kategoriBasliginiYaz()
         {
+            String yaziRengi;
+            if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+            {
+                yaziRengi = Sabit.RENK_BEYAZ;
+            }
+            else
+            {
+                yaziRengi = Sabit.RENK_SIYAH;
+            }
+
             if (seciliCRL.getId() == 0)
             {
                 ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>/</font>"));
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + yaziRengi + ">/</font>"));
             }
             else
             {
                 ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + kategoriYolunuGetir(String.valueOf(seciliCRL.getId())) + "</font>"));
+                ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + yaziRengi + ">" + kategoriYolunuGetir(String.valueOf(seciliCRL.getId())) + "</font>"));
                 //getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
             }
         }
@@ -3272,7 +3328,7 @@ public class MainActivity extends ActionBarActivity
             {
                 case Sabit.ELEMAN_TUR_KATEGORI:
                 {
-                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
@@ -3317,7 +3373,7 @@ public class MainActivity extends ActionBarActivity
 
                 case Sabit.ELEMAN_TUR_KAYIT:
                 {
-                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
                 }
@@ -3338,8 +3394,8 @@ public class MainActivity extends ActionBarActivity
 
                 case Sabit.ELEMAN_TUR_YENI_KAYIT:
                 {
-                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);
-                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
@@ -3358,8 +3414,8 @@ public class MainActivity extends ActionBarActivity
 
                 case Sabit.ELEMAN_TUR_YENI_KATEGORI:
                 {
-                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);
-                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
@@ -3404,21 +3460,6 @@ public class MainActivity extends ActionBarActivity
             return renkKodu;
         }
 
-        //verilen rengin koyu,açık bilgisini döndürür
-        public boolean renkKoyuMu(String renk)
-        {
-            int irenk = Color.parseColor(renk);
-            double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
-            if (darkness < 0.5)
-            {
-                return false; //açık renk
-            }
-            else
-            {
-                return true; //koyu renk
-            }
-        }
-
         //ikonu actionBara ekler, renk bilgisini disaridan alır
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id, String renk)
         {
@@ -3429,7 +3470,17 @@ public class MainActivity extends ActionBarActivity
         //ikonu actionBara ekler
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id)
         {
-            drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_IN));
+            int yaziRengi;
+
+            if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+            {
+                yaziRengi = Color.WHITE;
+            }
+            else
+            {
+                yaziRengi = Color.BLACK;
+            }
+            drawable.setColorFilter(new PorterDuffColorFilter(yaziRengi, PorterDuff.Mode.SRC_IN));
             menu.add(0, id, 0, baslik).setIcon(drawable).setShowAsAction(Action);
         }
 
@@ -3688,7 +3739,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
+                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
                 //kayit degistir
                 //kategori degistir
@@ -3697,7 +3748,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
+                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_KAYDET:
@@ -3749,15 +3800,15 @@ public class MainActivity extends ActionBarActivity
                 //ayar
                 //yeni kayit
                 case Sabit.ACTION_YENI_KAYIT_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
+                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
 
                 case Sabit.ACTION_YENI_KAYIT_KAYDET:
                 {
                     klavyeKapat();
-                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);
-                    EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);
-                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
+                    EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etKayitID);
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     String renkKodu = arkaplanRenginiGetir(llBaslik);
                     int eklenenID = xmlDosyasinaKayitEkle(etBaslik.getText().toString(), etKayit.getText().toString(), renkKodu);
                     anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
@@ -3768,15 +3819,15 @@ public class MainActivity extends ActionBarActivity
                 //yeni kayit
                 //yeni kategori
                 case Sabit.ACTION_YENI_KATEGORI_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(llBaslikID)));
+                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
 
                 case Sabit.ACTION_YENI_KATEGORI_KAYDET:
                 {
                     klavyeKapat();
-                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(etBaslikID);
-                    EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);
-                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(llBaslikID);
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
+                    EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etKayitID);
+                    LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     String renkKodu = arkaplanRenginiGetir(llBaslik);
 
                     int eklenenID = xmlDosyasinaKategoriEkle(etBaslik.getText().toString(), renkKodu);
@@ -3891,8 +3942,18 @@ public class MainActivity extends ActionBarActivity
 
                     ma.geriSimgesiniEkle();
 
+                    String yaziRengi;
+                    if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+                    {
+                        yaziRengi = Sabit.RENK_BEYAZ;
+                    }
+                    else
+                    {
+                        yaziRengi = Sabit.RENK_SIYAH;
+                    }
+
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + seciliCRL.getBaslik() + "</font>"));
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + yaziRengi + ">" + seciliCRL.getBaslik() + "</font>"));
 
                     return rootView;
                 }
@@ -3950,8 +4011,19 @@ public class MainActivity extends ActionBarActivity
 
                     ma.geriSimgesiniEkle();
 
+                    int yaziRengi;
+
+                    if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+                    {
+                        yaziRengi = Color.WHITE;
+                    }
+                    else
+                    {
+                        yaziRengi = Color.BLACK;
+                    }
+
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + cnt.getString(R.string.yeni_kategori) + "</font>"));
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + yaziRengi + ">" + cnt.getString(R.string.yeni_kategori) + "</font>"));
 
                     return rootView;
                 }
@@ -4009,8 +4081,19 @@ public class MainActivity extends ActionBarActivity
                     */
 
                     ma.geriSimgesiniEkle();
+
+                    String yaziRengi;
+                    if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+                    {
+                        yaziRengi = Sabit.RENK_BEYAZ;
+                    }
+                    else
+                    {
+                        yaziRengi = Sabit.RENK_SIYAH;
+                    }
+
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + cnt.getString(R.string.yeni_not) + "</font>"));
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + yaziRengi + ">" + cnt.getString(R.string.yeni_not) + "</font>"));
 
                     return rootView;
                 }

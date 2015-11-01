@@ -1,21 +1,12 @@
 package com.example.ekcdr.uygulama3;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -107,6 +98,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 lp2.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                 this.addView(tvBaslik, lp2);
 
+                /*
                 tvDuzenle = new ImageView(context);
                 Drawable drawable = getResources().getDrawable(R.drawable.duzenle);
                 drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(MainActivity.DEGER_AYAR_SIMGE_RENGI), PorterDuff.Mode.SRC_IN));
@@ -173,6 +165,7 @@ public class CustomRelativeLayout extends RelativeLayout
                         });
                     }
                 });
+                */
 
                 break;
             }

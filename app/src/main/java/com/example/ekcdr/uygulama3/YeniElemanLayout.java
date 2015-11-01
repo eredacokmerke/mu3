@@ -13,9 +13,6 @@ public class YeniElemanLayout
     private RelativeLayout anaRelativeLayout;
     private CustomRelativeLayout seciliCRL;
     private int ekranTuru;
-    private int llBaslikID = 1000;
-    private int etBaslikID = 1001;
-    private int etKayitID = 1002;
 
     public YeniElemanLayout(RelativeLayout anaRelativeLayout, CustomRelativeLayout seciliCRL, int ekranTuru)
     {
@@ -30,10 +27,10 @@ public class YeniElemanLayout
     {
         //yeni fragmentinde baslik kısmı
         LinearLayout llBaslik = new LinearLayout(MainActivity.cnt);
-        llBaslik.setId(llBaslikID);
+        llBaslik.setId(Sabit.llBaslikID);
 
         EditText etBaslik = new EditText(MainActivity.cnt);
-        etBaslik.setId(etBaslikID);
+        etBaslik.setId(Sabit.etBaslikID);
         etBaslik.setSingleLine(true);
         etBaslik.setHint(MainActivity.cnt.getString(R.string.baslik));
         etBaslik.setBackground(null);//edittext te altcizgi cikmasin
@@ -50,7 +47,7 @@ public class YeniElemanLayout
         //yeni fragmentinde yazı kısmı
         LinearLayout llKayit = new LinearLayout(MainActivity.cnt);
         EditText etKayit = new EditText(MainActivity.cnt);
-        etKayit.setId(etKayitID);
+        etKayit.setId(Sabit.etKayitID);
         etKayit.setHint(MainActivity.cnt.getString(R.string.not));
         etKayit.setHintTextColor(Color.DKGRAY);
         etKayit.setBackground(null);//edittext te altcizgi cikmasin
