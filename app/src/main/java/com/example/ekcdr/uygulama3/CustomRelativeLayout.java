@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,7 +27,7 @@ public class CustomRelativeLayout extends RelativeLayout
     private TextView tvTik;
     private TextView tvBaslik;
     private TextView tvYazi;
-    private ImageView tvDuzenle;
+    //private ImageView tvDuzenle;
     private int crlTur;
     private String durum;
     private String renk;
@@ -465,10 +464,6 @@ public class CustomRelativeLayout extends RelativeLayout
         this.crlSeciliMi = crlSeciliMi;
     }
 
-    public ImageView getTvDuzenle()
-    {
-        return tvDuzenle;
-    }
 
     public int getCrlTur()
     {
@@ -488,11 +483,6 @@ public class CustomRelativeLayout extends RelativeLayout
     public String getRenk()
     {
         return renk;
-    }
-
-    public void setRenk(String renk)
-    {
-        this.renk = renk;
     }
 
     public String getBaslik()

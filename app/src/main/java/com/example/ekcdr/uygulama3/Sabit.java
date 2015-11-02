@@ -81,7 +81,7 @@ public class Sabit
 
     //ontanimli renkler
     public static final String KATEGORI_ONTANIMLI_RENK = RENK_MOR;
-    public static final String KAYIT_ONTANIMLI_RENK = RENK_YESIL;
+    public static final String KAYIT_ONTANIMLI_RENK = RENK_TURUNCU;
     public static final String ACTIONBAR_ARKAPLAN_SECILI = "#FF2222";
 
     //xml documentleri
@@ -104,9 +104,9 @@ public class Sabit
 
     //ayarlarin idleri ve ontanimli degerleri
     public static final int AYAR_ID_SATIR_BASINA_KAYIT_SAYISI = 1;
-    public static final String ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = "1";
+    public static final String ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI = "2";
     public static final int AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = 2;
-    public static final String ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = "0";
+    public static final String ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN = "1";
     public static final int AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI = 3;
     public static final String ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI = "5";
     //public static final int AYAR_ID_SIMGE_RENGI = 4;
@@ -114,11 +114,11 @@ public class Sabit
     //public static final int AYAR_ID_YAZI_RENGI = 5;
     //public static final String ONTANIMLI_DEGER_AYAR_YAZI_RENGI = RENK_TURUNCU;
     public static final int AYAR_ID_CERCEVE_GOZUKSUN = 6;
-    public static final String ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN = "1";
+    public static final String ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN = "0";
     public static final int AYAR_ID_CERCEVE_RENGI = 7;
     public static final String ONTANIMLI_DEGER_AYAR_CERCEVE_RENGI = RENK_SIYAH;
     public static final int AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN = 8;
-    public static final String ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN = "0";
+    public static final String ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN = "1";
     public static final int AYAR_ID_ARKAPLAN_RENGI = 9;
     public static final String ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI = RENK_BEYAZ;
     public static final int AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN = 10;

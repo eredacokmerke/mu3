@@ -1307,8 +1307,8 @@ public class MainActivity extends ActionBarActivity
                                 actionBarDegistir(Sabit.ACTIONBAR_SECIM);
                                 TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
                                 ma.actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
-                                duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
-                                basligiDuzenleninYaninaAl();
+                                //duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+                                //basligiDuzenleninYaninaAl();
                             }
 
                             secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
@@ -1508,8 +1508,8 @@ public class MainActivity extends ActionBarActivity
                                 actionBarDegistir(Sabit.ACTIONBAR_SECIM);
                                 TIKLAMA_OLAYI = Sabit.OLAY_SECIM_YAP;
                                 ma.actionBarArkaPlanDegistir(Sabit.ACTIONBAR_ARKAPLAN_SECILI);
-                                duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
-                                basligiDuzenleninYaninaAl();
+                                //duzenleSimgesininGorunumunuDegistir(View.VISIBLE);
+                                //basligiDuzenleninYaninaAl();
                             }
                             secimEkranindaDurumuKontrolEt(crl.getDurum(), Sabit.SECIM_YAPILDI);
                         }
@@ -1520,6 +1520,7 @@ public class MainActivity extends ActionBarActivity
             anaRelativeLayout.addView(crl);
         }
 
+        /*
         //kategori secildigi zaman kategori basligini duzenle simgesini yanına alır
         public void basligiDuzenleninYaninaAl()
         {
@@ -1534,7 +1535,9 @@ public class MainActivity extends ActionBarActivity
                 }
             }
         }
+        */
 
+        /*
         //kategori secildigi zaman kategori basligini duzenle simgesini yanına alır
         public void basligiEskiYerineAl()
         {
@@ -1549,7 +1552,9 @@ public class MainActivity extends ActionBarActivity
                 }
             }
         }
+        */
 
+        /*
         //kategori layout'undaki duzenle simgesini gösterir ve gizler
         public void duzenleSimgesininGorunumunuDegistir(int gorunum)
         {
@@ -1562,6 +1567,7 @@ public class MainActivity extends ActionBarActivity
                 }
             }
         }
+        */
 
         //Document nesnesini dosyaya yazıyor
         public void documentToFile(int tur)
@@ -1682,8 +1688,8 @@ public class MainActivity extends ActionBarActivity
             }
             actionBarDegistir(Sabit.ACTIONBAR_EKLE);
             TIKLAMA_OLAYI = Sabit.OLAY_ICINE_GIR;
-            duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
-            basligiEskiYerineAl();
+            //duzenleSimgesininGorunumunuDegistir(View.INVISIBLE);
+            //basligiEskiYerineAl();
         }
 
         //yeni kategori fragmentini acar
@@ -3832,7 +3838,7 @@ public class MainActivity extends ActionBarActivity
 
                     int eklenenID = xmlDosyasinaKategoriEkle(etBaslik.getText().toString(), renkKodu);
                     anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
-                    kategoriyiAnaEkranaEkle(etBaslik.getText().toString(), eklenenID, Sabit.DURUM_YENI, Sabit.KAYIT_ONTANIMLI_RENK, globalYerlesim);
+                    kategoriyiAnaEkranaEkle(etBaslik.getText().toString(), eklenenID, Sabit.DURUM_YENI, Sabit.KATEGORI_ONTANIMLI_RENK, globalYerlesim);
                     ustSeviyeyiGetir();
                 }
                 return true;
@@ -3966,7 +3972,7 @@ public class MainActivity extends ActionBarActivity
                     //klavye acilinca ekran yukarı dogru kaymasın sadece edittext oynasın
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-                    new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI);
+                    new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_YENI_KATEGORI_EKRANI);
 
                     /*
                     //yeni kayıt fragmentinde baslik kısmı
