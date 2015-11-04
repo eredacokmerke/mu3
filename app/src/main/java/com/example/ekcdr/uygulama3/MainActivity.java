@@ -959,7 +959,6 @@ public class MainActivity extends ActionBarActivity
         private RelativeLayout anaRelativeLayout;//scrollview ın içinde viewların içine yerleşeceği relative layout
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
-        private EditText etDegisecek;//kayit degiştirmeye tıklandığı zaman olusan edittext
         private Activity fAct;
         private AlertDialog alertRenk;//renkleri soran alertDialog. renk dugmesine dokunuca alertDialog^u kapatabilmek için
 
@@ -2037,7 +2036,6 @@ public class MainActivity extends ActionBarActivity
                     }
                 });
 
-                //klavyeKapat(etDegisecek.getWindowToken());
                 klavyeKapat();
             }
             else
@@ -2176,14 +2174,6 @@ public class MainActivity extends ActionBarActivity
                 }
             }
         }
-
-        /*
-        public void kategoriDurumunuGuncelle(String id, String durum)
-        {
-            Element elementKayit = document.getElementById(id);
-            elementKayit.setAttribute(Sabit.XML_DURUM, durum);
-        }
-        */
 
         //parcanın yazilarini ve altparcalarını kontrol eder. hepsi tamamlanmiş ise parcayı tamamlandı olarak işaretler
         public boolean parcayiIsaretleTamamlandi(Node nodeParca)
@@ -3297,6 +3287,7 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
+        /*
         //kategori seciliyken duzenleye tıklanıldığı zaman girilen ismi xml'e kaydeder
         public void kategorininBaslikBilgisiniGuncelle(String baslik, int kategoriID)
         {
@@ -3305,6 +3296,7 @@ public class MainActivity extends ActionBarActivity
             nodeBaslik.setTextContent(baslik);
             documentToFile(Sabit.DOCUMENT_ASIL);
         }
+        */
 
         //actionbar da renk tusuna dokunulduğu zaman ekrana gelen alertdialogu olusturur
         public void renkDialogunuOlustur()
@@ -3342,6 +3334,20 @@ public class MainActivity extends ActionBarActivity
                     if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
                     {
                         ma.actionBarArkaPlanDegistir(secilenRenk);
+
+                        EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
+                        if (renkKoyuMu(secilenRenk))
+                        {
+                            etBaslik.setHintTextColor(Color.LTGRAY);
+                            etBaslik.setTextColor(Color.WHITE);
+                            actionBarRenkGuncelle(Color.WHITE, Sabit.RENK_BEYAZ);
+                        }
+                        else
+                        {
+                            etBaslik.setHintTextColor(Color.DKGRAY);
+                            etBaslik.setTextColor(Color.BLACK);
+                            actionBarRenkGuncelle(Color.BLACK, Sabit.RENK_SIYAH);
+                        }
                     }
                     else
                     {
@@ -3382,6 +3388,19 @@ public class MainActivity extends ActionBarActivity
                     LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
+
+                    EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
+
+                    if (renkKoyuMu(secilenRenk))
+                    {
+                        etBaslik.setHintTextColor(Color.LTGRAY);
+                        etBaslik.setTextColor(Color.WHITE);
+                    }
+                    else
+                    {
+                        etBaslik.setHintTextColor(Color.DKGRAY);
+                        etBaslik.setTextColor(Color.BLACK);
+                    }
                 }
                     /*
                     kaydinRenkBilgisiniGuncelle(secilenRenk);
@@ -3405,7 +3424,7 @@ public class MainActivity extends ActionBarActivity
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
-                    if (renkKoyuMu(arkaplanRenginiGetir(llBaslik)))
+                    if (renkKoyuMu(secilenRenk))
                     {
                         etBaslik.setHintTextColor(Color.LTGRAY);
                         etBaslik.setTextColor(Color.WHITE);
@@ -3425,7 +3444,7 @@ public class MainActivity extends ActionBarActivity
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
-                    if (renkKoyuMu(arkaplanRenginiGetir(llBaslik)))
+                    if (renkKoyuMu(secilenRenk))
                     {
                         etBaslik.setHintTextColor(Color.LTGRAY);
                         etBaslik.setTextColor(Color.WHITE);
@@ -3466,6 +3485,23 @@ public class MainActivity extends ActionBarActivity
             return renkKodu;
         }
 
+        //actionBar arkaplanı değişince simge ve başlığın renklerini değiştiriyor
+        public void actionBarRenkGuncelle(int renk1, String renk2)
+        {
+            int itemSayisi = menuActionBar.size();
+
+            for(int i=0;i<itemSayisi;i++)
+            {
+                MenuItem item = menuActionBar.getItem(i);
+                Drawable dr = item.getIcon();
+                dr.setColorFilter(new PorterDuffColorFilter(renk1, PorterDuff.Mode.SRC_IN));
+                item.setIcon(dr);
+            }
+
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + renk2 + ">" + seciliCRL.getBaslik() + "</font>"));
+            ma.geriSimgesiniEkle(renk2);
+        }
+
         //ikonu actionBara ekler, renk bilgisini disaridan alır
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id, String renk)
         {
@@ -3477,7 +3513,6 @@ public class MainActivity extends ActionBarActivity
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id)
         {
             int yaziRengi;
-
             if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
             {
                 yaziRengi = Color.WHITE;
@@ -3865,7 +3900,6 @@ public class MainActivity extends ActionBarActivity
                 default:
                     ekranaHataYazdir("55", cnt.getString(R.string.hatali_action_id) + " : " + item.getItemId());
 
-
                 /*
                 case R.id.action_onay_kaydet:
                     //yeniKayitEkraniniAc(etEklenecek);
@@ -3903,49 +3937,6 @@ public class MainActivity extends ActionBarActivity
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
                     new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI);
-
-                    /*
-                    //yeni kayıt fragmentinde baslik kısmı
-                    LinearLayout llBaslik = new LinearLayout(getActivity());
-                    llBaslik.setId(llBaslikID);
-                    llBaslik.setBackgroundColor(Color.parseColor(seciliCRL.getRenk()));
-                    EditText etBaslik = new EditText(getActivity());
-                    etBaslik.setId(etBaslikID);
-                    etBaslik.setSingleLine(true);
-                    etBaslik.setHint(cnt.getString(R.string.baslik));
-                    etBaslik.setBackground(null);//edittext te altcizgi cikmasin
-                    etBaslik.setText(seciliCRL.getBaslik());
-                    LinearLayout.LayoutParams lpBaslik = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpBaslik.setMargins((int) dpGetir(20), (int) dpGetir(40), (int) dpGetir(20), (int) dpGetir(40));
-                    etBaslik.setLayoutParams(lpBaslik);
-                    llBaslik.addView(etBaslik);
-                    RelativeLayout.LayoutParams lpBaslik2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpBaslik2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    llBaslik.setLayoutParams(lpBaslik2);
-
-                    //yeni kayıt fragmentinde yazı kısmı
-                    LinearLayout llKayit = new LinearLayout(getActivity());
-                    EditText etKayit = new EditText(getActivity());
-                    etKayit.setId(etKayitID);
-                    etKayit.setHint(cnt.getString(R.string.not));
-                    etKayit.setBackground(null);//edittext te altcigi cikmasin
-                    LinearLayout.LayoutParams lpKayit = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpKayit.setMargins((int) dpGetir(20), 0, (int) dpGetir(20), 0);
-                    etKayit.setLayoutParams(lpKayit);
-                    llKayit.addView(etKayit);
-                    RelativeLayout.LayoutParams lpKayit2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpKayit2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    lpKayit2.addRule(RelativeLayout.BELOW, llBaslik.getId());
-                    llKayit.setLayoutParams(lpKayit2);
-
-                    LinearLayout llYeniKayit = new LinearLayout(getActivity());
-                    llYeniKayit.setOrientation(LinearLayout.VERTICAL);
-                    RelativeLayout.LayoutParams lpYeniKayit = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    llYeniKayit.setLayoutParams(lpYeniKayit);
-                    yeniKayitRelativeLayout.addView(llBaslik);
-                    yeniKayitRelativeLayout.addView(llKayit);
-                    */
-
                     ma.geriSimgesiniEkle();
 
                     String yaziRengi;
@@ -3973,59 +3964,16 @@ public class MainActivity extends ActionBarActivity
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
                     new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_YENI_KATEGORI_EKRANI);
-
-                    /*
-                    //yeni kayıt fragmentinde baslik kısmı
-                    LinearLayout llBaslik = new LinearLayout(getActivity());
-                    llBaslik.setId(llBaslikID);
-                    llBaslik.setBackgroundColor(Color.parseColor(Sabit.KAYIT_ONTANIMLI_RENK));
-                    EditText etBaslik = new EditText(getActivity());
-                    etBaslik.setId(etBaslikID);
-                    etBaslik.setSingleLine(true);
-                    etBaslik.setHint(cnt.getString(R.string.baslik));
-                    etBaslik.setBackground(null);//edittext te altcigi cikmasin
-                    LinearLayout.LayoutParams lpBaslik = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpBaslik.setMargins((int) dpGetir(20), (int) dpGetir(40), (int) dpGetir(20), (int) dpGetir(40));
-                    etBaslik.setLayoutParams(lpBaslik);
-                    llBaslik.addView(etBaslik);
-                    RelativeLayout.LayoutParams lpBaslik2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpBaslik2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    llBaslik.setLayoutParams(lpBaslik2);
-
-                    //yeni kayıt fragmentinde yazı kısmı
-                    LinearLayout llKayit = new LinearLayout(getActivity());
-                    EditText etKayit = new EditText(getActivity());
-                    etKayit.setId(etKayitID);
-                    etKayit.setHint(cnt.getString(R.string.not));
-                    etKayit.setBackground(null);//edittext te altcigi cikmasin
-                    LinearLayout.LayoutParams lpKayit = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpKayit.setMargins((int) dpGetir(20), 0, (int) dpGetir(20), 0);
-                    etKayit.setLayoutParams(lpKayit);
-                    llKayit.addView(etKayit);
-                    RelativeLayout.LayoutParams lpKayit2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpKayit2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    lpKayit2.addRule(RelativeLayout.BELOW, llBaslik.getId());
-                    llKayit.setLayoutParams(lpKayit2);
-
-                    LinearLayout llYeniKayit = new LinearLayout(getActivity());
-                    llYeniKayit.setOrientation(LinearLayout.VERTICAL);
-                    RelativeLayout.LayoutParams lpYeniKayit = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    llYeniKayit.setLayoutParams(lpYeniKayit);
-                    yeniKayitRelativeLayout.addView(llBaslik);
-                    yeniKayitRelativeLayout.addView(llKayit);
-                    */
-
                     ma.geriSimgesiniEkle();
 
-                    int yaziRengi;
-
+                    String yaziRengi;
                     if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
                     {
-                        yaziRengi = Color.WHITE;
+                        yaziRengi = Sabit.RENK_BEYAZ;
                     }
                     else
                     {
-                        yaziRengi = Color.BLACK;
+                        yaziRengi = Sabit.RENK_SIYAH;
                     }
 
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -4044,48 +3992,6 @@ public class MainActivity extends ActionBarActivity
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
                     new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_YENI_KAYIT_EKRANI);
-
-                    /*
-                    //yeni kayıt fragmentinde baslik kısmı
-                    LinearLayout llBaslik = new LinearLayout(getActivity());
-                    llBaslik.setId(llBaslikID);
-                    llBaslik.setBackgroundColor(Color.parseColor(Sabit.KAYIT_ONTANIMLI_RENK));
-                    EditText etBaslik = new EditText(getActivity());
-                    etBaslik.setId(etBaslikID);
-                    etBaslik.setSingleLine(true);
-                    etBaslik.setHint(cnt.getString(R.string.baslik));
-                    etBaslik.setBackground(null);//edittext te altcigi cikmasin
-                    LinearLayout.LayoutParams lpBaslik = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpBaslik.setMargins((int) dpGetir(20), (int) dpGetir(40), (int) dpGetir(20), (int) dpGetir(40));
-                    etBaslik.setLayoutParams(lpBaslik);
-                    llBaslik.addView(etBaslik);
-                    RelativeLayout.LayoutParams lpBaslik2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpBaslik2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    llBaslik.setLayoutParams(lpBaslik2);
-
-                    //yeni kayıt fragmentinde yazı kısmı
-                    LinearLayout llKayit = new LinearLayout(getActivity());
-                    EditText etKayit = new EditText(getActivity());
-                    etKayit.setId(etKayitID);
-                    etKayit.setHint(cnt.getString(R.string.not));
-                    etKayit.setBackground(null);//edittext te altcigi cikmasin
-                    LinearLayout.LayoutParams lpKayit = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpKayit.setMargins((int) dpGetir(20), 0, (int) dpGetir(20), 0);
-                    etKayit.setLayoutParams(lpKayit);
-                    llKayit.addView(etKayit);
-                    RelativeLayout.LayoutParams lpKayit2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpKayit2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    lpKayit2.addRule(RelativeLayout.BELOW, llBaslik.getId());
-                    llKayit.setLayoutParams(lpKayit2);
-
-                    LinearLayout llYeniKayit = new LinearLayout(getActivity());
-                    llYeniKayit.setOrientation(LinearLayout.VERTICAL);
-                    RelativeLayout.LayoutParams lpYeniKayit = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    llYeniKayit.setLayoutParams(lpYeniKayit);
-                    yeniKayitRelativeLayout.addView(llBaslik);
-                    yeniKayitRelativeLayout.addView(llKayit);
-                    */
-
                     ma.geriSimgesiniEkle();
 
                     String yaziRengi;
@@ -4155,90 +4061,8 @@ public class MainActivity extends ActionBarActivity
                     RelativeLayout yeniKayitRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.yeniKayitRelativeLayout);
 
                     new YeniElemanLayout(yeniKayitRelativeLayout, seciliCRL, Sabit.FRAGMENT_KAYIT_EKRANI);
-
-                    /*
-                    //kayıt fragmentinde baslik kısmı
-                    LinearLayout llBaslik = new LinearLayout(getActivity());
-                    llBaslik.setId(llBaslikID);
-                    llBaslik.setBackgroundColor(Color.parseColor(seciliCRL.getRenk()));
-                    EditText etBaslik = new EditText(getActivity());
-                    etBaslik.setId(etBaslikID);
-                    etBaslik.setSingleLine(true);
-                    etBaslik.setHint(cnt.getString(R.string.baslik));
-                    etBaslik.setBackground(null);//edittext te altcizgi cikmasin
-                    etBaslik.setText(seciliCRL.getTvBaslik().getText());
-                    LinearLayout.LayoutParams lpBaslik = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpBaslik.setMargins((int) dpGetir(20), (int) dpGetir(40), (int) dpGetir(20), (int) dpGetir(40));
-                    etBaslik.setLayoutParams(lpBaslik);
-                    llBaslik.addView(etBaslik);
-                    RelativeLayout.LayoutParams lpBaslik2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpBaslik2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    llBaslik.setLayoutParams(lpBaslik2);
-
-                    //kayıt fragmentinde yazı kısmı
-                    LinearLayout llKayit = new LinearLayout(getActivity());
-                    EditText etKayit = new EditText(getActivity());
-                    etKayit.setId(etKayitID);
-                    etKayit.setHint(cnt.getString(R.string.not));
-                    etKayit.setBackground(null);//edittext te altcizgi cikmasin
-                    etKayit.setText(seciliCRL.getTvYazi().getText());
-                    LinearLayout.LayoutParams lpKayit = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    lpKayit.setMargins((int) dpGetir(20), 0, (int) dpGetir(20), 0);
-                    etKayit.setLayoutParams(lpKayit);
-                    llKayit.addView(etKayit);
-                    RelativeLayout.LayoutParams lpKayit2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpKayit2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    lpKayit2.addRule(RelativeLayout.BELOW, llBaslik.getId());
-                    llKayit.setLayoutParams(lpKayit2);
-
-                    LinearLayout llYeniKayit = new LinearLayout(getActivity());
-                    llYeniKayit.setOrientation(LinearLayout.VERTICAL);
-                    RelativeLayout.LayoutParams lpYeniKayit = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    llYeniKayit.setLayoutParams(lpYeniKayit);
-                    yeniKayitRelativeLayout.addView(llBaslik);
-                    yeniKayitRelativeLayout.addView(llKayit);
-                    */
-
                     ma.menuSimgesiEkle();
                     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-                    /*
-                    View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    fragmentRootView = rootView;
-                    anaLinearLayout = (LinearLayout) fragmentRootView.findViewById(R.id.anaLinearLayout);
-                    anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
-
-                    if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
-                    {
-                        ma.actionBarArkaPlanDegistir(kayitRenkBilgisiniGetir(String.valueOf(seciliCRL.getId())));
-                    }
-                    else
-                    {
-                        ma.actionBarArkaPlanDegistir(DEGER_AYAR_ACTIONBAR_RENGI);
-                    }
-
-                    if (DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN.equals("0"))
-                    {
-                        ekranRenginiDegistir();
-                    }
-                    ma.geriSimgesiniEkle();
-
-                    //ekran dondugu zaman actionbar guncellensin
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    getActivity().getActionBar().setTitle(Html.fromHtml("<font color='" + DEGER_AYAR_SIMGE_RENGI + "'>" + kategoriBasligi + "</font>"));
-                    //////////
-
-                    RelativeLayout rl = new RelativeLayout(getActivity());
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    etDegisecek = new EditText(getActivity());
-                    etDegisecek.setText(getArguments().getString(Sabit.FRAGMENT_YAZI));
-                    etDegisecek.requestFocus();
-                    rl.addView(etDegisecek, lp);
-                    anaRelativeLayout.addView(rl);
-
-                    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                    klavyeAc(getActivity().getApplicationContext(), etDegisecek);
-                    */
 
                     return rootView;
                 }
