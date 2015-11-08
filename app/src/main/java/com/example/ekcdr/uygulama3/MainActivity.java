@@ -202,6 +202,7 @@ public class MainActivity extends ActionBarActivity
     }
     */
 
+    //etiket isminden etiket değerini dondurur
     public static String etiketBilgisiniGetir(Element element, String xmlEtiketi)
     {
         Node node = etiketiGetir(element, xmlEtiketi);
@@ -216,7 +217,7 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    //etiket isminden etiketi bulur
+    //etiket isminden etiketi dondurur
     public static Node etiketiGetir(Element element, String etiketAdi)
     {
         NodeList nodeList = element.getChildNodes();
@@ -2077,7 +2078,7 @@ public class MainActivity extends ActionBarActivity
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
-                Element element = kayitDurumunuYeniYap(String.valueOf(crl.getId()));
+                Element element = durumuYeniYap(String.valueOf(crl.getId()));
                 if (element != null)
                 {
                     switch (crl.getCrlTur())
@@ -2114,26 +2115,24 @@ public class MainActivity extends ActionBarActivity
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
-                Element element = kayitDurumunuTamamlandiYap(String.valueOf(crl.getId()));
-                if (element != null)
+                Element element = durumuTamamlandiYap(String.valueOf(crl.getId()));
+
+                switch (crl.getCrlTur())
                 {
-                    switch (crl.getCrlTur())
-                    {
-                        case Sabit.ELEMAN_TUR_KATEGORI:
-                            kategoriCocuklariniDurumunuGuncelle(element, Sabit.DURUM_TAMAMLANDI);
-                            crl.arkaplanKategori();
-                            break;
+                    case Sabit.ELEMAN_TUR_KATEGORI:
+                        kategoriCocuklariniDurumunuGuncelle(element, Sabit.DURUM_TAMAMLANDI);
+                        crl.arkaplanKategori();
+                        break;
 
-                        case Sabit.ELEMAN_TUR_KAYIT:
-                            crl.arkaplanKayit();
-                            break;
+                    case Sabit.ELEMAN_TUR_KAYIT:
+                        crl.arkaplanKayit();
+                        break;
 
-                        default:
-                            ekranaHataYazdir("18", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
-                    }
-                    crl.getTvTik().setText(Sabit.TIK_UNICODE);
-                    crl.setCrlSeciliMi(false);
+                    default:
+                        ekranaHataYazdir("18", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
                 }
+                crl.getTvTik().setText(Sabit.TIK_UNICODE);
+                crl.setCrlSeciliMi(false);
             }
 
             if (!listSeciliCRL.isEmpty())
@@ -2192,7 +2191,7 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListKayit = nodeYazilar.getChildNodes();
                     for (int j = 0; j < nodeListKayit.getLength(); j++)
                     {
-                        if (etiketiGetir((Element) nodeListKayit.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
+                        if (etiketBilgisiniGetir((Element) nodeListKayit.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
                         {
                             sonucYazilar = false;
                             break;
@@ -2212,7 +2211,7 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListAltParca = nodeListParca.item(i).getChildNodes();
                     for (int j = 0; j < nodeListAltParca.getLength(); j++)
                     {
-                        if (etiketiGetir((Element) nodeListAltParca.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
+                        if (etiketBilgisiniGetir((Element) nodeListAltParca.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
                         {
                             sonucAltParcalar = false;
                             break;
@@ -2283,34 +2282,26 @@ public class MainActivity extends ActionBarActivity
         }
 
         //secilen kaydin durumunu yeni olarak değiştirir
-        public Element kayitDurumunuYeniYap(String idd)
+        public Element durumuYeniYap(String idd)
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(Sabit.DURUM_YENI);
-
             Element elementKayit = document.getElementById(idd);
-            //elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);
-
             etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
-
-
-            documentToFile(Sabit.DOCUMENT_ASIL);
 
             return elementKayit;
         }
 
         //secilen kaydin durumunu yeni olarak değiştirir
-        public Element kayitDurumunuYeniYap()
+        public Element durumuYeniYap()
         {
             if (seciliCRL != null)
             {
                 seciliCRL.setDurum(Sabit.DURUM_YENI);
                 Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
-                //elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);
 
-                etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
-
-                documentToFile(Sabit.DOCUMENT_ASIL);
+                //etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
+                //documentToFile(Sabit.DOCUMENT_ASIL);
 
                 return elementKayit;
             }
@@ -2380,7 +2371,7 @@ public class MainActivity extends ActionBarActivity
             ustSeviyeyiGetir();
         }
 
-        //ust parcaların kayıt ve kategorilerine bakar hepsi tamalandi durumunda ise parcayı tamamlandı olarak isaretler
+        //ust parcaların kayıt ve kategorilerine bakar hepsi tamamlandi durumunda ise parcayı tamamlandı olarak isaretler
         public void ustParcaDurumunuKontrolEtTamamla(Element element)
         {
             boolean sonuc;
@@ -2395,31 +2386,25 @@ public class MainActivity extends ActionBarActivity
         }
 
         //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public Element kayitDurumunuTamamlandiYap(String idd)
+        public Element durumuTamamlandiYap(String idd)
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(Sabit.DURUM_TAMAMLANDI);
             Element elementKayit = document.getElementById(idd);
-            ////elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_TAMAMLANDI);
-
-            //etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
-
-            //documentToFile(Sabit.DOCUMENT_ASIL);
+            etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
 
             return elementKayit;
         }
 
         //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public Element kayitDurumunuTamamlandiYap()
+        public Element durumuTamamlandiYap()
         {
             if (seciliCRL != null)
             {
                 seciliCRL.setDurum(Sabit.DURUM_TAMAMLANDI);
                 Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
-                ////elementKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_TAMAMLANDI);
 
                 //etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
-
                 //documentToFile(Sabit.DOCUMENT_ASIL);
 
                 return elementKayit;
@@ -3490,7 +3475,7 @@ public class MainActivity extends ActionBarActivity
         {
             int itemSayisi = menuActionBar.size();
 
-            for(int i=0;i<itemSayisi;i++)
+            for (int i = 0; i < itemSayisi; i++)
             {
                 MenuItem item = menuActionBar.getItem(i);
                 Drawable dr = item.getIcon();
@@ -3755,23 +3740,17 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_TAMAM:
-                    Element elementKayitTamam = kayitDurumunuTamamlandiYap();
-                    if (elementKayitTamam != null)
-                    {
-                        ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
-                        actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_TAMAMLANDI);
-                        Toast.makeText(getActivity(), cnt.getString(R.string.kayit_tamamlandi_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
-                    }
+                    Element elementKayitTamam = durumuTamamlandiYap();
+                    ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
+                    actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_TAMAMLANDI);
+                    Toast.makeText(getActivity(), cnt.getString(R.string.kayit_tamamlandi_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_YENI:
-                    Element elementKayitYeni = kayitDurumunuYeniYap();
-                    if (elementKayitYeni != null)
-                    {
-                        ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
-                        actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_YENI);
-                        Toast.makeText(getActivity(), cnt.getString(R.string.kayit_yeni_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
-                    }
+                    Element elementKayitYeni = durumuYeniYap();
+                    ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
+                    actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_YENI);
+                    Toast.makeText(getActivity(), cnt.getString(R.string.kayit_yeni_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_KAYDET:
@@ -3798,7 +3777,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM:
-                    Element elementKategoriTamam = kayitDurumunuTamamlandiYap();
+                    Element elementKategoriTamam = durumuTamamlandiYap();
                     if (elementKategoriTamam != null)
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKategoriTamam);
@@ -3809,7 +3788,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_YENI:
-                    Element elementKategoriYeni = kayitDurumunuYeniYap();
+                    Element elementKategoriYeni = durumuYeniYap();
                     if (elementKategoriYeni != null)
                     {
                         ustParcaDurumunuKontrolEtYeni(elementKategoriYeni);
