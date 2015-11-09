@@ -2,11 +2,14 @@ package com.example.ekcdr.uygulama3;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +25,7 @@ public class CustomRelativeLayout extends RelativeLayout
     final static int CERCEVE_KALINLIGI = 2;
     final static int CERCEVE_KOSE = 2;
     private boolean crlSeciliMi = false;
-    private TextView tvTik;
+    private ImageView tvTik;
     private TextView tvBaslik;
     private TextView tvYazi;
     //private ImageView tvDuzenle;
@@ -75,17 +78,21 @@ public class CustomRelativeLayout extends RelativeLayout
                 arkaplanKategori();
                 crlTur = Sabit.ELEMAN_TUR_KATEGORI;
 
-                tvTik = new TextView(context);
-                tvTik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
+                tvTik = new ImageView(context);
+                tvTik.setScaleX(0.7f);
+                tvTik.setScaleY(0.7f);
+                tvTik.setImageResource(R.drawable.yeni);
+                tvTik.setColorFilter(new PorterDuffColorFilter(yaziRengi, PorterDuff.Mode.SRC_IN));
+                //tvTik = new TextView(context);
+                //tvTik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvTik.setId(View.generateViewId());
-                tvTik.setTextColor(yaziRengi);
+                //tvTik.setTextColor(yaziRengi);
                 RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 lp3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp3.addRule(RelativeLayout.CENTER_VERTICAL);
                 this.addView(tvTik, lp3);
 
                 tvBaslik = new TextView(context);
-                //tvBaslik.setId(10004);
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(yaziRengi);
@@ -186,10 +193,15 @@ public class CustomRelativeLayout extends RelativeLayout
                 arkaplanKayit();
                 crlTur = Sabit.ELEMAN_TUR_KAYIT;
 
-                tvTik = new TextView(context);
-                tvTik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
+                tvTik = new ImageView(context);
+                tvTik.setImageResource(R.drawable.yeni);
+                tvTik.setScaleX(0.6f);
+                tvTik.setScaleY(0.6f);
+                tvTik.setColorFilter(new PorterDuffColorFilter(yaziRengi, PorterDuff.Mode.SRC_IN));
+                //tvTik = new TextView(context);
+                //tvTik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
                 tvTik.setId(View.generateViewId());
-                tvTik.setTextColor(yaziRengi);
+                //tvTik.setTextColor(yaziRengi);
                 RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp4.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -197,7 +209,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 //kayit basliginin yazildigi yer
                 tvBaslik = new TextView(context);
-                if(baslik.isEmpty())//baslik bos ise yer kaplamasın
+                if (baslik.isEmpty())//baslik bos ise yer kaplamasın
                 {
                     tvBaslik.setVisibility(GONE);
                 }
@@ -217,7 +229,7 @@ public class CustomRelativeLayout extends RelativeLayout
 
                 //kayit iceriginin yazildigi yer
                 tvYazi = new TextView(context);
-                if(kayit.isEmpty())//icerik bos ise yer kaplamasın
+                if (kayit.isEmpty())//icerik bos ise yer kaplamasın
                 {
                     tvYazi.setVisibility(GONE);
                 }
@@ -464,7 +476,7 @@ public class CustomRelativeLayout extends RelativeLayout
         return tvYazi;
     }
 
-    public TextView getTvTik()
+    public ImageView getTvTik()
     {
         return tvTik;
     }

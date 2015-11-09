@@ -106,7 +106,6 @@ public class MainActivity extends ActionBarActivity
     private static Document documentAyar;
     private static int actionBarBoy;
     private static List<String> listeRenkler;
-    //private static String kategoriBasligi = "";//kayıt ekranındayken ekran dönerse baslik siliniyor. tekrar yazırabilmek için
     private static PlaceholderFragment frag;
     private static ActionBarDrawerToggle mDrawerToggle;
     private static DrawerLayout mDrawer;//yan panel
@@ -1083,25 +1082,6 @@ public class MainActivity extends ActionBarActivity
             return fragment;
         }
 
-        /*
-        //kaydin renk degerinin dondurur
-        public static String kayitRenkBilgisiniGetir(String kayitID)
-        {
-            Element element = document.getElementById(kayitID);
-
-            Node nodeRenk = etiketiGetir(element, Sabit.XML_RENK);
-            if (nodeRenk == null)
-            {
-                ekranaHataYazdir("48", cnt.getString(R.string.xml_renk_etiketi_getirilemedi));
-                return Sabit.KAYIT_ONTANIMLI_RENK;
-            }
-            else
-            {
-                return nodeRenk.getTextContent();
-            }
-        }
-        */
-
         //kutuların ekranda yerlesimini ayarlamak için yerlesim nesnesi
         public static void yeniYerlesimOlustur()
         {
@@ -1257,22 +1237,18 @@ public class MainActivity extends ActionBarActivity
             if (listSeciliElemanDurumu.contains(Sabit.DURUM_YENI))
             {
                 menuActionBar.findItem(Sabit.ACTION_SECIM_TAMAM).setVisible(true);
-                // menuActionBar.findItem(R.id.Sabit.ACTION_SECIM_TAMAM).setVisible(true);
             }
             else
             {
                 menuActionBar.findItem(Sabit.ACTION_SECIM_TAMAM).setVisible(false);
-                //   menuActionBar.findItem(R.id.Sabit.ACTION_SECIM_TAMAM).setVisible(false);
             }
             if (listSeciliElemanDurumu.contains(Sabit.DURUM_TAMAMLANDI))
             {
                 menuActionBar.findItem(Sabit.ACTION_SECIM_YENI).setVisible(true);
-                // menuActionBar.findItem(R.id.action_secim_yeni).setVisible(true);
             }
             else
             {
                 menuActionBar.findItem(Sabit.ACTION_SECIM_YENI).setVisible(false);
-                // menuActionBar.findItem(R.id.action_secim_yeni).setVisible(false);
             }
         }
 
@@ -1283,11 +1259,13 @@ public class MainActivity extends ActionBarActivity
 
             if (durum.equals(Sabit.DURUM_TAMAMLANDI))
             {
-                crl.getTvTik().setText(Sabit.TIK_UNICODE);
+                crl.getTvTik().setImageResource(R.drawable.tamam);
+                //crl.getTvTik().setText(Sabit.TIK_UNICODE);
             }
             else
             {
-                crl.getTvTik().setText("");
+                crl.getTvTik().setImageResource(R.drawable.yeni);
+                //crl.getTvTik().setText("");
             }
             crl.setOnLongClickListener(new View.OnLongClickListener()
             {
@@ -1432,8 +1410,6 @@ public class MainActivity extends ActionBarActivity
                 }
             }
 
-            //kategoriBasligi = baslik;
-
             return baslik;
         }
 
@@ -1444,11 +1420,13 @@ public class MainActivity extends ActionBarActivity
 
             if (durum.equals(Sabit.DURUM_TAMAMLANDI))
             {
-                crl.getTvTik().setText(Sabit.TIK_UNICODE);
+                crl.getTvTik().setImageResource(R.drawable.tamam);
+                //crl.getTvTik().setText(Sabit.TIK_UNICODE);
             }
             else
             {
-                crl.getTvTik().setText("");
+                crl.getTvTik().setImageResource(R.drawable.yeni);
+                //crl.getTvTik().setText("");
             }
             crl.setOnClickListener(new View.OnClickListener()
             {
@@ -2095,7 +2073,8 @@ public class MainActivity extends ActionBarActivity
                         default:
                             ekranaHataYazdir("17", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
                     }
-                    crl.getTvTik().setText("");
+                    crl.getTvTik().setImageResource(R.drawable.yeni);
+                    //crl.getTvTik().setText("");
                     crl.setCrlSeciliMi(false);
                 }
             }
@@ -2131,7 +2110,8 @@ public class MainActivity extends ActionBarActivity
                     default:
                         ekranaHataYazdir("18", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
                 }
-                crl.getTvTik().setText(Sabit.TIK_UNICODE);
+                crl.getTvTik().setImageResource(R.drawable.tamam);
+                //crl.getTvTik().setText(Sabit.TIK_UNICODE);
                 crl.setCrlSeciliMi(false);
             }
 
@@ -2311,6 +2291,7 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
+        //etiket degerini gunceller
         public void etiketiGuncelle(Element element, String yeniDeger, String xmlEtiketi)
         {
             Node node = etiketiGetir(element, xmlEtiketi);//node getiriliyor

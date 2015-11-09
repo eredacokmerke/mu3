@@ -5,7 +5,7 @@ public class Sabit
     public static final String UYGULAMA_ADI = "uygulama3";
     public static final String YEDEK_KLASORU_ADI = "backup";
     public static final String FRAGMENT_TAG = "fragment_tag";
-    public static final String TIK_UNICODE = "\u2714";
+    //public static final String TIK_UNICODE = "\u2714";
     public static final String UC_NOKTA = "/.../";
 
     //xml dosya adlari
