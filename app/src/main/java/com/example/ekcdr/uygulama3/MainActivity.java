@@ -929,6 +929,7 @@ public class MainActivity extends ActionBarActivity
             case Sabit.FRAGMENT_KAYIT_EKRANI:
             case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
             case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
+            case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
                 fr.ustSeviyeyiGetir();
                 break;
 
