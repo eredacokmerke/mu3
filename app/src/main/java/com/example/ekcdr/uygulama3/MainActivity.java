@@ -7,14 +7,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -36,6 +42,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -43,7 +50,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -111,6 +117,9 @@ public class MainActivity extends ActionBarActivity
     private static DrawerLayout mDrawer;//yan panel
     private static LinearLayout mDrawerLayout;//yan panel içindeki layout
     private static String ACTION_BAR_ARKAPLAN_RENGI;//action bar arkaplan rengi
+    private static ImageView ivBlur;
+    private static FloatingActionButton fab;
+    private static boolean blurEtkin;//ekran blurlanmis durumda mi
 
     public static List<String> getListeRenkler()
     {
@@ -186,7 +195,7 @@ public class MainActivity extends ActionBarActivity
     //kategorinin renk degerinin dondurur
     public static String kategoriRenkBilgisiniGetir(String kategoriID)
     {
-        Element element = document.getElementById(kategoriID);
+        org.w3c.dom.Element element = document.getElementById(kategoriID);
 
         Node nodeRenk = etiketiGetir(element, Sabit.XML_RENK);
         if (nodeRenk == null)
@@ -202,7 +211,7 @@ public class MainActivity extends ActionBarActivity
     */
 
     //etiket isminden etiket değerini dondurur
-    public static String etiketBilgisiniGetir(Element element, String xmlEtiketi)
+    public static String etiketBilgisiniGetir(org.w3c.dom.Element element, String xmlEtiketi)
     {
         Node node = etiketiGetir(element, xmlEtiketi);
         if (node == null)
@@ -217,7 +226,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     //etiket isminden etiketi dondurur
-    public static Node etiketiGetir(Element element, String etiketAdi)
+    public static Node etiketiGetir(org.w3c.dom.Element element, String etiketAdi)
     {
         NodeList nodeList = element.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++)
@@ -243,6 +252,16 @@ public class MainActivity extends ActionBarActivity
         {
             return true; //koyu renk
         }
+    }
+
+    public static boolean isBlurEtkin()
+    {
+        return blurEtkin;
+    }
+
+    public static void setBlurEtkin(boolean blurEtkin)
+    {
+        MainActivity.blurEtkin = blurEtkin;
     }
 
     public void yanEkraniOlustur()
@@ -345,6 +364,8 @@ public class MainActivity extends ActionBarActivity
         File xmlYedekKlasoru;
         mResources = getResources();
         cnt = getApplicationContext();
+        ivBlur = new ImageView(cnt);
+        fab = new FloatingActionButton(this);//ekrana floatinActionButton ekleniyor
 
         activityRootView = findViewById(R.id.container);
         uygulamaKlasoru = uygulamaKlasoruKontrolEt();
@@ -360,7 +381,7 @@ public class MainActivity extends ActionBarActivity
 
                 if (xmlDosyasiKontrolEt() && xmlAyarDosyasiKontrolEt())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
                 {
-                    Element element = document.getElementById("0");
+                    org.w3c.dom.Element element = document.getElementById("0");
                     if (savedInstanceState == null)
                     {
                         String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
@@ -603,7 +624,7 @@ public class MainActivity extends ActionBarActivity
     {
         boolean eksikAyarVarMi = false;
         List<Integer> xmldekiAyarlar = new ArrayList<>();
-        Element element = documentAyar.getDocumentElement();
+        org.w3c.dom.Element element = documentAyar.getDocumentElement();
         NodeList nodeList = element.getChildNodes();
 
         for (int i = 0; i < nodeList.getLength(); i++)
@@ -616,7 +637,7 @@ public class MainActivity extends ActionBarActivity
 
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);//ayar isimli etiket olşuturuluyor
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);//ayar isimli etiket olşuturuluyor
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_SATIR_BASINA_KAYIT_SAYISI));//ayar etiketine id veriliyor
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);//ayar etiketinin icerigi yazılıyor
             element.appendChild(elementAyar);//root etiketine ayar etiketi ekleniyor
@@ -624,7 +645,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_SATIR_BOY_UZUNLUGU_SABIT_OLSUN));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_SATIR_BOY_UZUNLUGU_SABIT_OLSUN);
             element.appendChild(elementAyar);
@@ -632,7 +653,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_SUTUN_BASINA_KAYIT_SAYISI));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI);
             element.appendChild(elementAyar);
@@ -641,7 +662,7 @@ public class MainActivity extends ActionBarActivity
         /*
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_SIMGE_RENGI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_SIMGE_RENGI));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_SIMGE_RENGI);
             element.appendChild(elementAyar);
@@ -651,7 +672,7 @@ public class MainActivity extends ActionBarActivity
         /*
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_YAZI_RENGI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_YAZI_RENGI));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_YAZI_RENGI);
             element.appendChild(elementAyar);
@@ -660,7 +681,7 @@ public class MainActivity extends ActionBarActivity
         */
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_CERCEVE_GOZUKSUN))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_CERCEVE_GOZUKSUN));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_CERCEVE_GOZUKSUN);
             element.appendChild(elementAyar);
@@ -668,7 +689,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_CERCEVE_RENGI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_CERCEVE_RENGI));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_CERCEVE_RENGI);
             element.appendChild(elementAyar);
@@ -676,7 +697,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ARKAPLAN_RENGI_SABIT_OLSUN));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI_SABIT_OLSUN);
             element.appendChild(elementAyar);
@@ -684,7 +705,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ARKAPLAN_RENGI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ARKAPLAN_RENGI));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ARKAPLAN_RENGI);
             element.appendChild(elementAyar);
@@ -692,7 +713,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ACTIONBAR_RENGI_SABIT_OLSUN));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN);
             element.appendChild(elementAyar);
@@ -700,7 +721,7 @@ public class MainActivity extends ActionBarActivity
         }
         if (!xmldekiAyarlar.contains(Sabit.AYAR_ID_ACTIONBAR_RENGI))
         {
-            Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
+            org.w3c.dom.Element elementAyar = documentAyar.createElement(Sabit.XML_AYAR);
             elementAyar.setAttribute(Sabit.XML_ID, String.valueOf(Sabit.AYAR_ID_ACTIONBAR_RENGI));
             elementAyar.setTextContent(Sabit.ONTANIMLI_DEGER_AYAR_ACTIONBAR_RENGI);
             element.appendChild(elementAyar);
@@ -744,7 +765,7 @@ public class MainActivity extends ActionBarActivity
     //uygulama açılırken gecerli ayarları xml den okur
     private void ayarlariOku()
     {
-        Element element = documentAyar.getDocumentElement();
+        org.w3c.dom.Element element = documentAyar.getDocumentElement();
         NodeList nodeList = element.getChildNodes();
 
         for (int i = 0; i < nodeList.getLength(); i++)
@@ -918,30 +939,38 @@ public class MainActivity extends ActionBarActivity
     public void onBackPressed()
     {
         PlaceholderFragment fr = (PlaceholderFragment) getFragmentManager().findFragmentByTag(Sabit.FRAGMENT_TAG);
-        switch (FRAGMENT_ETKIN_EKRAN)
+
+        if (isBlurEtkin())//eger blur etkinse kapansın
         {
-            case Sabit.FRAGMENT_YEDEK_EKRANI:
-            case Sabit.FRAGMENT_AYAR_EKRANI:
-                fr.parseXml(xmlParcaID);
-                fr.ustSeviyeyiGetir();
-                break;
-
-            case Sabit.FRAGMENT_KAYIT_EKRANI:
-            case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
-            case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
-            case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
-                fr.ustSeviyeyiGetir();
-                break;
-
-            default:
-                if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
-                {
-                    finish();
-                }
-                else
-                {
+            frag.bluruIptalEt();
+        }
+        else
+        {
+            switch (FRAGMENT_ETKIN_EKRAN)
+            {
+                case Sabit.FRAGMENT_YEDEK_EKRANI:
+                case Sabit.FRAGMENT_AYAR_EKRANI:
+                    fr.parseXml(xmlParcaID);
                     fr.ustSeviyeyiGetir();
-                }
+                    break;
+
+                case Sabit.FRAGMENT_KAYIT_EKRANI:
+                case Sabit.FRAGMENT_YENI_KAYIT_EKRANI:
+                case Sabit.FRAGMENT_YENI_KATEGORI_EKRANI:
+                case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
+                    fr.ustSeviyeyiGetir();
+                    break;
+
+                default:
+                    if (xmlParcaID.equals("0"))//en ust seviyede ise uygulamadan çıksın
+                    {
+                        finish();
+                    }
+                    else
+                    {
+                        fr.ustSeviyeyiGetir();
+                    }
+            }
         }
     }
 
@@ -960,7 +989,7 @@ public class MainActivity extends ActionBarActivity
         private RelativeLayout anaRelativeLayout;//scrollview ın içinde viewların içine yerleşeceği relative layout
         private MenuInflater inflaterActionBar;
         private Menu menuActionBar;
-        private Activity fAct;
+        //private Activity fAct;
         private AlertDialog alertRenk;//renkleri soran alertDialog. renk dugmesine dokunuca alertDialog^u kapatabilmek için
 
         public PlaceholderFragment()
@@ -1112,7 +1141,7 @@ public class MainActivity extends ActionBarActivity
         //parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
         public void parseXml(String parcaID)
         {
-            Element element = document.getElementById(parcaID);
+            org.w3c.dom.Element element = document.getElementById(parcaID);
             NodeList nodeList = element.getChildNodes();
 
             for (int i = 0; i < nodeList.getLength(); i++)
@@ -1126,16 +1155,16 @@ public class MainActivity extends ActionBarActivity
                     {
                         Node nodeKayit = nodeListKayitlar.item(j);
 
-                        String kayitBaslik = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_BASLIK);
-                        String kayitRenk = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_RENK);
-                        String kayitYazi = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_YAZI);
-                        String kayitDurum = etiketBilgisiniGetir((Element) nodeKayit, Sabit.XML_DURUM);
+                        String kayitBaslik = etiketBilgisiniGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_BASLIK);
+                        String kayitRenk = etiketBilgisiniGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_RENK);
+                        String kayitYazi = etiketBilgisiniGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_YAZI);
+                        String kayitDurum = etiketBilgisiniGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_DURUM);
 
                         /*
                         String kayitBaslik = "";
                         String kayitYazi = "";
                         String kayitRenk = Sabit.KAYIT_ONTANIMLI_RENK;
-                        Node nodeKayitBaslik = etiketiGetir((Element) nodeKayit, Sabit.XML_BASLIK);
+                        Node nodeKayitBaslik = etiketiGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_BASLIK);
                         if (nodeKayitBaslik == null)
                         {
                             ekranaHataYazdir("53", cnt.getString(R.string.xml_etiket_okunamadi));
@@ -1144,7 +1173,7 @@ public class MainActivity extends ActionBarActivity
                         {
                             kayitBaslik = nodeKayitBaslik.getTextContent();
                         }
-                        Node nodeKayitYazi = etiketiGetir((Element) nodeKayit, Sabit.XML_YAZI);
+                        Node nodeKayitYazi = etiketiGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_YAZI);
                         if (nodeKayitYazi == null)
                         {
                             ekranaHataYazdir("40", cnt.getString(R.string.xml_etiket_okunamadi));
@@ -1153,7 +1182,7 @@ public class MainActivity extends ActionBarActivity
                         {
                             kayitYazi = nodeKayitYazi.getTextContent();
                         }
-                        Node nodeRenk = etiketiGetir((Element) nodeKayit, Sabit.XML_RENK);
+                        Node nodeRenk = etiketiGetir((org.w3c.dom.Element) nodeKayit, Sabit.XML_RENK);
                         if (nodeRenk == null)
                         {
                             ekranaHataYazdir("47", cnt.getString(R.string.xml_etiket_okunamadi));
@@ -1179,13 +1208,13 @@ public class MainActivity extends ActionBarActivity
                     {
                         Node nodeParca = nodeListParcalar.item(j);
 
-                        String kategoriBaslik = etiketBilgisiniGetir((Element) nodeParca, Sabit.XML_BASLIK);
-                        String kategoriRenk = etiketBilgisiniGetir((Element) nodeParca, Sabit.XML_RENK);
-                        String kategoriDurum = etiketBilgisiniGetir((Element) nodeParca, Sabit.XML_DURUM);
+                        String kategoriBaslik = etiketBilgisiniGetir((org.w3c.dom.Element) nodeParca, Sabit.XML_BASLIK);
+                        String kategoriRenk = etiketBilgisiniGetir((org.w3c.dom.Element) nodeParca, Sabit.XML_RENK);
+                        String kategoriDurum = etiketBilgisiniGetir((org.w3c.dom.Element) nodeParca, Sabit.XML_DURUM);
 
 
                         /*
-                        Node nodeBaslik = etiketiGetir((Element) nodeParca, Sabit.XML_BASLIK);
+                        Node nodeBaslik = etiketiGetir((org.w3c.dom.Element) nodeParca, Sabit.XML_BASLIK);
 
                         String kategoriBaslik = "";
                         String kategoriRenk = Sabit.KATEGORI_ONTANIMLI_RENK;
@@ -1198,7 +1227,7 @@ public class MainActivity extends ActionBarActivity
                             kategoriBaslik = nodeBaslik.getTextContent();
                         }
 
-                        Node nodeRenk = etiketiGetir((Element) nodeParca, Sabit.XML_RENK);
+                        Node nodeRenk = etiketiGetir((org.w3c.dom.Element) nodeParca, Sabit.XML_RENK);
                         if (nodeRenk == null)
                         {
                             ekranaHataYazdir("42", cnt.getString(R.string.xml_etiket_okunamadi));
@@ -1343,12 +1372,12 @@ public class MainActivity extends ActionBarActivity
         public String kategoriYolunuGetir(String kategoriID)
         {
             String baslik = "";
-            Element elementParca = document.getElementById(kategoriID);
+            org.w3c.dom.Element elementParca = document.getElementById(kategoriID);
             baslik = elementParca.getFirstChild().getTextContent() + "/" + baslik;
             String asilBaslik = baslik;
             do
             {
-                elementParca = (Element) elementParca.getParentNode().getParentNode();
+                elementParca = (org.w3c.dom.Element) elementParca.getParentNode().getParentNode();
                 baslik = elementParca.getFirstChild().getTextContent() + "/" + baslik;
             }
             while (!elementParca.getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue().equals("0"));
@@ -1615,25 +1644,25 @@ public class MainActivity extends ActionBarActivity
                 if (nodeParcaCocuklari.item(i).getNodeName().equals(Sabit.XML_ALTPARCA))//parcanın içindeki altparca etiketine ulaşılıyor
                 {
                     Node nodeAltparca = nodeParcaCocuklari.item(i);//altparcaya giriliyor
-                    Element yeniNodeParca = document.createElement(Sabit.XML_PARCA);//parca isimli etiket olşuturuluyor
+                    org.w3c.dom.Element yeniNodeParca = document.createElement(Sabit.XML_PARCA);//parca isimli etiket olşuturuluyor
                     yeniNodeParca.setAttribute(Sabit.XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
                     //yeniNodeParca.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);//parca ya id özelliği ekleniyor
                     nodeAltparca.appendChild(yeniNodeParca);//altparca etiketine parca ekleniyor
 
                     Node nodeParca = document.getElementById(String.valueOf(xmlEnBuyukID));//xmlid id sine sahip parca nın içine giriliyor. az önce oluşturulan parca
 
-                    Element yeniNodeBaslik = document.createElement(Sabit.XML_BASLIK);//baslik etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeBaslik = document.createElement(Sabit.XML_BASLIK);//baslik etiketi oluşturuluyor
                     yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
 
-                    Element yeniNodeRenk = document.createElement(Sabit.XML_RENK);//renk etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeRenk = document.createElement(Sabit.XML_RENK);//renk etiketi oluşturuluyor
                     yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
 
-                    Element yeniNodeDurum = document.createElement(Sabit.XML_DURUM);//durum etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeDurum = document.createElement(Sabit.XML_DURUM);//durum etiketi oluşturuluyor
                     yeniNodeDurum.setTextContent(Sabit.DURUM_YENI);//durum etiketine durum değeri giriliyor
 
-                    Element yeniNodeYazi = document.createElement(Sabit.XML_YAZILAR);//yazi etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeYazi = document.createElement(Sabit.XML_YAZILAR);//yazi etiketi oluşturuluyor
 
-                    Element yeniNodeAltparca = document.createElement(Sabit.XML_ALTPARCA);//altparca etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeAltparca = document.createElement(Sabit.XML_ALTPARCA);//altparca etiketi oluşturuluyor
 
                     nodeParca.appendChild(yeniNodeBaslik);//parca etiketine baslik etiketi ekleniyor
                     nodeParca.appendChild(yeniNodeRenk);//parca etiketine renk etiketi ekleniyor
@@ -1656,7 +1685,7 @@ public class MainActivity extends ActionBarActivity
 
             if (DEGER_AYAR_ACTIONBAR_RENGI_SABIT_OLSUN.equals("0"))
             {
-                Element element = document.getElementById(xmlParcaID);
+                org.w3c.dom.Element element = document.getElementById(xmlParcaID);
                 String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
 
                 ma.actionBarArkaPlanDegistir(renk);
@@ -1741,7 +1770,7 @@ public class MainActivity extends ActionBarActivity
                 case Sabit.FRAGMENT_AYAR_EKRANI:
                 case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
                 {
-                    Element element = document.getElementById(xmlParcaID);
+                    org.w3c.dom.Element element = document.getElementById(xmlParcaID);
                     String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
                     String baslik = etiketBilgisiniGetir(element, Sabit.XML_BASLIK);
                     String durum = etiketBilgisiniGetir(element, Sabit.XML_DURUM);
@@ -1763,7 +1792,7 @@ public class MainActivity extends ActionBarActivity
 
                 case Sabit.FRAGMENT_KATEGORI_EKRANI:
                 {
-                    Element element = document.getElementById(xmlParcaID);
+                    org.w3c.dom.Element element = document.getElementById(xmlParcaID);
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue();
                     xmlParcaID = ustSeviyeID;
                     element = document.getElementById(xmlParcaID);//ust seviye id yi alinca yeni element olusturuluyor
@@ -1823,7 +1852,7 @@ public class MainActivity extends ActionBarActivity
         {
             xmlEnBuyukID++;
             //kategoriDurumunuGuncelle(xmlParcaID, Sabit.DURUM_YENI);
-            Element element = document.getElementById(String.valueOf(xmlParcaID));
+            org.w3c.dom.Element element = document.getElementById(String.valueOf(xmlParcaID));
             etiketiGuncelle(element, Sabit.DURUM_YENI, Sabit.XML_DURUM);
 
             Node nodeMevcutParca = document.getElementById(String.valueOf(xmlParcaID));//içinde bulunulan parcaya giriyor
@@ -1833,7 +1862,7 @@ public class MainActivity extends ActionBarActivity
                 if (nodeParcaCocuklari.item(i).getNodeName().equals(Sabit.XML_YAZILAR))//parcanın içindeki yazilar etiketine ulaşılıyor
                 {
                     //int eklenenID = xmlEnBuyukID;
-                    Element yeniNodeKayit = document.createElement(Sabit.XML_KAYIT);//kayıt etiketi olusturuyor
+                    org.w3c.dom.Element yeniNodeKayit = document.createElement(Sabit.XML_KAYIT);//kayıt etiketi olusturuyor
                     yeniNodeKayit.setAttribute(Sabit.XML_ID, String.valueOf(xmlEnBuyukID));//parca ya id özelliği ekleniyor
                     //yeniNodeKayit.setAttribute(Sabit.XML_DURUM, Sabit.DURUM_YENI);//parca ya durum özelliği ekleniyor
 
@@ -1848,19 +1877,19 @@ public class MainActivity extends ActionBarActivity
                         }
                     }
 
-                    Element yeniNodeBaslik = document.createElement(Sabit.XML_BASLIK);//baslik etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeBaslik = document.createElement(Sabit.XML_BASLIK);//baslik etiketi oluşturuluyor
                     yeniNodeBaslik.setTextContent(baslik);//baslik etiketine baslik değeri giriliyor
                     yeniNodeKayit.appendChild(yeniNodeBaslik);
 
-                    Element yeniNodeYazi = document.createElement(Sabit.XML_YAZI);//yazi etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeYazi = document.createElement(Sabit.XML_YAZI);//yazi etiketi oluşturuluyor
                     yeniNodeYazi.setTextContent(str.toString());//yazi etiketine yazi değeri giriliyor
                     yeniNodeKayit.appendChild(yeniNodeYazi);
 
-                    Element yeniNodeRenk = document.createElement(Sabit.XML_RENK);//renk etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeRenk = document.createElement(Sabit.XML_RENK);//renk etiketi oluşturuluyor
                     yeniNodeRenk.setTextContent(renk);//renk etiketine renk değeri giriliyor
                     yeniNodeKayit.appendChild(yeniNodeRenk);
 
-                    Element yeniNodeDurum = document.createElement(Sabit.XML_DURUM);//renk etiketi oluşturuluyor
+                    org.w3c.dom.Element yeniNodeDurum = document.createElement(Sabit.XML_DURUM);//renk etiketi oluşturuluyor
                     yeniNodeDurum.setTextContent(Sabit.DURUM_YENI);//renk etiketine renk değeri giriliyor
                     yeniNodeKayit.appendChild(yeniNodeDurum);
 
@@ -1965,7 +1994,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view)
                 {
-                    Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
+                    org.w3c.dom.Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
 
                     String ustSeviyeID = element.getParentNode().getParentNode().getAttributes().getNamedItem(Sabit.XML_ID).getNodeValue();
                     xmlParcaID = ustSeviyeID;
@@ -2027,7 +2056,7 @@ public class MainActivity extends ActionBarActivity
         //kayit ekranındayken sile tıklandı. bir kayıt siliyor
         public void kayitSil()
         {
-            Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
+            org.w3c.dom.Element element = document.getElementById(String.valueOf(seciliCRL.getId()));
             element.getParentNode().removeChild(element);
             documentToFile(Sabit.DOCUMENT_ASIL);
 
@@ -2039,7 +2068,7 @@ public class MainActivity extends ActionBarActivity
         {
             for (int i = 0; i < listeSilinecek.size(); i++)
             {
-                Element element = document.getElementById(String.valueOf(listeSilinecek.get(i).getId()));
+                org.w3c.dom.Element element = document.getElementById(String.valueOf(listeSilinecek.get(i).getId()));
                 element.getParentNode().removeChild(element);
                 documentToFile(Sabit.DOCUMENT_ASIL);
 
@@ -2057,7 +2086,7 @@ public class MainActivity extends ActionBarActivity
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
-                Element element = durumuYeniYap(String.valueOf(crl.getId()));
+                org.w3c.dom.Element element = durumuYeniYap(String.valueOf(crl.getId()));
                 if (element != null)
                 {
                     switch (crl.getCrlTur())
@@ -2075,13 +2104,12 @@ public class MainActivity extends ActionBarActivity
                             ekranaHataYazdir("17", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
                     }
                     crl.getTvTik().setImageResource(R.drawable.yeni);
-                    //crl.getTvTik().setText("");
                     crl.setCrlSeciliMi(false);
                 }
             }
             if (!listSeciliCRL.isEmpty())
             {
-                Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                org.w3c.dom.Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
                 ustParcaDurumunuKontrolEtYeni(elementKayit);
             }
 
@@ -2095,7 +2123,7 @@ public class MainActivity extends ActionBarActivity
             for (int i = 0; i < listSeciliCRL.size(); i++)
             {
                 CustomRelativeLayout crl = listSeciliCRL.get(i);
-                Element element = durumuTamamlandiYap(String.valueOf(crl.getId()));
+                org.w3c.dom.Element element = durumuTamamlandiYap(String.valueOf(crl.getId()));
 
                 switch (crl.getCrlTur())
                 {
@@ -2112,13 +2140,12 @@ public class MainActivity extends ActionBarActivity
                         ekranaHataYazdir("18", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
                 }
                 crl.getTvTik().setImageResource(R.drawable.tamam);
-                //crl.getTvTik().setText(Sabit.TIK_UNICODE);
                 crl.setCrlSeciliMi(false);
             }
 
             if (!listSeciliCRL.isEmpty())
             {
-                Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
+                org.w3c.dom.Element elementKayit = document.getElementById(String.valueOf(listSeciliCRL.get(0).getId()));//secilen butun kayıtlar aynı parca altında olduğu için 1 kez kontrol yeterli
                 ustParcaDurumunuKontrolEtTamamla(elementKayit);
             }
 
@@ -2127,7 +2154,7 @@ public class MainActivity extends ActionBarActivity
         }
 
         //kategori altındaki bilesenlerin durumlarını gunceller
-        public void kategoriCocuklariniDurumunuGuncelle(Element elementKategori, String durum)
+        public void kategoriCocuklariniDurumunuGuncelle(org.w3c.dom.Element elementKategori, String durum)
         {
             NodeList nodeList = elementKategori.getChildNodes();
 
@@ -2138,7 +2165,7 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListKayitlar = nodeList.item(i).getChildNodes();
                     for (int j = 0; j < nodeListKayitlar.getLength(); j++)
                     {
-                        etiketiGuncelle((Element) nodeListKayitlar.item(j), durum, Sabit.XML_DURUM);
+                        etiketiGuncelle((org.w3c.dom.Element) nodeListKayitlar.item(j), durum, Sabit.XML_DURUM);
                         //nodeListKayitlar.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(durum);
                     }
                 }
@@ -2148,8 +2175,8 @@ public class MainActivity extends ActionBarActivity
                     for (int j = 0; j < nodeListAltParca.getLength(); j++)
                     {
                         //nodeListAltParca.item(j).getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(durum);
-                        etiketiGuncelle((Element) nodeListAltParca.item(j), durum, Sabit.XML_DURUM);
-                        kategoriCocuklariniDurumunuGuncelle((Element) nodeListAltParca.item(j), durum);
+                        etiketiGuncelle((org.w3c.dom.Element) nodeListAltParca.item(j), durum, Sabit.XML_DURUM);
+                        kategoriCocuklariniDurumunuGuncelle((org.w3c.dom.Element) nodeListAltParca.item(j), durum);
                     }
                 }
             }
@@ -2172,7 +2199,7 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListKayit = nodeYazilar.getChildNodes();
                     for (int j = 0; j < nodeListKayit.getLength(); j++)
                     {
-                        if (etiketBilgisiniGetir((Element) nodeListKayit.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
+                        if (etiketBilgisiniGetir((org.w3c.dom.Element) nodeListKayit.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
                         {
                             sonucYazilar = false;
                             break;
@@ -2192,7 +2219,7 @@ public class MainActivity extends ActionBarActivity
                     NodeList nodeListAltParca = nodeListParca.item(i).getChildNodes();
                     for (int j = 0; j < nodeListAltParca.getLength(); j++)
                     {
-                        if (etiketBilgisiniGetir((Element) nodeListAltParca.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
+                        if (etiketBilgisiniGetir((org.w3c.dom.Element) nodeListAltParca.item(j), Sabit.XML_DURUM).equals(Sabit.DURUM_YENI))
                         {
                             sonucAltParcalar = false;
                             break;
@@ -2216,7 +2243,7 @@ public class MainActivity extends ActionBarActivity
             {
                 if (sonucYazilar && sonucAltParcalar)//butun kayitlar ve kategoriler tamamlandı olarak işaretlenmiş. parca da tamamlandı olarak işaretlenecek
                 {
-                    etiketiGuncelle((Element) nodeParca, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
+                    etiketiGuncelle((org.w3c.dom.Element) nodeParca, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
 
                     //nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(Sabit.DURUM_TAMAMLANDI);
                     documentToFile(Sabit.DOCUMENT_ASIL);
@@ -2240,7 +2267,7 @@ public class MainActivity extends ActionBarActivity
             }
             else
             {
-                etiketiGuncelle((Element) nodeParca, Sabit.DURUM_YENI, Sabit.XML_DURUM);
+                etiketiGuncelle((org.w3c.dom.Element) nodeParca, Sabit.DURUM_YENI, Sabit.XML_DURUM);
 
 //                nodeParca.getAttributes().getNamedItem(Sabit.XML_DURUM).setNodeValue(Sabit.DURUM_YENI);
                 documentToFile(Sabit.DOCUMENT_ASIL);
@@ -2249,7 +2276,7 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
-        public void ustParcaDurumunuKontrolEtYeni(Element element)
+        public void ustParcaDurumunuKontrolEtYeni(org.w3c.dom.Element element)
         {
             boolean sonuc;
             Node nodeParca = element.getParentNode().getParentNode();
@@ -2263,23 +2290,23 @@ public class MainActivity extends ActionBarActivity
         }
 
         //secilen kaydin durumunu yeni olarak değiştirir
-        public Element durumuYeniYap(String idd)
+        public org.w3c.dom.Element durumuYeniYap(String idd)
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(Sabit.DURUM_YENI);
-            Element elementKayit = document.getElementById(idd);
+            org.w3c.dom.Element elementKayit = document.getElementById(idd);
             etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
 
             return elementKayit;
         }
 
         //secilen kaydin durumunu yeni olarak değiştirir
-        public Element durumuYeniYap()
+        public org.w3c.dom.Element durumuYeniYap()
         {
             if (seciliCRL != null)
             {
                 seciliCRL.setDurum(Sabit.DURUM_YENI);
-                Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
+                org.w3c.dom.Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
 
                 //etiketiGuncelle(elementKayit, Sabit.DURUM_YENI, Sabit.XML_DURUM);
                 //documentToFile(Sabit.DOCUMENT_ASIL);
@@ -2293,7 +2320,7 @@ public class MainActivity extends ActionBarActivity
         }
 
         //etiket degerini gunceller
-        public void etiketiGuncelle(Element element, String yeniDeger, String xmlEtiketi)
+        public void etiketiGuncelle(org.w3c.dom.Element element, String yeniDeger, String xmlEtiketi)
         {
             Node node = etiketiGetir(element, xmlEtiketi);//node getiriliyor
             if (node == null)
@@ -2314,7 +2341,7 @@ public class MainActivity extends ActionBarActivity
             LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
             String renkKodu = arkaplanRenginiGetir(llBaslik2);
 
-            Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
+            org.w3c.dom.Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
 
             etiketiGuncelle(elementKayit, etBaslik.getText().toString(), Sabit.XML_BASLIK);
             etiketiGuncelle(elementKayit, etYazi.getText().toString(), Sabit.XML_YAZI);
@@ -2337,7 +2364,7 @@ public class MainActivity extends ActionBarActivity
             LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
             String renkKodu = arkaplanRenginiGetir(llBaslik2);
 
-            Element elementKategori = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
+            org.w3c.dom.Element elementKategori = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
 
             etiketiGuncelle(elementKategori, etBaslik.getText().toString(), Sabit.XML_BASLIK);
             //etiketiGuncelle(elementKategori, etYazi.getText().toString(), Sabit.XML_YAZI);
@@ -2354,7 +2381,7 @@ public class MainActivity extends ActionBarActivity
         }
 
         //ust parcaların kayıt ve kategorilerine bakar hepsi tamamlandi durumunda ise parcayı tamamlandı olarak isaretler
-        public void ustParcaDurumunuKontrolEtTamamla(Element element)
+        public void ustParcaDurumunuKontrolEtTamamla(org.w3c.dom.Element element)
         {
             boolean sonuc;
             Node nodeParca = element.getParentNode().getParentNode();
@@ -2368,23 +2395,23 @@ public class MainActivity extends ActionBarActivity
         }
 
         //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public Element durumuTamamlandiYap(String idd)
+        public org.w3c.dom.Element durumuTamamlandiYap(String idd)
         {
             CustomRelativeLayout crl = findCRLbyID(Integer.valueOf(idd));
             crl.setDurum(Sabit.DURUM_TAMAMLANDI);
-            Element elementKayit = document.getElementById(idd);
+            org.w3c.dom.Element elementKayit = document.getElementById(idd);
             etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
 
             return elementKayit;
         }
 
         //secilen kaydin durumunu tamamlandı olarak değiştirir
-        public Element durumuTamamlandiYap()
+        public org.w3c.dom.Element durumuTamamlandiYap()
         {
             if (seciliCRL != null)
             {
                 seciliCRL.setDurum(Sabit.DURUM_TAMAMLANDI);
-                Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
+                org.w3c.dom.Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));
 
                 //etiketiGuncelle(elementKayit, Sabit.DURUM_TAMAMLANDI, Sabit.XML_DURUM);
                 //documentToFile(Sabit.DOCUMENT_ASIL);
@@ -2681,7 +2708,7 @@ public class MainActivity extends ActionBarActivity
 
                                 document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
 
-                                Element element = document.getElementById("0");
+                                org.w3c.dom.Element element = document.getElementById("0");
                                 String renk = etiketBilgisiniGetir(element, Sabit.XML_RENK);
                                 String baslik = etiketBilgisiniGetir(element, Sabit.XML_BASLIK);
                                 String durum = etiketBilgisiniGetir(element, Sabit.XML_DURUM);
@@ -2794,6 +2821,7 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
+        //actionBar turunu degiştirir
         public void actionBarDegistir(int actionBarTur)
         {
             if (ACTIONBAR_TUR != actionBarTur)
@@ -2802,6 +2830,13 @@ public class MainActivity extends ActionBarActivity
                 menuActionBar.clear();
                 onCreateOptionsMenu(menuActionBar, inflaterActionBar);
             }
+        }
+
+        //actionBar simgelerini yeniler
+        public void actionBarYenile()
+        {
+            menuActionBar.clear();
+            onCreateOptionsMenu(menuActionBar, inflaterActionBar);
         }
 
         public void ayarEkraniniAc()
@@ -3060,7 +3095,7 @@ public class MainActivity extends ActionBarActivity
         public boolean ayarlariKontrolEt()
         {
             boolean sonuc = true;
-            Element element = documentAyar.getDocumentElement();
+            org.w3c.dom.Element element = documentAyar.getDocumentElement();
             NodeList nodeList = element.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); i++)
             {
@@ -3142,7 +3177,7 @@ public class MainActivity extends ActionBarActivity
 
         public void ayarlariKaydet()
         {
-            Element element = documentAyar.getDocumentElement();
+            org.w3c.dom.Element element = documentAyar.getDocumentElement();
             NodeList nodeList = element.getChildNodes();
 
             for (int i = 0; i < nodeList.getLength(); i++)
@@ -3258,7 +3293,7 @@ public class MainActivity extends ActionBarActivity
         //kategori seciliyken duzenleye tıklanıldığı zaman girilen ismi xml'e kaydeder
         public void kategorininBaslikBilgisiniGuncelle(String baslik, int kategoriID)
         {
-            Element element = document.getElementById(String.valueOf(kategoriID));
+            org.w3c.dom.Element element = document.getElementById(String.valueOf(kategoriID));
             Node nodeBaslik = element.getFirstChild();
             nodeBaslik.setTextContent(baslik);
             documentToFile(Sabit.DOCUMENT_ASIL);
@@ -3325,7 +3360,7 @@ public class MainActivity extends ActionBarActivity
                     /*
                     alertRenk.dismiss();
 
-                    Element element = document.getElementById(String.valueOf(xmlParcaID));
+                    org.w3c.dom.Element element = document.getElementById(String.valueOf(xmlParcaID));
                     etiketiGuncelle(element, secilenRenk, Sabit.XML_RENK);
                     documentToFile(Sabit.DOCUMENT_ASIL);
 
@@ -3551,6 +3586,89 @@ public class MainActivity extends ActionBarActivity
             menuIkonEkle(menu, getResources().getDrawable(R.drawable.kaydet), MenuItem.SHOW_AS_ACTION_ALWAYS, cnt.getString(R.string.kaydet), Sabit.ACTION_AYAR_KAYDET, Sabit.RENK_SIYAH);
         }
 
+        //blur resmini kaldirir
+        public void ivBlurKaldir()
+        {
+            setBlurEtkin(false);
+            int margin = (int) mResources.getDimension(R.dimen.activity_horizontal_margin);
+            anaLinearLayout.removeView(ivBlur);
+            anaLinearLayout.setPadding(margin, margin, margin, margin);
+            fab.setAcikMi(false);
+        }
+
+        //fab a veya ekrana tıklanıldığı zaman blur resmini ve fablari kaldirir
+        public void bluruIptalEt()
+        {
+            actionBarYenile();//silinen actionbar simgeleri tekrar gosteriliyor
+
+            setBlurEtkin(false);
+            int margin = (int) mResources.getDimension(R.dimen.activity_horizontal_margin);
+            anaLinearLayout.removeView(ivBlur);
+            anaLinearLayout.setPadding(margin, margin, margin, margin);
+            fab.tuslariGizle();
+        }
+
+        public void ekraniBlurYap()
+        {
+            menuActionBar.clear();//menu simgeleri tiklanamamasi icin siliniyor
+
+            //secili elemanlar varsa secim iptal ediliyor
+            for (int i = 0; i < listSeciliCRL.size(); i++)
+            {
+                CustomRelativeLayout crl = listSeciliCRL.get(i);
+                switch (crl.getCrlTur())
+                {
+                    case Sabit.ELEMAN_TUR_KATEGORI:
+                        crl.arkaplanKategori();
+                        break;
+
+                    case Sabit.ELEMAN_TUR_KAYIT:
+                        crl.arkaplanKayit();
+                        break;
+
+                    default:
+                        ekranaHataYazdir("18", cnt.getString(R.string.hatali_kayit_turu) + " : " + crl.getCrlTur());
+                }
+                crl.setCrlSeciliMi(false);
+            }
+            seciliElemanListeleriniSifirla();
+            ///////////////////////////////////////
+
+            anaLinearLayout.destroyDrawingCache();
+            anaLinearLayout.setDrawingCacheEnabled(true);
+            anaLinearLayout.buildDrawingCache();
+            Bitmap bm = anaLinearLayout.getDrawingCache();
+
+            RenderScript rs = RenderScript.create(cnt);
+            final Allocation input = Allocation.createFromBitmap(rs, bm); //use this constructor for best performance, because it uses USAGE_SHARED mode which reuses memory
+            final Allocation output = Allocation.createTyped(rs, input.getType());
+            final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+            script.setRadius(8f);
+            script.setInput(input);
+            script.forEach(output);
+            output.copyTo(bm);
+
+            BitmapDrawable ob = new BitmapDrawable(getResources(), bm);
+            ivBlur.setBackground(ob);
+
+            RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            lp5.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            lp5.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp5.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lp5.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            anaLinearLayout.addView(ivBlur, lp5);
+
+            ivBlur.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    bluruIptalEt();
+                }
+            });
+            setBlurEtkin(true);
+        }
+
         /*
         @Override
         public void onPrepareOptionsMenu(Menu menu)
@@ -3575,8 +3693,9 @@ public class MainActivity extends ActionBarActivity
         public void onAttach(Activity activity)
         {
             super.onAttach(activity);
-            fAct = activity;
-            ma = (MainActivity) fAct;
+            ma = (MainActivity) activity;
+            //fAct = activity;
+            //ma = (MainActivity) fAct;
         }
 
         @Override
@@ -3722,14 +3841,14 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_TAMAM:
-                    Element elementKayitTamam = durumuTamamlandiYap();
+                    org.w3c.dom.Element elementKayitTamam = durumuTamamlandiYap();
                     ustParcaDurumunuKontrolEtTamamla(elementKayitTamam);
                     actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_TAMAMLANDI);
                     Toast.makeText(getActivity(), cnt.getString(R.string.kayit_tamamlandi_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_YENI:
-                    Element elementKayitYeni = durumuYeniYap();
+                    org.w3c.dom.Element elementKayitYeni = durumuYeniYap();
                     ustParcaDurumunuKontrolEtYeni(elementKayitYeni);
                     actionBarDurumSimgesiDegistirKayit(Sabit.DURUM_YENI);
                     Toast.makeText(getActivity(), cnt.getString(R.string.kayit_yeni_olarak_isaretlendi), Toast.LENGTH_SHORT).show();
@@ -3759,7 +3878,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_TAMAM:
-                    Element elementKategoriTamam = durumuTamamlandiYap();
+                    org.w3c.dom.Element elementKategoriTamam = durumuTamamlandiYap();
                     if (elementKategoriTamam != null)
                     {
                         ustParcaDurumunuKontrolEtTamamla(elementKategoriTamam);
@@ -3770,7 +3889,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_YENI:
-                    Element elementKategoriYeni = durumuYeniYap();
+                    org.w3c.dom.Element elementKategoriYeni = durumuYeniYap();
                     if (elementKategoriYeni != null)
                     {
                         ustParcaDurumunuKontrolEtYeni(elementKategoriYeni);
@@ -3886,6 +4005,11 @@ public class MainActivity extends ActionBarActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
+            if (isBlurEtkin())//eger ekran blurlu ise kaldıryorum. yoksa tekrar blurlanırken uygulama çöküyor
+            {
+                ivBlurKaldir();
+            }
+
             switch (FRAGMENT_ETKIN_EKRAN)
             {
                 case Sabit.FRAGMENT_KATEGORI_DUZENLE_EKRANI:
@@ -4010,7 +4134,10 @@ public class MainActivity extends ActionBarActivity
                         kategoriBasliginiYaz();
                     }
 
-                    new FloatingActionButton(fAct, anaLinearLayout, this);//ekrana floatinActionButton ekleniyopr
+                    fab.setFrag(this);
+                    fab.setAnaLayout(anaLinearLayout);
+                    fab.tuslariOlustur();
+                    //fab = new FloatingActionButton(fAct, anaLinearLayout, this);//ekrana floatinActionButton ekleniyopr
 
                     return rootView;
                 }
