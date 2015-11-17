@@ -3285,7 +3285,6 @@ public class MainActivity extends ActionBarActivity
             {
                 ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(Html.fromHtml("<font color=" + yaziRengi + ">" + kategoriYolunuGetir(String.valueOf(seciliCRL.getId())) + "</font>"));
-                //getActivity().getActionBar().setTitle(kategoriYolunuGetir(xmlParcaID));
             }
         }
 
@@ -4163,7 +4162,7 @@ public class MainActivity extends ActionBarActivity
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
                     //((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    //((ActionBarActivity)getActivity()).getSupportActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.yedek_dosyalari) + "</font>")));
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.yedek_dosyalari) + "</font>")));
                     ekranRenginiDegistir(Sabit.RENK_BEYAZ2);
                     ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ2);
                     ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
@@ -4200,7 +4199,7 @@ public class MainActivity extends ActionBarActivity
                     anaRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.anaRelativeLayout);
 
                     //((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    //((ActionBarActivity)getActivity()).getSupportActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.ayarlar) + "</font>")));
+                    ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle((Html.fromHtml("<font color='" + Sabit.RENK_SIYAH + "'>" + cnt.getString(R.string.ayarlar) + "</font>")));
                     ekranRenginiDegistir(Sabit.RENK_BEYAZ2);
                     ma.actionBarArkaPlanDegistir(Sabit.RENK_BEYAZ2);
                     ma.geriSimgesiniEkle(Sabit.RENK_SIYAH);
