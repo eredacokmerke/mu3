@@ -34,8 +34,9 @@ public class CustomRelativeLayout extends RelativeLayout
     private String renk;
     private String baslik;
     private int satirBasinaKayitSayisi;
+    private int parentID;
 
-    public CustomRelativeLayout(final Context context, final String baslik, final String kayit, int elemanTur, final int crlID, String durum, String renk, final MainActivity.PlaceholderFragment frag, Yerlesim ylsm)
+    public CustomRelativeLayout(final Context context, final String baslik, final String kayit, int elemanTur, final int crlID, String durum, String renk, Yerlesim ylsm, int parentID)
     {
         super(context);
         setCrlSeciliMi(false);
@@ -43,6 +44,7 @@ public class CustomRelativeLayout extends RelativeLayout
         this.renk = renk;
         this.baslik = baslik;
         this.setId(crlID);
+        this.parentID = parentID;
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
         int yaziRengi;
 
@@ -250,7 +252,7 @@ public class CustomRelativeLayout extends RelativeLayout
         }
     }
 
-    public CustomRelativeLayout(Context context, String baslik, String renk, String durum, final int crlID)
+    public CustomRelativeLayout(Context context, String baslik, String renk, String durum, int crlID, int parentID)
     {
         super(context);
         setCrlSeciliMi(false);
@@ -258,6 +260,7 @@ public class CustomRelativeLayout extends RelativeLayout
         this.renk = renk;
         this.baslik = baslik;
         this.durum = durum;
+        this.parentID = parentID;
     }
 
     //verilen sutundaki ilk -1 degerine sahip satir sayisini donduruyor
@@ -514,6 +517,11 @@ public class CustomRelativeLayout extends RelativeLayout
     public String getBaslik()
     {
         return baslik;
+    }
+
+    public int getParentID()
+    {
+        return parentID;
     }
 
     //verilen rengin koyu,açık bilgisini döndürür

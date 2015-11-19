@@ -55,6 +55,7 @@ public class Sabit
     public static final int FRAGMENT_YENI_KAYIT_EKRANI = 4;
     public static final int FRAGMENT_YENI_KATEGORI_EKRANI = 5;
     public static final int FRAGMENT_KATEGORI_DUZENLE_EKRANI = 6;
+    public static final int FRAGMENT_ELEMAN_SIL_EKRANI = 7;
 
     //actionbar turu
     public static final int ACTIONBAR_EKLE = 0;
