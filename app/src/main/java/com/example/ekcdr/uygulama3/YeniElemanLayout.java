@@ -80,8 +80,8 @@ public class YeniElemanLayout
 
             case Sabit.FRAGMENT_KAYIT_EKRANI:
                 llBaslik.setBackgroundColor(Color.parseColor(seciliCRL.getRenk()));
-                etBaslik.setText(seciliCRL.getTvBaslik().getText());
-                etKayit.setText(seciliCRL.getTvYazi().getText());
+                etBaslik.setText(seciliCRL.getBaslik());
+                etKayit.setText(seciliCRL.getKayit());
                 break;
         }
 

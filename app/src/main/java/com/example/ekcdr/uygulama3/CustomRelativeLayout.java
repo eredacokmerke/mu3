@@ -4,9 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.text.Html;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -27,12 +28,13 @@ public class CustomRelativeLayout extends RelativeLayout
     private boolean crlSeciliMi = false;
     private ImageView tvTik;
     private TextView tvBaslik;
-    private TextView tvYazi;
+    //private TextView tvYazi;
     //private ImageView tvDuzenle;
     private int crlTur;
     private String durum;
     private String renk;
     private String baslik;
+    private String kayit;
     private int satirBasinaKayitSayisi;
     private int parentID;
 
@@ -43,8 +45,9 @@ public class CustomRelativeLayout extends RelativeLayout
         this.durum = durum;
         this.renk = renk;
         this.baslik = baslik;
-        this.setId(crlID);
+        this.kayit = kayit;
         this.parentID = parentID;
+        this.setId(crlID);
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
         int yaziRengi;
 
@@ -98,6 +101,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 tvBaslik.setTextSize(YAZI_BUYUKLUGU_KATEGORI);
                 tvBaslik.setText(baslik);
                 tvBaslik.setTextColor(yaziRengi);
+                tvBaslik.setGravity(Gravity.CENTER_VERTICAL);
                 tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 //lp2.addRule(RelativeLayout.LEFT_OF, tvDuzenle.getId());
@@ -209,6 +213,33 @@ public class CustomRelativeLayout extends RelativeLayout
                 lp4.addRule(RelativeLayout.CENTER_VERTICAL);
                 this.addView(tvTik, lp4);
 
+                tvBaslik = new TextView(context);
+                tvBaslik.setId(View.generateViewId());
+                tvBaslik.setTextSize(YAZI_BUYUKLUGU_KAYIT);
+                if (!baslik.isEmpty() && !kayit.isEmpty())//baslik bos ise yer kaplamasın
+                {
+                    tvBaslik.setText(Html.fromHtml("<b><i>" + baslik + "</i></b><br>" + kayit));
+                }
+                else if (!kayit.isEmpty())
+                {
+                    tvBaslik.setText(Html.fromHtml(kayit));
+                }
+                else if (!baslik.isEmpty())
+                {
+                    tvBaslik.setText(Html.fromHtml("<b><i>" + baslik + "</i></b>"));
+                }
+
+                tvBaslik.setTextColor(yaziRengi);
+                tvBaslik.setPadding(PADDING_YAZI, 0, PADDING_YAZI, 0);
+                tvBaslik.setGravity(Gravity.CENTER_VERTICAL);
+
+                RelativeLayout.LayoutParams lp6 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                lp6.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
+                lp6.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                lp6.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                this.addView(tvBaslik, lp6);
+
+                /*
                 //kayit basliginin yazildigi yer
                 tvBaslik = new TextView(context);
                 if (baslik.isEmpty())//baslik bos ise yer kaplamasın
@@ -246,6 +277,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 lp6.addRule(RelativeLayout.BELOW, tvBaslik.getId());
                 lp6.addRule(RelativeLayout.RIGHT_OF, tvTik.getId());
                 this.addView(tvYazi, lp6);
+                */
 
                 break;
             }
@@ -469,16 +501,6 @@ public class CustomRelativeLayout extends RelativeLayout
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
     }
 
-    public TextView getTvBaslik()
-    {
-        return tvBaslik;
-    }
-
-    public TextView getTvYazi()
-    {
-        return tvYazi;
-    }
-
     public ImageView getTvTik()
     {
         return tvTik;
@@ -517,6 +539,11 @@ public class CustomRelativeLayout extends RelativeLayout
     public String getBaslik()
     {
         return baslik;
+    }
+
+    public String getKayit()
+    {
+        return kayit;
     }
 
     public int getParentID()
