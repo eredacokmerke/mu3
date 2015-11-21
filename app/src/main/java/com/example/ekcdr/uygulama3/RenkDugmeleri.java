@@ -28,7 +28,7 @@ public class RenkDugmeleri extends LinearLayout
         LinearLayout.LayoutParams pa1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         setLayoutParams(pa1);
         setGravity(Gravity.CENTER);//içerik linearlayout un ortasına yerleşsin
-        setPadding((int) dpGetir(20), 0, (int) dpGetir(20), 0);
+        setPadding((int) Sabit.dpGetir(20), 0, (int) Sabit.dpGetir(20), 0);
         LinearLayout.LayoutParams pa3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
 
         LinearLayout alertLLSatir = null;
@@ -121,11 +121,6 @@ public class RenkDugmeleri extends LinearLayout
         }
     }
 
-    public float dpGetir(int px)
-    {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
-    }
-
     public int rastgeleRenkGetir()
     {
         Random rnd = new Random();
@@ -134,12 +129,14 @@ public class RenkDugmeleri extends LinearLayout
         return color;
     }
 
+    //cagiran yere gore farklı renkSecimiYapildi() metoduna gidecek
     public void setCagiranYer(int yer, AyarlarRelativeLayout arl)
     {
         cagiranYer = yer;
         this.arl = arl;
     }
 
+    //cagiran yere gore farklı renkSecimiYapildi() metoduna gidecek
     public void setCagiranYer(int yer, MainActivity.PlaceholderFragment frag)
     {
         cagiranYer = yer;

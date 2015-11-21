@@ -1,5 +1,10 @@
 package com.example.ekcdr.uygulama3;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.util.TypedValue;
+import android.view.View;
+
 public class Sabit
 {
     public static final String UYGULAMA_ADI = "uygulama3";
@@ -161,4 +166,34 @@ public class Sabit
     public static int llBaslikID = 1000;
     public static int etBaslikID = 1001;
     public static int etKayitID = 1002;
+
+    //verilen rengin koyu,açık bilgisini döndürür
+    public static boolean renkKoyuMu(String renk)
+    {
+        int irenk = Color.parseColor(renk);
+        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
+        if (darkness < 0.5)
+        {
+            return false; //açık renk
+        }
+        else
+        {
+            return true; //koyu renk
+        }
+    }
+
+    //px birimini dp ye cevirir
+    public static float dpGetir(int px)
+    {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, MainActivity.cnt.getResources().getDisplayMetrics());
+    }
+
+    //view'ın arka plan rengini getirir
+    public static String arkaplanRenginiGetir(View v)
+    {
+        String renkKodu = Integer.toHexString(((ColorDrawable) v.getBackground()).getColor()).toUpperCase();
+        renkKodu = renkKodu.substring(2, 8);//alfa degerini siliyorum
+        renkKodu = "#" + renkKodu;
+        return renkKodu;
+    }
 }

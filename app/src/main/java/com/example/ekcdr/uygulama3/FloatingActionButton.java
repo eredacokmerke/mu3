@@ -26,8 +26,8 @@ public class FloatingActionButton
         //this.anaLayout = anaLayout;
         setAcikMi(false);
 
-        btnBoyut = (int) dpGetir(60);
-        btnMargin = (int) dpGetir(5);
+        btnBoyut = (int) Sabit.dpGetir(60);
+        btnMargin = (int) Sabit.dpGetir(5);
 
         /*
         LayerDrawable layers = (LayerDrawable)  act.getResources().getDrawable(R.drawable.golge);
@@ -59,7 +59,7 @@ public class FloatingActionButton
         lpbtnKategoriEkle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         //lpbtnKategoriEkle.addRule(RelativeLayout.ABOVE, btnAna.getId());
         lpbtnKategoriEkle.addRule(RelativeLayout.ALIGN_PARENT_END);
-        lpbtnKategoriEkle.setMargins(btnMargin, btnMargin, btnMargin + (int) dpGetir(16), btnMargin + (int) dpGetir(16));
+        lpbtnKategoriEkle.setMargins(btnMargin, btnMargin, btnMargin + (int) Sabit.dpGetir(16), btnMargin + (int) Sabit.dpGetir(16));
         btnKategoriEkle.setLayoutParams(lpbtnKategoriEkle);
 
         btnKayitEkle = new ImageButton(act);
@@ -71,7 +71,7 @@ public class FloatingActionButton
         RelativeLayout.LayoutParams lpbtnKayitEkle = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpbtnKayitEkle.addRule(RelativeLayout.ABOVE, btnKategoriEkle.getId());
         lpbtnKayitEkle.addRule(RelativeLayout.ALIGN_PARENT_END);
-        lpbtnKayitEkle.setMargins(btnMargin, btnMargin, btnMargin+(int) dpGetir(16), btnMargin);
+        lpbtnKayitEkle.setMargins(btnMargin, btnMargin, btnMargin+(int) Sabit.dpGetir(16), btnMargin);
         btnKayitEkle.setLayoutParams(lpbtnKayitEkle);
 
         btnAna.setOnClickListener(new View.OnClickListener()
@@ -145,7 +145,7 @@ public class FloatingActionButton
         lpbtnKategoriEkle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         //lpbtnKategoriEkle.addRule(RelativeLayout.ABOVE, btnAna.getId());
         lpbtnKategoriEkle.addRule(RelativeLayout.ALIGN_PARENT_END);
-        lpbtnKategoriEkle.setMargins(btnMargin, btnMargin, btnMargin + (int) dpGetir(16), btnMargin + (int) dpGetir(16));
+        lpbtnKategoriEkle.setMargins(btnMargin, btnMargin, btnMargin + (int) Sabit.dpGetir(16), btnMargin + (int) Sabit.dpGetir(16));
         btnKategoriEkle.setLayoutParams(lpbtnKategoriEkle);
 
         btnKayitEkle = new ImageButton(act);
@@ -157,7 +157,7 @@ public class FloatingActionButton
         RelativeLayout.LayoutParams lpbtnKayitEkle = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpbtnKayitEkle.addRule(RelativeLayout.ABOVE, btnKategoriEkle.getId());
         lpbtnKayitEkle.addRule(RelativeLayout.ALIGN_PARENT_END);
-        lpbtnKayitEkle.setMargins(btnMargin, btnMargin, btnMargin + (int) dpGetir(16), btnMargin);
+        lpbtnKayitEkle.setMargins(btnMargin, btnMargin, btnMargin + (int) Sabit.dpGetir(16), btnMargin);
         btnKayitEkle.setLayoutParams(lpbtnKayitEkle);
 
         btnAna.setOnClickListener(new View.OnClickListener()
@@ -222,13 +222,7 @@ public class FloatingActionButton
     {
         this.acikMi = acikMi;
     }
-
-    //px birimini dp ye cevirir
-    public float dpGetir(int px)
-    {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, act.getResources().getDisplayMetrics());
-    }
-
+    
     public void setFrag(MainActivity.PlaceholderFragment frag)
     {
         this.frag = frag;

@@ -100,7 +100,7 @@ public class AyarlarRelativeLayout extends RelativeLayout
                 viewSecenek = new ImageButton(cnt);
                 ImageButton im = (ImageButton) viewSecenek;
                 im.getBackground().setColorFilter(Color.parseColor(deger), PorterDuff.Mode.SRC_ATOP);
-                RelativeLayout.LayoutParams pa3 = new RelativeLayout.LayoutParams((ekranEnUzunluğu / 10) * 2, (int) MainActivity.dpGetir(50));
+                RelativeLayout.LayoutParams pa3 = new RelativeLayout.LayoutParams((ekranEnUzunluğu / 10) * 2, (int) Sabit.dpGetir(50));
                 pa3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 im.setLayoutParams(pa3);
                 this.addView(im);

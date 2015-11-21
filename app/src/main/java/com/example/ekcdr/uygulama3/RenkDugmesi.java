@@ -18,7 +18,7 @@ public class RenkDugmesi extends ImageButton
         this.renk = renk;
 
         //LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.2f);
-        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams((int) dpGetir(70), (int) dpGetir(50), 0.2f);
+        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams((int) Sabit.dpGetir(70), (int) Sabit.dpGetir(50), 0.2f);
 
         setLayoutParams(pa);
         getBackground().setColorFilter(Color.parseColor(renk), PorterDuff.Mode.SRC_ATOP);
@@ -43,7 +43,7 @@ public class RenkDugmesi extends ImageButton
         this.renk = hexColor;
 
         //LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.2f);
-        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams((int) dpGetir(70), (int) dpGetir(50), 0.2f);
+        LinearLayout.LayoutParams pa = new LinearLayout.LayoutParams((int) Sabit.dpGetir(70), (int) Sabit.dpGetir(50), 0.2f);
         setLayoutParams(pa);
         getBackground().setColorFilter(renkID, PorterDuff.Mode.SRC_ATOP);
 
@@ -55,21 +55,5 @@ public class RenkDugmesi extends ImageButton
                 rd.secimYapildi(renk);
             }
         });
-    }
-
-    public String getRenk()
-    {
-        return renk;
-    }
-
-    public void setRenk(String renk)
-    {
-        this.renk = renk;
-    }
-
-    //px birimini dp ye cevirir
-    public float dpGetir(int px)
-    {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
     }
 }

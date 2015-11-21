@@ -51,7 +51,7 @@ public class CustomRelativeLayout extends RelativeLayout
         satirBasinaKayitSayisi = Integer.valueOf(MainActivity.DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
         int yaziRengi;
 
-        if (renkKoyuMu(renk))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+        if (Sabit.renkKoyuMu(renk))//zemin rengine göre yazı rengi siyah veya beyaz olacak
         {
             yaziRengi = Color.WHITE;
         }
@@ -75,7 +75,7 @@ public class CustomRelativeLayout extends RelativeLayout
                 }
 
                 //RelativeLayout.LayoutParams pa = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                pa.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
+                pa.setMargins(0, 0, (int) Sabit.dpGetir(3), (int) Sabit.dpGetir(3));
 
                 this.setLayoutParams(pa);
                 viewBoyunuGetir(this, ylsm, crlID, pa);
@@ -191,7 +191,7 @@ public class CustomRelativeLayout extends RelativeLayout
                     pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 }
                 //RelativeLayout.LayoutParams pa2 = new RelativeLayout.LayoutParams(MainActivity.elemanEnUzunluğu, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                pa2.setMargins(0, 0, (int) dpGetir(3), (int) dpGetir(3));
+                pa2.setMargins(0, 0, (int) Sabit.dpGetir(3), (int) Sabit.dpGetir(3));
 
                 this.setLayoutParams(pa2);
                 viewBoyunuGetir(this, ylsm, crlID, pa2);
@@ -462,11 +462,11 @@ public class CustomRelativeLayout extends RelativeLayout
         gd.setColor(0xFFFF2222);
         if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
         {
-            gd.setStroke((int) dpGetir(CERCEVE_KALINLIGI), 0xFF880000);
+            gd.setStroke((int) Sabit.dpGetir(CERCEVE_KALINLIGI), 0xFF880000);
         }
-        gd.setCornerRadius(dpGetir(CERCEVE_KOSE));
+        gd.setCornerRadius(Sabit.dpGetir(CERCEVE_KOSE));
         setBackground(gd);
-        setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
+        setPadding((int) Sabit.dpGetir(PADDING_YATAY), (int) Sabit.dpGetir(PADDING_DIKEY), (int) Sabit.dpGetir(PADDING_YATAY), (int) Sabit.dpGetir(PADDING_DIKEY));
     }
 
     public void arkaplanKategori()
@@ -475,11 +475,11 @@ public class CustomRelativeLayout extends RelativeLayout
         gd.setColor(Color.parseColor(renk));
         if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
         {
-            gd.setStroke((int) dpGetir(CERCEVE_KALINLIGI), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
+            gd.setStroke((int) Sabit.dpGetir(CERCEVE_KALINLIGI), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
         }
-        gd.setCornerRadius(dpGetir(CERCEVE_KOSE));
+        gd.setCornerRadius(Sabit.dpGetir(CERCEVE_KOSE));
         setBackground(gd);
-        setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
+        setPadding((int) Sabit.dpGetir(PADDING_YATAY), (int) Sabit.dpGetir(PADDING_DIKEY), (int) Sabit.dpGetir(PADDING_YATAY), (int) Sabit.dpGetir(PADDING_DIKEY));
     }
 
     public void arkaplanKayit()
@@ -488,17 +488,11 @@ public class CustomRelativeLayout extends RelativeLayout
         gd.setColor(Color.parseColor(renk));
         if (MainActivity.DEGER_AYAR_CERCEVE_GOZUKSUN.equals("1"))
         {
-            gd.setStroke((int) dpGetir(CERCEVE_KALINLIGI), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
+            gd.setStroke((int) Sabit.dpGetir(CERCEVE_KALINLIGI), Color.parseColor(MainActivity.DEGER_AYAR_CERCEVE_RENGI));
         }
-        gd.setCornerRadius(dpGetir(CERCEVE_KOSE));
+        gd.setCornerRadius(Sabit.dpGetir(CERCEVE_KOSE));
         setBackground(gd);
-        setPadding((int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY), (int) dpGetir(PADDING_YATAY), (int) dpGetir(PADDING_DIKEY));
-    }
-
-    //px birimini dp ye cevirir
-    public float dpGetir(int px)
-    {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
+        setPadding((int) Sabit.dpGetir(PADDING_YATAY), (int) Sabit.dpGetir(PADDING_DIKEY), (int) Sabit.dpGetir(PADDING_YATAY), (int) Sabit.dpGetir(PADDING_DIKEY));
     }
 
     public ImageView getTvTik()
@@ -549,20 +543,5 @@ public class CustomRelativeLayout extends RelativeLayout
     public int getParentID()
     {
         return parentID;
-    }
-
-    //verilen rengin koyu,açık bilgisini döndürür
-    public boolean renkKoyuMu(String renk)
-    {
-        int irenk = Color.parseColor(renk);
-        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
-        if (darkness < 0.5)
-        {
-            return false; //açık renk
-        }
-        else
-        {
-            return true; //koyu renk
-        }
     }
 }

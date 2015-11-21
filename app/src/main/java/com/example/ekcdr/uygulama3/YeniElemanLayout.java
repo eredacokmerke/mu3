@@ -36,7 +36,7 @@ public class YeniElemanLayout
         etBaslik.setBackground(null);//edittext te altcizgi cikmasin
 
         LinearLayout.LayoutParams lpETBaslik = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lpETBaslik.setMargins((int) dpGetir(20), (int) dpGetir(40), (int) dpGetir(20), (int) dpGetir(40));
+        lpETBaslik.setMargins((int) Sabit.dpGetir(20), (int) Sabit.dpGetir(40), (int) Sabit.dpGetir(20), (int) Sabit.dpGetir(40));
         etBaslik.setLayoutParams(lpETBaslik);
 
         llBaslik.addView(etBaslik);
@@ -54,7 +54,7 @@ public class YeniElemanLayout
         etKayit.setTextColor(Color.BLACK);
 
         LinearLayout.LayoutParams lpETKayit = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        lpETKayit.setMargins((int) dpGetir(20), 0, (int) dpGetir(20), 0);
+        lpETKayit.setMargins((int) Sabit.dpGetir(20), 0, (int) Sabit.dpGetir(20), 0);
         etKayit.setLayoutParams(lpETKayit);
         llKayit.addView(etKayit);
 
@@ -85,7 +85,7 @@ public class YeniElemanLayout
                 break;
         }
 
-        if (renkKoyuMu(arkaplanRenginiGetir(llBaslik)))
+        if (Sabit.renkKoyuMu(Sabit.arkaplanRenginiGetir(llBaslik)))
         {
             etBaslik.setHintTextColor(Color.LTGRAY);
             etBaslik.setTextColor(Color.WHITE);
@@ -104,33 +104,5 @@ public class YeniElemanLayout
         anaRelativeLayout.addView(llKayit);
     }
 
-    //px birimini dp ye cevirir
-    public float dpGetir(int px)
-    {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, MainActivity.cnt.getResources().getDisplayMetrics());
-    }
-
-    //verilen rengin koyu,açık bilgisini döndürür
-    public boolean renkKoyuMu(String renk)
-    {
-        int irenk = Color.parseColor(renk);
-        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
-        if (darkness < 0.5)
-        {
-            return false; //açık renk
-        }
-        else
-        {
-            return true; //koyu renk
-        }
-    }
-
-    //view'ın arka plan rengini getirir
-    public String arkaplanRenginiGetir(View v)
-    {
-        String renkKodu = Integer.toHexString(((ColorDrawable) v.getBackground()).getColor()).toUpperCase();
-        renkKodu = renkKodu.substring(2, 8);//alfa degerini siliyorum
-        renkKodu = "#" + renkKodu;
-        return renkKodu;
-    }
+    
 }

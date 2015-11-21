@@ -164,7 +164,7 @@ public class MainActivity extends ActionBarActivity
     {
         tumEkranEnUzunlugu = mResources.getDisplayMetrics().widthPixels;
         float fazlalık = (mResources.getDimension(R.dimen.activity_horizontal_margin) * 2);
-        fazlalık = fazlalık + dpGetir(3) * ((Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI)) - 1);
+        fazlalık = fazlalık + Sabit.dpGetir(3) * ((Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI)) - 1);
         ekranEnUzunlugu = (int) (tumEkranEnUzunlugu - fazlalık);
 
         elemanEnUzunluğu = ekranEnUzunlugu / Integer.valueOf(DEGER_AYAR_SATIR_BASINA_KAYIT_SAYISI);
@@ -175,16 +175,10 @@ public class MainActivity extends ActionBarActivity
     {
         int ekranBoyUzunluğu = mResources.getDisplayMetrics().heightPixels;
         float fazlalık = (mResources.getDimension(R.dimen.activity_horizontal_margin) * 2);
-        fazlalık = fazlalık + actionBarBoy + dpGetir(30) + dpGetir(3) * ((Integer.valueOf(DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI)) - 1);
+        fazlalık = fazlalık + actionBarBoy + Sabit.dpGetir(30) + Sabit.dpGetir(3) * ((Integer.valueOf(DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI)) - 1);
         elemanBoyUzunluğu = (int) ((ekranBoyUzunluğu - fazlalık) / Integer.valueOf(DEGER_AYAR_SUTUN_BASINA_KAYIT_SAYISI));
     }
-
-    //px birimini dp ye cevirir
-    public static float dpGetir(int px)
-    {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, mResources.getDisplayMetrics());
-    }
-
+    
     public static void ekranaHataYazdir(String id, String hata)
     {
         Toast.makeText(cnt, cnt.getString(R.string.hata) + "[" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
@@ -217,21 +211,6 @@ public class MainActivity extends ActionBarActivity
             }
         }
         return null;
-    }
-
-    //verilen rengin koyu,açık bilgisini döndürür
-    public static boolean renkKoyuMu(String renk)
-    {
-        int irenk = Color.parseColor(renk);
-        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
-        if (darkness < 0.5)
-        {
-            return false; //açık renk
-        }
-        else
-        {
-            return true; //koyu renk
-        }
     }
 
     public static boolean isBlurEtkin()
@@ -450,7 +429,7 @@ public class MainActivity extends ActionBarActivity
         final Drawable upArrow = getResources().getDrawable(R.drawable.geri);
         int yaziRengi;
 
-        if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+        if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
         {
             yaziRengi = Color.WHITE;
         }
@@ -468,7 +447,7 @@ public class MainActivity extends ActionBarActivity
         final Drawable upArrow = getResources().getDrawable(R.drawable.menu);
         int yaziRengi;
 
-        if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+        if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
         {
             yaziRengi = Color.WHITE;
         }
@@ -2403,7 +2382,7 @@ public class MainActivity extends ActionBarActivity
             EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
             EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etKayitID);//kayit degistirme ekranındaki yazi bilgisi
             LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
-            String renkKodu = arkaplanRenginiGetir(llBaslik2);
+            String renkKodu = Sabit.arkaplanRenginiGetir(llBaslik2);
 
             org.w3c.dom.Element elementKayit = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
 
@@ -2426,7 +2405,7 @@ public class MainActivity extends ActionBarActivity
             EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);//kayit degistirme ekranındaki baslik bilgisi
             //EditText etYazi = (EditText) fragmentRootViewYeniKayit.findViewById(etKayitID);//kayit degistirme ekranındaki yazi bilgisi
             LinearLayout llBaslik2 = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
-            String renkKodu = arkaplanRenginiGetir(llBaslik2);
+            String renkKodu = Sabit.arkaplanRenginiGetir(llBaslik2);
 
             org.w3c.dom.Element elementKategori = document.getElementById(String.valueOf(seciliCRL.getId()));//degisecek kayit nesnesi
 
@@ -3332,7 +3311,7 @@ public class MainActivity extends ActionBarActivity
         public void kategoriBasliginiYaz()
         {
             String yaziRengi;
-            if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+            if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
             {
                 yaziRengi = Sabit.RENK_BEYAZ;
             }
@@ -3402,7 +3381,7 @@ public class MainActivity extends ActionBarActivity
                         ma.actionBarArkaPlanDegistir(secilenRenk);
 
                         EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
-                        if (renkKoyuMu(secilenRenk))
+                        if (Sabit.renkKoyuMu(secilenRenk))
                         {
                             etBaslik.setHintTextColor(Color.LTGRAY);
                             etBaslik.setTextColor(Color.WHITE);
@@ -3457,7 +3436,7 @@ public class MainActivity extends ActionBarActivity
 
                     EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
 
-                    if (renkKoyuMu(secilenRenk))
+                    if (Sabit.renkKoyuMu(secilenRenk))
                     {
                         etBaslik.setHintTextColor(Color.LTGRAY);
                         etBaslik.setTextColor(Color.WHITE);
@@ -3490,7 +3469,7 @@ public class MainActivity extends ActionBarActivity
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
-                    if (renkKoyuMu(secilenRenk))
+                    if (Sabit.renkKoyuMu(secilenRenk))
                     {
                         etBaslik.setHintTextColor(Color.LTGRAY);
                         etBaslik.setTextColor(Color.WHITE);
@@ -3510,7 +3489,7 @@ public class MainActivity extends ActionBarActivity
                     llBaslik.setBackgroundColor(Color.parseColor(secilenRenk));
                     alertRenk.dismiss();
 
-                    if (renkKoyuMu(secilenRenk))
+                    if (Sabit.renkKoyuMu(secilenRenk))
                     {
                         etBaslik.setHintTextColor(Color.LTGRAY);
                         etBaslik.setTextColor(Color.WHITE);
@@ -3542,15 +3521,6 @@ public class MainActivity extends ActionBarActivity
             //ll.getBackground().setAlpha(128);
         }
 
-        //view'ın arka plan rengini getirir
-        public String arkaplanRenginiGetir(View v)
-        {
-            String renkKodu = Integer.toHexString(((ColorDrawable) v.getBackground()).getColor()).toUpperCase();
-            renkKodu = renkKodu.substring(2, 8);//alfa degerini siliyorum
-            renkKodu = "#" + renkKodu;
-            return renkKodu;
-        }
-
         //actionBar arkaplanı değişince simge ve başlığın renklerini değiştiriyor
         public void actionBarRenkGuncelle(int renk1, String renk2)
         {
@@ -3579,7 +3549,7 @@ public class MainActivity extends ActionBarActivity
         public void menuIkonEkle(Menu menu, Drawable drawable, int Action, String baslik, int id)
         {
             int yaziRengi;
-            if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+            if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
             {
                 yaziRengi = Color.WHITE;
             }
@@ -3924,7 +3894,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KAYIT_DEGISTIR_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
+                    renkDialogunuOlustur(Sabit.arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
                 //kayit degistir
                 //kategori degistir
@@ -3933,7 +3903,7 @@ public class MainActivity extends ActionBarActivity
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
+                    renkDialogunuOlustur(Sabit.arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
 
                 case Sabit.ACTION_KATEGORI_DEGISTIR_KAYDET:
@@ -3985,7 +3955,7 @@ public class MainActivity extends ActionBarActivity
                 //ayar
                 //yeni kayit
                 case Sabit.ACTION_YENI_KAYIT_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
+                    renkDialogunuOlustur(Sabit.arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
 
                 case Sabit.ACTION_YENI_KAYIT_KAYDET:
@@ -3994,7 +3964,7 @@ public class MainActivity extends ActionBarActivity
                     EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
                     EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etKayitID);
                     LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
-                    String renkKodu = arkaplanRenginiGetir(llBaslik);
+                    String renkKodu = Sabit.arkaplanRenginiGetir(llBaslik);
                     int eklenenID = xmlDosyasinaKayitEkle(etBaslik.getText().toString(), etKayit.getText().toString(), renkKodu);
                     anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
                     kayitlariAnaEkranaEkle(etBaslik.getText().toString(), etKayit.getText().toString(), eklenenID, Sabit.DURUM_YENI, Sabit.KAYIT_ONTANIMLI_RENK, globalYerlesim);
@@ -4004,7 +3974,7 @@ public class MainActivity extends ActionBarActivity
                 //yeni kayit
                 //yeni kategori
                 case Sabit.ACTION_YENI_KATEGORI_RENK_DEGISTIR:
-                    renkDialogunuOlustur(arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
+                    renkDialogunuOlustur(Sabit.arkaplanRenginiGetir(fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID)));
                     return true;
 
                 case Sabit.ACTION_YENI_KATEGORI_KAYDET:
@@ -4013,7 +3983,7 @@ public class MainActivity extends ActionBarActivity
                     EditText etBaslik = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etBaslikID);
                     EditText etKayit = (EditText) fragmentRootViewYeniKayit.findViewById(Sabit.etKayitID);
                     LinearLayout llBaslik = (LinearLayout) fragmentRootViewYeniKayit.findViewById(Sabit.llBaslikID);
-                    String renkKodu = arkaplanRenginiGetir(llBaslik);
+                    String renkKodu = Sabit.arkaplanRenginiGetir(llBaslik);
 
                     int eklenenID = xmlDosyasinaKategoriEkle(etBaslik.getText().toString(), renkKodu);
                     anaRelativeLayout = (RelativeLayout) fragmentRootView.findViewById(R.id.anaRelativeLayout);
@@ -4089,7 +4059,7 @@ public class MainActivity extends ActionBarActivity
                     ma.geriSimgesiniEkle();
 
                     String yaziRengi;
-                    if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+                    if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
                     {
                         yaziRengi = Sabit.RENK_BEYAZ;
                     }
@@ -4116,7 +4086,7 @@ public class MainActivity extends ActionBarActivity
                     ma.geriSimgesiniEkle();
 
                     String yaziRengi;
-                    if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+                    if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
                     {
                         yaziRengi = Sabit.RENK_BEYAZ;
                     }
@@ -4144,7 +4114,7 @@ public class MainActivity extends ActionBarActivity
                     ma.geriSimgesiniEkle();
 
                     String yaziRengi;
-                    if (renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
+                    if (Sabit.renkKoyuMu(ACTION_BAR_ARKAPLAN_RENGI))//zemin rengine göre yazı rengi siyah veya beyaz olacak
                     {
                         yaziRengi = Sabit.RENK_BEYAZ;
                     }
