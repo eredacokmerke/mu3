@@ -1,27 +1,44 @@
 package com.eredacokmerke.uygulama3;
 
+import android.content.Context;
+import android.os.Environment;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class Engine
 {
-    public static String xmlYedekKlasorYolu;
-    public static File uygulamaKlasoru;
-    public static File xmlYedekKlasoru;
-    private static String xmlDosyaYolu;
-    private static String xmlAyarDosyaYolu;
+
 
     public static boolean klasorKontroluYap()
     {
+        File uygulamaKlasoru = uygulamaKlasoruKontrolEt();
+        File xmlYedekKlasoru = xmlYedekKlasoruKontrolEt();
+
         if (uygulamaKlasoru != null && xmlYedekKlasoru != null)
         {
-            xmlYedekKlasorYolu = xmlYedekKlasoru.getAbsolutePath();
+            String xmlYedekKlasorYolu = xmlYedekKlasoru.getAbsolutePath();
 
             if (uygulamaKlasoru.exists())
             {
-                xmlDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_DOSYA_ADI;
-                xmlAyarDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
+                String xmlVeriDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_DOSYA_ADI;
+                String xmlAyarDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
 
-                if (xmlDosyasiKontrolEt() && xmlAyarDosyasiKontrolEt())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
+                XmlVeri xmlVeri =  new XmlVeri(xmlVeriDosyaYolu);
+                XmlAyar xmlAyar =  new XmlAyar(xmlAyarDosyaYolu);
+
+
+
+                if (xmlVeri.isXmlDosyasiDuzgnMu() && xmlAyar.isXmlDosyasiDuzgnMu())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
                 {
                     /*
                     org.w3c.dom.Element element = document.getElementById("0");
@@ -86,77 +103,72 @@ public class Engine
         }
     }
 
-    //xml dosyası var mı diye kontrol ediyor. yoksa oluşturuyor ve en buyuk xml id sini buluyor
-    public static boolean xmlDosyasiKontrolEt()
+    //xml in duracagı klasoru olusturur
+    public static File uygulamaKlasoruKontrolEt()
     {
-        if (new File(xmlDosyaYolu).exists())//xml dosyası var mı
+        File uygKlasoru;
+
+        if (hariciAlanVarMi())//sdcard var
         {
-            /*
-            document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-            if (document == null)
-            {
-                ekranaHataYazdir("4", cnt.getString(R.string.xml_document_olusamadi));
-                return false;
-            }
-            else
-            {
-                xmlEnBuyukID = enBuyukIDyiBul();
-                if (xmlEnBuyukID == -1)
-                {
-                    ekranaHataYazdir("5", cnt.getString(R.string.xml_okunamadi));
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            */
+            uygKlasoru = new File(Environment.getExternalStorageDirectory().getPath() + "/" + SabitYoneticisi.UYGULAMA_ADI);
         }
-        else
+        else//sdcard yok
         {
-            /*
-            xmlDosyasiOlustur();
-            xmlEnBuyukID = 0;
-            document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-            return true;
-            */
+            uygKlasoru = MainActivity.getCnt().getDir(SabitYoneticisi.UYGULAMA_ADI, Context.MODE_PRIVATE);
+        }
+        if (!uygKlasoru.exists())
+        {
+            if (!uygKlasoru.mkdirs())
+            {
+                HataYoneticisi.ekranaHataYazdir("2", MainActivity.getCnt().getString(R.string.uygulama_klasoru_olusturulamadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + uygKlasoru);
+                return null;
+            }
         }
 
-        return true;
+        return uygKlasoru;
     }
 
-    //uygulama baslarken sistemde ayar dosyası var mı diye bakar. varsa ayarları alır. yoksa öntanımlı ayarla ile dosyayı olusturur
-    public static boolean xmlAyarDosyasiKontrolEt()
+    public static File xmlYedekKlasoruKontrolEt()
     {
-        if (new File(xmlAyarDosyaYolu).exists())//xml ayar dosyası var mı
+        File xmlYedekKlasoru;
+
+        if (hariciAlanVarMi())//sdcard var
         {
-            /*
-            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyaYolu);
-            if (documentAyar == null)
-            {
-                ekranaHataYazdir("6", cnt.getString(R.string.xml_ayar_document_olusamadi));
-                return false;
-            }
-            else
-            {
-                yeniAyarVarsaEkle();
-                ayarlariOku();
-                return true;
-            }
-            */
+            xmlYedekKlasoru = new File(Environment.getExternalStorageDirectory().getPath() + "/" + SabitYoneticisi.UYGULAMA_ADI + "/" + SabitYoneticisi.YEDEK_KLASORU_ADI);
         }
-        else
+        else//sdcard yok
         {
-            /*
-            xmlAyarDosyasiOlustur();
-            documentAyar = xmlDocumentNesnesiOlustur(xmlAyarDosyaYolu);
-            yeniAyarVarsaEkle();
-            ayarlariOku();
-            return true;
-            */
+            xmlYedekKlasoru = MainActivity.getCnt().getDir(SabitYoneticisi.UYGULAMA_ADI, Context.MODE_PRIVATE);
+        }
+        if (!xmlYedekKlasoru.exists())
+        {
+            if (!xmlYedekKlasoru.mkdirs())
+            {
+                HataYoneticisi.ekranaHataYazdir("3", MainActivity.getCnt().getString(R.string.yedek_klasoru_olusturulumadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + xmlYedekKlasoru);
+                return null;
+            }
         }
 
-        return true;
+        return xmlYedekKlasoru;
+    }
+
+
+    /**
+     * sdcard ın olup olmadığını kontrol ediyor
+     */
+    public static boolean hariciAlanVarMi()
+    {
+        String state = Environment.getExternalStorageState();
+        switch (state)
+        {
+            case Environment.MEDIA_MOUNTED:
+                return true;
+
+            case Environment.MEDIA_MOUNTED_READ_ONLY:
+                return false;
+
+            default:
+                return false;
+        }
     }
 }
