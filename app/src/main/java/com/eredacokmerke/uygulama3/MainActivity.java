@@ -44,9 +44,35 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        ActivityCompat.requestPermissions(
+                MainActivity.this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
         cnt = getApplicationContext();
+    }
 
         Engine.klasorKontroluYap();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        switch (requestCode)
+        {
+            case SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE:
+            {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    Engine.klasorKontroluYap();
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, R.string.harici_alana_yazman_izni_gerekli, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+            }
+            default:
+                HataYoneticisi.ekranaHataYazdir("2", MainActivity.getCnt().getString(R.string.hatali_izin_id) + " : " + requestCode);
+        }
     }
 
     @Override

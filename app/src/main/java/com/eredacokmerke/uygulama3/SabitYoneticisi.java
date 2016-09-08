@@ -167,4 +167,7 @@ public class SabitYoneticisi
     //kes kopyala islemleri
     public static int ISLEM_KES = 0;
     public static int ISLEM_KOPYALA = 1;
+
+    //izinler
+    public static final int IZIN_WRITE_EXTERNAL_STORAGE = 0;
 }

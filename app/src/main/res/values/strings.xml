@@ -34,6 +34,8 @@
     <string name="bos_nesne">null object</string>
     <string name="hatali_sinif">wrong class</string>
     <string name="hatali_action_id">wrong action id</string>
+    <string name="harici_alana_yazman_izni_gerekli">app needs external storage permission to run</string>
+    <string name="hatali_izin_id">wrong permission id</string>
 
     <string name="renk">color</string>
     <string name="dosya">file</string>
