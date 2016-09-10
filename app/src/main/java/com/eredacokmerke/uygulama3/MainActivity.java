@@ -14,9 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener
+{
     private static Context cnt;
 
     @Override
@@ -48,10 +47,10 @@ public class MainActivity extends AppCompatActivity
                 MainActivity.this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
+
         cnt = getApplicationContext();
     }
 
-        Engine.klasorKontroluYap();
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
@@ -130,6 +129,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri)
+    {
     }
 
     public static Context getCnt()
