@@ -2,7 +2,7 @@ package com.eredacokmerke.uygulama3;
 
 public class SabitYoneticisi
 {
-    public static final String UYGULAMA_ADI = "uygulama3";
+    public static final String UYGULAMA_ADI = "uygulama3yeni";
     public static final String YEDEK_KLASORU_ADI = "backup";
     public static final String FRAGMENT_TAG = "fragment_tag";
     //public static final String TIK_UNICODE = "\u2714";

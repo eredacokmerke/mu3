@@ -3,22 +3,10 @@ package com.eredacokmerke.uygulama3;
 import android.content.Context;
 import android.os.Environment;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 public class Engine
 {
-
-
     public static boolean klasorKontroluYap()
     {
         File uygulamaKlasoru = uygulamaKlasoruKontrolEt();
@@ -33,9 +21,8 @@ public class Engine
                 String xmlVeriDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_DOSYA_ADI;
                 String xmlAyarDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
 
-                XmlVeri xmlVeri =  new XmlVeri(xmlVeriDosyaYolu);
-                XmlAyar xmlAyar =  new XmlAyar(xmlAyarDosyaYolu);
-
+                XmlVeri xmlVeri = new XmlVeri(xmlVeriDosyaYolu);
+                XmlAyar xmlAyar = new XmlAyar(xmlAyarDosyaYolu);
 
 
                 if (xmlVeri.isXmlDosyasiDuzgnMu() && xmlAyar.isXmlDosyasiDuzgnMu())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
@@ -106,6 +93,7 @@ public class Engine
     //xml in duracagı klasoru olusturur
     public static File uygulamaKlasoruKontrolEt()
     {
+
         File uygKlasoru;
 
         if (hariciAlanVarMi())//sdcard var
