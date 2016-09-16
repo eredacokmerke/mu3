@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:app="http://schemas.android.com/apk/res-auto"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/fragment"
-          android:name="com.eredacokmerke.uygulama3.MainFragment"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          app:layout_behavior="@string/appbar_scrolling_view_behavior"
-          tools:context="com.eredacokmerke.uygulama3.MainActivity"
-          tools:layout="@layout/fragment_main"
-          tools:showIn="@layout/app_bar_main"/>
+
+<FrameLayout
+    android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.eredacokmerke.uygulama3.MainActivity"
+    tools:ignore="MergeRootFrame"
+    tools:showIn="@layout/app_bar_main" />
+
+
+    <!--
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/fragment"
+              android:name="com.eredacokmerke.uygulama3.MainFragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              app:layout_behavior="@string/appbar_scrolling_view_behavior"
+              tools:context="com.eredacokmerke.uygulama3.MainActivity"
+              tools:layout="@layout/fragment_main"
+              tools:showIn="@layout/app_bar_main"/>
+    -->
 
 
     <!--
