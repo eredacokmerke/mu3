@@ -1,0 +1,114 @@
+package com.eredacokmerke.uygulama3;
+
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.Toast;
+
+public class FABYoneticisi extends FloatingActionButton
+{
+    Animation show_fab_1;
+    Animation hide_fab_1;
+    Animation show_fab_2;
+    Animation hide_fab_2;
+
+    FloatingActionButton fab1;
+    FloatingActionButton fab2;
+
+    //Save the FAB's active status
+    //false -> fab = close
+    //true -> fab = open
+    private boolean FABdurumu = false;
+
+    public FABYoneticisi(final MainActivity ma)
+    {
+        super(ma);
+
+        fab1 = (FloatingActionButton) ma.findViewById(R.id.fab_1);
+        fab2 = (FloatingActionButton) ma.findViewById(R.id.fab_2);
+
+        fab1.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(ma, "Floating Action Button 1", Toast.LENGTH_SHORT).show();
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(ma, "Floating Action Button 2", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        show_fab_1 = AnimationUtils.loadAnimation(ma, R.anim.fab1_show);
+        hide_fab_1 = AnimationUtils.loadAnimation(ma, R.anim.fab1_hide);
+        show_fab_2 = AnimationUtils.loadAnimation(ma, R.anim.fab2_show);
+        hide_fab_2 = AnimationUtils.loadAnimation(ma, R.anim.fab2_hide);
+    }
+
+    private void expandFAB()
+    {
+
+        //Floating Action Button 1
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab1.getLayoutParams();
+        layoutParams.rightMargin += (int) (fab1.getWidth() * 0);
+        layoutParams.bottomMargin += (int) (fab1.getHeight() * 1.5);
+        fab1.setLayoutParams(layoutParams);
+        fab1.startAnimation(show_fab_1);
+        fab1.setClickable(true);
+
+        //Floating Action Button 2
+        FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) fab2.getLayoutParams();
+        layoutParams2.rightMargin += (int) (fab2.getWidth() * 0);
+        layoutParams2.bottomMargin += (int) (fab2.getHeight() * 2.7);
+        fab2.setLayoutParams(layoutParams2);
+        fab2.startAnimation(show_fab_2);
+        fab2.setClickable(true);
+    }
+
+    private void hideFAB()
+    {
+
+        //Floating Action Button 1
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab1.getLayoutParams();
+        layoutParams.rightMargin -= (int) (fab1.getWidth() * 0);
+        layoutParams.bottomMargin -= (int) (fab1.getHeight() * 1.5);
+        fab1.setLayoutParams(layoutParams);
+        fab1.startAnimation(hide_fab_1);
+        fab1.setClickable(false);
+
+
+        //Floating Action Button 2
+        FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) fab2.getLayoutParams();
+        layoutParams2.rightMargin -= (int) (fab2.getWidth() * 0);
+        layoutParams2.bottomMargin -= (int) (fab2.getHeight() * 2.7);
+        fab2.setLayoutParams(layoutParams2);
+        fab2.startAnimation(hide_fab_2);
+        fab2.setClickable(false);
+    }
+
+    /**
+     * menu aciksa kapatacak, kapaliysa acacak
+     */
+    public void durumuDegistir()
+    {
+        if (FABdurumu == false)
+        {
+            //Display FAB menu
+            expandFAB();
+            FABdurumu = true;
+        }
+        else
+        {
+            //Close FAB menu
+            hideFAB();
+            FABdurumu = false;
+        }
+    }
+}

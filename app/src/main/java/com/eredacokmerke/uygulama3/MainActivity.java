@@ -19,7 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniFragment.OnFragmentInteractionListener
+public class MainActivity
+        extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniFragment.OnFragmentInteractionListener
 {
     private static Context cnt;
 
@@ -31,13 +33,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final FABYoneticisi fy = new FABYoneticisi(MainActivity.this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                FragmentYoneticisi.fragmentAc(new YeniFragment(), MainActivity.this);
+                fy.durumuDegistir();
+                //FragmentYoneticisi.fragmentAc(new YeniFragment(), MainActivity.this);
 
                 /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -60,9 +65,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
 
-        cnt = getApplicationContext();
-
         FragmentYoneticisi.fragmentAc(new MainFragment(), MainActivity.this);
+
+        cnt = getApplicationContext();
     }
 
     @Override
