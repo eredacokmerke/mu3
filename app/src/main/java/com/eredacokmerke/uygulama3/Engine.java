@@ -73,24 +73,28 @@ public class Engine
                 }
                 else
                 {
-                    HataYoneticisi.ekranaHataYazdir("45", "xml hatasi olustu");
+                    HataYoneticisi.ekranaHataYazdir("1", "xml hatasi olustu");
                     return false;
                 }
             }
             else
             {
-                HataYoneticisi.ekranaHataYazdir("1", "uygulama klasoru yok");
+                HataYoneticisi.ekranaHataYazdir("2", "uygulama klasoru yok");
                 return false;
             }
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("37", "klasor hatasi olustu");
+            HataYoneticisi.ekranaHataYazdir("3", "klasor hatasi olustu");
             return false;
         }
     }
 
-    //xml in duracagı klasoru olusturur
+    /**
+     * uygulama dosyalarinin duracagi klasorun olup olmadigina bakar, yoksa olusturur
+     *
+     * @return hata olusursa false yoksa true doner
+     */
     public static File uygulamaKlasoruKontrolEt()
     {
 
@@ -116,6 +120,11 @@ public class Engine
         return uygKlasoru;
     }
 
+    /**
+     * xml dosyalarinin yedeklenecegi klasorun olup olmadigina bakar, yoksa olusturur
+     *
+     * @return hata olusursa false yoksa true doner
+     */
     public static File xmlYedekKlasoruKontrolEt()
     {
         File xmlYedekKlasoru;

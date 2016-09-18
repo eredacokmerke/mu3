@@ -56,10 +56,15 @@ public class XmlAyar extends XmlYoneticisi
         super.xmlDosyasiniBellegeAl(document, xmlDosyaYolu);
 
         yeniAyarVarsaEkle(document, xmlDosyaYolu);
-
     }
 
-    //yeni ayar varsa xml ayar dosyasına ekle
+
+    /**
+     * yeni ayar varsa xml ayar dosyasına ekliyor
+     *
+     * @param document      : xml a air document nesnesi
+     * @param xmlDosyaYolu  : xml dosyasinin dosya yolu
+     */
     private void yeniAyarVarsaEkle(Document document, String xmlDosyaYolu)
     {
         boolean eksikAyarVarMi = false;
@@ -189,15 +194,15 @@ public class XmlAyar extends XmlYoneticisi
             }
             catch (TransformerConfigurationException e)
             {
-                HataYoneticisi.ekranaHataYazdir("31", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
+                HataYoneticisi.ekranaHataYazdir("5", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
             }
             catch (TransformerException e)
             {
-                HataYoneticisi.ekranaHataYazdir("32", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
+                HataYoneticisi.ekranaHataYazdir("6", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
             }
             catch (IOException e)
             {
-                HataYoneticisi.ekranaHataYazdir("33", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
+                HataYoneticisi.ekranaHataYazdir("7", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
             }
         }
     }

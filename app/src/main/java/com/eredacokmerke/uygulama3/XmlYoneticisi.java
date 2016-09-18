@@ -17,14 +17,20 @@ public class XmlYoneticisi
     //private Document document;
     private boolean xmlDosyasiDuzgnMu;
 
+    /**
+     * xml dosyasinin olup olmadigina bakar
+     *
+     * @param xmlDosyaYolu : xml dosyasinin dosya yolu
+     * @return hata varsa false, yoksa true doner
+     */
     public boolean xmlDosyasiKontrolEt(String xmlDosyaYolu)
     {
-        if (new File(xmlDosyaYolu).exists())//xml dosyası var mı
+        if (new File(xmlDosyaYolu).exists())
         {
             Document document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
             if (document == null)
             {
-                HataYoneticisi.ekranaHataYazdir("4", MainActivity.getCnt().getString(R.string.xml_document_olusamadi));
+                HataYoneticisi.ekranaHataYazdir("8", MainActivity.getCnt().getString(R.string.xml_document_olusamadi));
                 return false;
             }
             else
@@ -39,7 +45,7 @@ public class XmlYoneticisi
             Document document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
             if (document == null)
             {
-                HataYoneticisi.ekranaHataYazdir("4", MainActivity.getCnt().getString(R.string.xml_document_olusamadi));
+                HataYoneticisi.ekranaHataYazdir("9", MainActivity.getCnt().getString(R.string.xml_document_olusamadi));
                 return false;
             }
             else
@@ -50,7 +56,11 @@ public class XmlYoneticisi
         }
     }
 
-    //xml i okumank için Document nesnesi olusturur
+    /**
+     * xml i okumank için Document nesnesi olusturur
+     * @param xmlDosyaYolu : xml dosyasinin dosya yolu
+     * @return xml e ait document nesnesi
+     */
     public Document xmlDocumentNesnesiOlustur(String xmlDosyaYolu)
     {
         try
@@ -64,22 +74,22 @@ public class XmlYoneticisi
         }
         catch (ParserConfigurationException e)
         {
-            HataYoneticisi.ekranaHataYazdir("28", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir("10", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
         catch (FileNotFoundException e)
         {
-            HataYoneticisi.ekranaHataYazdir("29", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir("11", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
         catch (IOException e)
         {
-            HataYoneticisi.ekranaHataYazdir("30", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir("12", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
         catch (SAXException e)
         {
-            HataYoneticisi.ekranaHataYazdir("15", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir("13", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
     }
@@ -94,12 +104,24 @@ public class XmlYoneticisi
         this.xmlDosyasiDuzgnMu = xmlDosyasiDuzgnMu;
     }
 
-    //xml dosyası yoksa oluşturuyor
+    /**
+     * ontanimli degerlerle xml dosyasi olusturuyor
+     *
+     * @param xmlDosyaYolu : xml dosyasinin dosya yolu
+     */
     public void xmlDosyasiOlustur(String xmlDosyaYolu)
     {
+        //override
     }
 
+    /**
+     * xml dosyasindaki verileri degiskenlere atar
+     *
+     * @param document      : xml in document nesnesi
+     * @param xmlDosyaYolu  : xml dosyasinin dosya yolu
+     */
     public void xmlDosyasiniBellegeAl(Document document, String xmlDosyaYolu)
     {
+        //override
     }
 }

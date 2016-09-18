@@ -26,7 +26,6 @@ public class XmlVeri extends XmlYoneticisi
         {
             //string i xml dosyasına yazıyor
             BufferedWriter out = new BufferedWriter(new FileWriter(xmlDosyaYolu));
-
             out.write("<?xml version=\"1.0\"?><" + SabitYoneticisi.XML_ROOT + ">" +
                     "<" + SabitYoneticisi.XML_PARCA + " " + SabitYoneticisi.XML_ID + "=\"0\">" +
                     "<" + SabitYoneticisi.XML_BASLIK + "/>" +
@@ -42,7 +41,6 @@ public class XmlVeri extends XmlYoneticisi
         {
             HataYoneticisi.ekranaHataYazdir("8", MainActivity.getCnt().getString(R.string.xml_olusturulamadi) + e.getMessage() + ", " + MainActivity.getCnt().getString(R.string.dosya) + " : " + xmlDosyaYolu);
         }
-
     }
 
     @Override
@@ -50,10 +48,17 @@ public class XmlVeri extends XmlYoneticisi
     {
         super.xmlDosyasiniBellegeAl(document, xmlDosyaYolu);
 
-        xmlEnBuyukID = enBuyukIDyiBul(document);
+        setXmlEnBuyukID(enBuyukIDyiBul(document));
+        XMLParser.parseXml(document, getXmlEnBuyukID());
     }
 
-    //uygulama açıldığında xml dosyasındaki en büyük id yi buluyor ve id vermeye o sayıdan devam ediyor
+
+    /**
+     * uygulama açıldığında xml dosyasındaki en büyük id yi buluyor ve id vermeye o sayıdan devam ediyor
+     *
+     * @param document  : xml e ait document nesnesi
+     * @return xml deki en buyuk id
+     */
     public int enBuyukIDyiBul(Document document)
     {
         int sonIDParca = 0;
@@ -85,5 +90,15 @@ public class XmlVeri extends XmlYoneticisi
         {
             return sonIDParca;
         }
+    }
+
+    public int getXmlEnBuyukID()
+    {
+        return xmlEnBuyukID;
+    }
+
+    public void setXmlEnBuyukID(int xmlEnBuyukID)
+    {
+        this.xmlEnBuyukID = xmlEnBuyukID;
     }
 }

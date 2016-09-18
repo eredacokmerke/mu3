@@ -35,6 +35,7 @@ public class FABYoneticisi extends FloatingActionButton
             public void onClick(View v)
             {
                 Toast.makeText(ma, "Floating Action Button 1", Toast.LENGTH_SHORT).show();
+                FragmentYoneticisi.fragmentAc(new YeniFragment(), ma);
             }
         });
         fab2.setOnClickListener(new View.OnClickListener()
@@ -52,9 +53,11 @@ public class FABYoneticisi extends FloatingActionButton
         hide_fab_2 = AnimationUtils.loadAnimation(ma, R.anim.fab2_hide);
     }
 
-    private void expandFAB()
+    /**
+     * fab menusunu acar
+     */
+    private void gosterFAB()
     {
-
         //Floating Action Button 1
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab1.getLayoutParams();
         layoutParams.rightMargin += (int) (fab1.getWidth() * 0);
@@ -72,9 +75,11 @@ public class FABYoneticisi extends FloatingActionButton
         fab2.setClickable(true);
     }
 
-    private void hideFAB()
+    /**
+     * fab menusunu kapatir
+     */
+    private void gizleFAB()
     {
-
         //Floating Action Button 1
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab1.getLayoutParams();
         layoutParams.rightMargin -= (int) (fab1.getWidth() * 0);
@@ -98,16 +103,16 @@ public class FABYoneticisi extends FloatingActionButton
      */
     public void durumuDegistir()
     {
-        if (FABdurumu == false)
+        if (!FABdurumu)
         {
             //Display FAB menu
-            expandFAB();
+            gosterFAB();
             FABdurumu = true;
         }
         else
         {
             //Close FAB menu
-            hideFAB();
+            gizleFAB();
             FABdurumu = false;
         }
     }
