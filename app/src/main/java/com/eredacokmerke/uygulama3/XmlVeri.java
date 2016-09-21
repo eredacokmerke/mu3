@@ -14,7 +14,7 @@ public class XmlVeri extends XmlYoneticisi
 
     public XmlVeri(String xmlDosyaYolu)
     {
-        setXmlDosyasiDuzgnMu(xmlDosyasiKontrolEt(xmlDosyaYolu));
+        super(xmlDosyaYolu);
     }
 
     @Override
@@ -52,11 +52,10 @@ public class XmlVeri extends XmlYoneticisi
         XMLParser.parseXml(document, getXmlEnBuyukID());
     }
 
-
     /**
      * uygulama açıldığında xml dosyasındaki en büyük id yi buluyor ve id vermeye o sayıdan devam ediyor
      *
-     * @param document  : xml e ait document nesnesi
+     * @param document : xml e ait document nesnesi
      * @return xml deki en buyuk id
      */
     public int enBuyukIDyiBul(Document document)

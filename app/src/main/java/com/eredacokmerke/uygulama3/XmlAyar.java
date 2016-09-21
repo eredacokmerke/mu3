@@ -23,7 +23,7 @@ public class XmlAyar extends XmlYoneticisi
 {
     public XmlAyar(String xmlDosyaYolu)
     {
-        setXmlDosyasiDuzgnMu(xmlDosyasiKontrolEt(xmlDosyaYolu));
+        super(xmlDosyaYolu);
     }
 
     @Override
@@ -62,8 +62,8 @@ public class XmlAyar extends XmlYoneticisi
     /**
      * yeni ayar varsa xml ayar dosyasına ekliyor
      *
-     * @param document      : xml a air document nesnesi
-     * @param xmlDosyaYolu  : xml dosyasinin dosya yolu
+     * @param document     : xml a air document nesnesi
+     * @param xmlDosyaYolu : xml dosyasinin dosya yolu
      */
     private void yeniAyarVarsaEkle(Document document, String xmlDosyaYolu)
     {

@@ -14,8 +14,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XmlYoneticisi
 {
-    //private Document document;
-    private boolean xmlDosyasiDuzgnMu;
+    private Document document;
+
+    public XmlYoneticisi(String xmlDosyaYolu)
+    {
+        xmlDosyasiKontrolEt(xmlDosyaYolu);
+
+        setDocument(xmlDocumentNesnesiOlustur(xmlDosyaYolu));
+        if (getDocument() != null)
+        {
+            xmlDosyasiniBellegeAl(getDocument(), xmlDosyaYolu);
+        }
+    }
 
     /**
      * xml dosyasinin olup olmadigina bakar
@@ -23,41 +33,18 @@ public class XmlYoneticisi
      * @param xmlDosyaYolu : xml dosyasinin dosya yolu
      * @return hata varsa false, yoksa true doner
      */
-    public boolean xmlDosyasiKontrolEt(String xmlDosyaYolu)
+    public void xmlDosyasiKontrolEt(String xmlDosyaYolu)
     {
-        if (new File(xmlDosyaYolu).exists())
-        {
-            Document document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-            if (document == null)
-            {
-                HataYoneticisi.ekranaHataYazdir("8", MainActivity.getCnt().getString(R.string.xml_document_olusamadi));
-                return false;
-            }
-            else
-            {
-                xmlDosyasiniBellegeAl(document, xmlDosyaYolu);
-                return true;
-            }
-        }
-        else
+        //dosya yoksa olustursun
+        if (!(new File(xmlDosyaYolu).exists()))
         {
             xmlDosyasiOlustur(xmlDosyaYolu);
-            Document document = xmlDocumentNesnesiOlustur(xmlDosyaYolu);
-            if (document == null)
-            {
-                HataYoneticisi.ekranaHataYazdir("9", MainActivity.getCnt().getString(R.string.xml_document_olusamadi));
-                return false;
-            }
-            else
-            {
-                xmlDosyasiniBellegeAl(document, xmlDosyaYolu);
-                return true;
-            }
         }
     }
 
     /**
      * xml i okumank için Document nesnesi olusturur
+     *
      * @param xmlDosyaYolu : xml dosyasinin dosya yolu
      * @return xml e ait document nesnesi
      */
@@ -94,16 +81,6 @@ public class XmlYoneticisi
         }
     }
 
-    public boolean isXmlDosyasiDuzgnMu()
-    {
-        return xmlDosyasiDuzgnMu;
-    }
-
-    public void setXmlDosyasiDuzgnMu(boolean xmlDosyasiDuzgnMu)
-    {
-        this.xmlDosyasiDuzgnMu = xmlDosyasiDuzgnMu;
-    }
-
     /**
      * ontanimli degerlerle xml dosyasi olusturuyor
      *
@@ -117,11 +94,23 @@ public class XmlYoneticisi
     /**
      * xml dosyasindaki verileri degiskenlere atar
      *
-     * @param document      : xml in document nesnesi
-     * @param xmlDosyaYolu  : xml dosyasinin dosya yolu
+     * @param document     : xml in document nesnesi
+     * @param xmlDosyaYolu : xml dosyasinin dosya yolu
      */
     public void xmlDosyasiniBellegeAl(Document document, String xmlDosyaYolu)
     {
         //override
+    }
+
+    /////getter & setter/////
+
+    public Document getDocument()
+    {
+        return document;
+    }
+
+    public void setDocument(Document document)
+    {
+        this.document = document;
     }
 }

@@ -7,6 +7,9 @@ import java.io.File;
 
 public class Engine
 {
+    private static XmlVeri xmlVeri;//veri xml dosyasi
+    private static XmlAyar xmlAyar;//ayar xml dosyasi
+
     public static boolean klasorKontroluYap()
     {
         File uygulamaKlasoru = uygulamaKlasoruKontrolEt();
@@ -21,11 +24,10 @@ public class Engine
                 String xmlVeriDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_DOSYA_ADI;
                 String xmlAyarDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
 
-                XmlVeri xmlVeri = new XmlVeri(xmlVeriDosyaYolu);
-                XmlAyar xmlAyar = new XmlAyar(xmlAyarDosyaYolu);
+                setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
+                setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
 
-
-                if (xmlVeri.isXmlDosyasiDuzgnMu() && xmlAyar.isXmlDosyasiDuzgnMu())//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
+                if ((getXmlVeri().getDocument() != null) && (getXmlAyar() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
                 {
                     /*
                     org.w3c.dom.Element element = document.getElementById("0");
@@ -167,5 +169,25 @@ public class Engine
             default:
                 return false;
         }
+    }
+
+    public static XmlVeri getXmlVeri()
+    {
+        return xmlVeri;
+    }
+
+    public static void setXmlVeri(XmlVeri xmlVeri)
+    {
+        Engine.xmlVeri = xmlVeri;
+    }
+
+    public static XmlAyar getXmlAyar()
+    {
+        return xmlAyar;
+    }
+
+    public static void setXmlAyar(XmlAyar xmlAyar)
+    {
+        Engine.xmlAyar = xmlAyar;
     }
 }
