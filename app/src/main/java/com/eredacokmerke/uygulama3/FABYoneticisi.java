@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 public class FABYoneticisi extends FloatingActionButton
 {
@@ -26,6 +25,21 @@ public class FABYoneticisi extends FloatingActionButton
     {
         super(ma);
 
+        FloatingActionButton fab = (FloatingActionButton) ma.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                durumuDegistir();
+                //FragmentYoneticisi.fragmentAc(new YeniFragment(), MainActivity.this);
+                /*
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                */
+            }
+        });
+
         fab1 = (FloatingActionButton) ma.findViewById(R.id.fab_1);
         fab2 = (FloatingActionButton) ma.findViewById(R.id.fab_2);
 
@@ -34,8 +48,7 @@ public class FABYoneticisi extends FloatingActionButton
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(ma, "Floating Action Button 1", Toast.LENGTH_SHORT).show();
-                FragmentYoneticisi.fragmentAc(new YeniFragment(), ma);
+                FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma);
             }
         });
         fab2.setOnClickListener(new View.OnClickListener()
@@ -43,7 +56,6 @@ public class FABYoneticisi extends FloatingActionButton
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(ma, "Floating Action Button 2", Toast.LENGTH_SHORT).show();
             }
         });
 
