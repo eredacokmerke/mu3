@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity
@@ -47,9 +45,30 @@ public class MainActivity
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
 
-        FragmentYoneticisi.fragmentAc(new MainFragment(), MainActivity.this);
-
+        //global context olusturuluyor
         cnt = getApplicationContext();
+    }
+
+    /**
+     * uygulama acildigi zaman ilk yapilacak islemler
+     *
+     * @return hata olusursa false yoksa true doner
+     */
+    public boolean init()
+    {
+        //uygulama klasorler var mi diye kontrol ediyor
+        if (!Engine.klasorKontroluYap())
+        {
+            return false;
+        }
+
+        //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(Engine.getXmlVeri().getXmlEnBuyukID(), "2"), MainActivity.this);
+
+        //fab lar olusturuluyor
+        new FABYoneticisi(MainActivity.this);
+
+        return true;
     }
 
     @Override
@@ -61,7 +80,11 @@ public class MainActivity
             {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    Engine.klasorKontroluYap();
+                    //init adiminda hata olustuysa uygulama kapansin
+                    if (!init())
+                    {
+                        finish();
+                    }
                 }
                 else
                 {
