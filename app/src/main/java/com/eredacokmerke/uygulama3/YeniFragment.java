@@ -1,12 +1,16 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -63,14 +67,23 @@ public class YeniFragment extends FragmentYoneticisi
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_yeni, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        editTextRenginiAyarla(R.id.fragment_yeni_llIcerik, R.id.fragment_yeni_llIcerik_edittext);
+        editTextRenginiAyarla(R.id.fragment_yeni_llBaslik, R.id.fragment_yeni_llBaslik_edittext);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -110,7 +123,7 @@ public class YeniFragment extends FragmentYoneticisi
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
@@ -119,5 +132,35 @@ public class YeniFragment extends FragmentYoneticisi
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /**
+     * layout rengine gore edittext in rengini beyaz yada siyah yapar
+     *
+     * @param layout
+     * @param edittext
+     */
+    public void editTextRenginiAyarla(int layout, int edittext)
+    {
+        View view = getView().findViewById(layout);
+        EditText et = (EditText) getView().findViewById(edittext);
+
+        ColorDrawable viewColor = (ColorDrawable) view.getBackground();
+        int colorId = viewColor.getColor();
+
+        int red = (colorId >> 16) & 0xFF;
+        int green = (colorId >> 8) & 0xFF;
+        int blue = (colorId >> 0) & 0xFF;
+
+        String hex = String.format("#%02x%02x%02x", red, green, blue);
+
+        if (Engine.renkKoyuMu(hex))
+        {
+            et.setTextColor(Color.WHITE);
+        }
+        else
+        {
+            et.setTextColor(Color.BLACK);
+        }
     }
 }

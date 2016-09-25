@@ -25,14 +25,28 @@ public class FABYoneticisi extends FloatingActionButton
     {
         super(ma);
 
-        FloatingActionButton fab = (FloatingActionButton) ma.findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) ma.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                durumuDegistir();
-                //FragmentYoneticisi.fragmentAc(new YeniFragment(), MainActivity.this);
+                switch (SabitYoneticisi.etkinEkran)
+                {
+                    case SabitYoneticisi.EKRAN_KAYIT:
+                        //kayit ekraninda tiklanirsa yeni kayit ekrani acilacak
+                        SabitYoneticisi.etkinEkran = SabitYoneticisi.EKRAN_YENI_KAYIT;
+
+                        //acik olan fab menusu kapaniyor
+                        durumuDegistir();
+                        break;
+
+                    case SabitYoneticisi.EKRAN_YENI_KAYIT:
+                        break;
+
+                    default:
+                }
+
                 /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -48,6 +62,7 @@ public class FABYoneticisi extends FloatingActionButton
             @Override
             public void onClick(View v)
             {
+                durumuDegistir();
                 FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma);
             }
         });
@@ -56,6 +71,7 @@ public class FABYoneticisi extends FloatingActionButton
             @Override
             public void onClick(View v)
             {
+                durumuDegistir();
             }
         });
 

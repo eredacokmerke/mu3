@@ -13,6 +13,12 @@ public class SabitYoneticisi
     public static final String XML_DOSYA_ADI = "new." + XML_DOSYA_UZANTISI;
     public static final String XML_AYAR_DOSYA_ADI = "opt." + XML_DOSYA_UZANTISI;
 
+    //ekranlar
+    public static final int EKRAN_YENI_KAYIT = 1;
+    public static final int EKRAN_KAYIT = 2;
+    public static int etkinEkran = EKRAN_YENI_KAYIT;
+
+
     //xml etiketleri
     public static final String XML_PARCA = "parca";
     public static final String XML_RENK = "renk";

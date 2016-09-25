@@ -1,6 +1,7 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Environment;
 
 import java.io.File;
@@ -168,6 +169,26 @@ public class Engine
 
             default:
                 return false;
+        }
+    }
+
+    /**
+     * verilen rengin koyu,açık bilgisini döndürür
+     *
+     * @param renk renk kodu
+     * @return acik ise false koyu ise true doner
+     */
+    public static boolean renkKoyuMu(String renk)
+    {
+        int irenk = Color.parseColor(renk);
+        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
+        if (darkness < 0.5)
+        {
+            return false; //açık renk
+        }
+        else
+        {
+            return true; //koyu renk
         }
     }
 
