@@ -10,8 +10,8 @@ public class XMLParser
     /**
      * parca etiketinin altındaki yazi ve kategorileri ekrana basıyor
      *
-     * @param document  : xml ait document nesnesi
-     * @param xmlID     : parse edilecek xml parcasinin id si
+     * @param document : xml ait document nesnesi
+     * @param xmlID    : parse edilecek xml parcasinin id si
      */
     public static void parseXml(Document document, int xmlID)
     {
@@ -67,7 +67,7 @@ public class XMLParser
      *
      * @param element   : xml elementi
      * @param etiketAdi : degeri alinacak xml etiketi
-     * @return xml etiketinin degeri
+     * @return xml etiketinin degerini doner, hata olusursa bos string doner
      */
     public static String etiketBilgisiniGetir(org.w3c.dom.Element element, String etiketAdi)
     {

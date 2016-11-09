@@ -57,36 +57,63 @@ public class MainActivity
     public boolean init()
     {
         //uygulama klasorler var mi diye kontrol ediyor
-        if (!Engine.klasorKontroluYap())
+        if (Engine.klasorKontroluYap())
         {
-            return false;
+            //uygulama dosylar var mi diye kontrol ediyor
+            if (!Engine.dosyaKontroluYap())
+            {
+                return false;//hata durumunda uygulamadan cikilsin
+            }
+        }
+        else
+        {
+            return false;//hata durumunda uygulamadan cikilsin
         }
 
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(Engine.getXmlVeri().getXmlEnBuyukID(), "2"), MainActivity.this);
+        //FragmentYoneticisi.fragmentAc(MainFragment.newInstance(Engine.getXmlVeri().getXmlEnBuyukID(), "2"), MainActivity.this);
 
         //fab lar olusturuluyor
         new FABYoneticisi(MainActivity.this);
 
+        //uygulama basladiginda etkin ekran kayit ekrani
+        SabitYoneticisi.etkinEkran = SabitYoneticisi.EKRAN_KAYIT;
+
         return true;
     }
 
+    /**
+     * uygulamanin izin istegine kullanicinin verdigi cevabi dondurur
+     *
+     * @param requestCode  : izin kodu
+     * @param permissions  : istenen izin
+     * @param grantResults : kullanici cevabi. izin verildi yada verilmedi
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         switch (requestCode)
         {
+            //sd karta yazma izni istendi
             case SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE:
             {
+                //izin kullanici tarafindan verildi
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    //init adiminda hata olustuysa uygulama kapansin
-                    if (!init())
+                    if (init())
+                    {
+                        //xml de veri varsa ekrana yerlestirsin
+                        //if (Engine.getXmlVeri().getXmlEnBuyukID() > 0)
+                        {
+
+                        }
+                    }
+                    else//init adiminda hata olustuysa uygulama kapansin
                     {
                         finish();
                     }
                 }
-                else
+                else//izin verilmezse uygulama kapansin
                 {
                     Toast.makeText(MainActivity.this, R.string.harici_alana_yazman_izni_gerekli, Toast.LENGTH_SHORT).show();
                     finish();
