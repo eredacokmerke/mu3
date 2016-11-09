@@ -49,7 +49,7 @@ public class XmlVeri extends XmlYoneticisi
         super.xmlDosyasiniBellegeAl(document, xmlDosyaYolu);
 
         setXmlEnBuyukID(enBuyukIDyiBul(document));
-        XMLParser.parseXml(document, getXmlEnBuyukID());
+        //XMLParser.parseXml(document, getXmlEnBuyukID());
     }
 
     /**

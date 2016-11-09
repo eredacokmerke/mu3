@@ -6,30 +6,32 @@ import android.os.Environment;
 
 import java.io.File;
 
+
 public class Engine
 {
-    private static XmlVeri xmlVeri;//veri xml dosyasi
+    //private static XmlVeri xmlVeri;//veri xml dosyasi
     private static XmlAyar xmlAyar;//ayar xml dosyasi
+    private static File uygulamaKlasoru;//uygulama dosyalarinin bulundugu klasor
 
-    public static boolean klasorKontroluYap()
+    /**
+     * uygulama icin gerekli dosyalar olusturulur
+     *
+     * @return hata olusursa false yoksa true doner
+     */
+    public static boolean dosyaKontroluYap()
     {
-        File uygulamaKlasoru = uygulamaKlasoruKontrolEt();
-        File xmlYedekKlasoru = xmlYedekKlasoruKontrolEt();
+        //String xmlVeriDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_DOSYA_ADI;
+        String xmlAyarDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
+        String vtDosyaIsmi = "kayit.db";
+        String vtDosyaYolu = getUygulamaKlasoru() + "/" + vtDosyaIsmi;
+        //Environment.getExternalStorageDirectory().getPath() + "/" + SabitYoneticisi.UYGULAMA_ADI + "/" + getVT_ISIM();
 
-        if (uygulamaKlasoru != null && xmlYedekKlasoru != null)
+        //setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
+        setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
+        VeritabaniKayit vtkayit = new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu);
+
+        //if ((getXmlVeri().getDocument() != null) && (getXmlAyar() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
         {
-            String xmlYedekKlasorYolu = xmlYedekKlasoru.getAbsolutePath();
-
-            if (uygulamaKlasoru.exists())
-            {
-                String xmlVeriDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_DOSYA_ADI;
-                String xmlAyarDosyaYolu = uygulamaKlasoru + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
-
-                setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
-                setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
-
-                if ((getXmlVeri().getDocument() != null) && (getXmlAyar() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
-                {
                     /*
                     org.w3c.dom.Element element = document.getElementById("0");
                     if (savedInstanceState == null)
@@ -72,13 +74,33 @@ public class Engine
                     //geriSimgesiniEkle();
                     */
 
-                    return true;
-                }
-                else
-                {
-                    HataYoneticisi.ekranaHataYazdir("1", "xml hatasi olustu");
-                    return false;
-                }
+            return true;
+        }
+        //else
+        // {
+        //   HataYoneticisi.ekranaHataYazdir("1", "xml hatasi olustu");
+        //   return false;
+        // }
+    }
+
+    /**
+     * uygulama icin gerekli klasorler olusturulur
+     *
+     * @return hata olusursa false yoksa true doner
+     */
+    public static boolean klasorKontroluYap()
+    {
+        setUygulamaKlasoru(uygulamaKlasoruKontrolEt());
+        File xmlYedekKlasoru = xmlYedekKlasoruKontrolEt();
+
+        if (getUygulamaKlasoru() != null && xmlYedekKlasoru != null)
+        {
+            //String xmlYedekKlasorYolu = xmlYedekKlasoru.getAbsolutePath();
+
+            //uygulama klasoru varsa
+            if (getUygulamaKlasoru().exists())
+            {
+                return true;
             }
             else
             {
@@ -152,7 +174,6 @@ public class Engine
         return xmlYedekKlasoru;
     }
 
-
     /**
      * sdcard ın olup olmadığını kontrol ediyor
      */
@@ -192,6 +213,7 @@ public class Engine
         }
     }
 
+    /*
     public static XmlVeri getXmlVeri()
     {
         return xmlVeri;
@@ -201,6 +223,7 @@ public class Engine
     {
         Engine.xmlVeri = xmlVeri;
     }
+    */
 
     public static XmlAyar getXmlAyar()
     {
@@ -210,5 +233,15 @@ public class Engine
     public static void setXmlAyar(XmlAyar xmlAyar)
     {
         Engine.xmlAyar = xmlAyar;
+    }
+
+    public static File getUygulamaKlasoru()
+    {
+        return uygulamaKlasoru;
+    }
+
+    public static void setUygulamaKlasoru(File uygulamaKlasoru)
+    {
+        Engine.uygulamaKlasoru = uygulamaKlasoru;
     }
 }
