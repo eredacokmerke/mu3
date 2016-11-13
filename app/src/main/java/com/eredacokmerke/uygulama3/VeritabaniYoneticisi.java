@@ -3,6 +3,7 @@ package com.eredacokmerke.uygulama3;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.File;
@@ -39,25 +40,42 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      */
     public void init()
     {
-        veritabaniAc(getVT_DOSYA_YOLU());
-        tablolariOlustur();
-        ontaminliVerileriYaz();
+        if (!veritabaniAc(getVT_DOSYA_YOLU()))//veritabani dosyasi yoksa olusturup tablolari ve ontanimli verileri yazar, varsa sadece acar
+        {
+            tablolariOlustur();
+            ontaminliVerileriYaz();
+        }
+        verileriGetir();
         veritabaniKapat();
     }
 
     /**
-     * veritabanini crud islemleri icin acar
+     * * veritabanini crud islemleri icin acar
+     *
+     * @param vtDosyaYolu : veritabani dosyasinin dosya yolu
+     * @return : veritabani dosyasi varsa true, yoksa false doner
      */
-    public void veritabaniAc(String vtDosyaYolu)
+    public boolean veritabaniAc(String vtDosyaYolu)
     {
-        //File dbfile = new File(Environment.getExternalStorageDirectory().getPath() + "/" + SabitYoneticisi.UYGULAMA_ADI + "/" + getVT_ISIM());
         File dbfile = new File(vtDosyaYolu);
 
         //SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbfile, null);
-        setVT(db);
+        SQLiteDatabase db;
 
-        // TODO: 11/8/16 hata durumlarini burada yakala
+        try//veritabani dosyasi var, sadece acilacak
+        {
+            db = SQLiteDatabase.openDatabase(vtDosyaYolu, null, SQLiteDatabase.OPEN_READONLY);
+            setVT(db);
+
+            return true;
+        }
+        catch (SQLiteException e)//veritabani dosyasi yok, olusturulacak
+        {
+            db = SQLiteDatabase.openOrCreateDatabase(dbfile, null);
+            setVT(db);
+
+            return false;
+        }
     }
 
     /**
@@ -80,6 +98,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      * veritabani ilk olusturuldugu zaman tablolari olusturur
      */
     public void tablolariOlustur()
+    {
+        //override
+    }
+
+    public void verileriGetir()
     {
         //override
     }
