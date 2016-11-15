@@ -10,6 +10,7 @@ import java.io.File;
 public class Engine
 {
     //private static XmlVeri xmlVeri;//veri xml dosyasi
+    private static VeritabaniKayit vtKayit;//veri veritabani dosyasi
     private static XmlAyar xmlAyar;//ayar xml dosyasi
     private static File uygulamaKlasoru;//uygulama dosyalarinin bulundugu klasor
 
@@ -24,14 +25,23 @@ public class Engine
         String xmlAyarDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
         String vtDosyaIsmi = "kayit.db";
         String vtDosyaYolu = getUygulamaKlasoru() + "/" + vtDosyaIsmi;
-        //Environment.getExternalStorageDirectory().getPath() + "/" + SabitYoneticisi.UYGULAMA_ADI + "/" + getVT_ISIM();
 
         //setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
         setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
-        VeritabaniKayit vtkayit = new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu);
+        setVtKayit(new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu));
+
+        if ((getXmlAyar().getDocument() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
+        {
+            return true;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir("1", "xml hatasi olustu");
+            return false;
+        }
 
         //if ((getXmlVeri().getDocument() != null) && (getXmlAyar() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
-        {
+        //{
                     /*
                     org.w3c.dom.Element element = document.getElementById("0");
                     if (savedInstanceState == null)
@@ -74,8 +84,8 @@ public class Engine
                     //geriSimgesiniEkle();
                     */
 
-            return true;
-        }
+        //return true;
+        //}
         //else
         // {
         //   HataYoneticisi.ekranaHataYazdir("1", "xml hatasi olustu");
@@ -122,7 +132,6 @@ public class Engine
      */
     public static File uygulamaKlasoruKontrolEt()
     {
-
         File uygKlasoru;
 
         if (hariciAlanVarMi())//sdcard var
@@ -224,6 +233,16 @@ public class Engine
         Engine.xmlVeri = xmlVeri;
     }
     */
+
+    public static VeritabaniKayit getVtKayit()
+    {
+        return vtKayit;
+    }
+
+    public static void setVtKayit(VeritabaniKayit vtKayit)
+    {
+        Engine.vtKayit = vtKayit;
+    }
 
     public static XmlAyar getXmlAyar()
     {

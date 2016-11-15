@@ -1,7 +1,11 @@
 package com.eredacokmerke.uygulama3;
 
+import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.DefaultDatabaseErrorHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ekcdr on 11/5/16.
@@ -31,5 +35,24 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     {
         getVT().execSQL("CREATE TABLE KAYIT ( ID INTEGER PRIMARY KEY, VERI_TURU INTEGER, BASLIK TEXT, RENK TEXT, VERI TEXT, FOREIGN KEY(VERI_TURU) REFERENCES TUR(ID) );");
         getVT().execSQL("CREATE TABLE TUR (ID INTEGER PRIMARY KEY, ISIM TEXT)");
+    }
+
+
+    @Override
+    public List<String> verileriGetir()
+    {
+        String selectQuery = "select * from KAYIT";
+        Cursor cursor = getVT().rawQuery(selectQuery, null);
+        List<String> listeVeri = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                listeVeri.add(cursor.getString(2));
+            } while (cursor.moveToNext());
+        }
+
+        return listeVeri;
     }
 }

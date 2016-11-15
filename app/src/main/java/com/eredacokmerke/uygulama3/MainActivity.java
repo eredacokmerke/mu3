@@ -50,20 +50,30 @@ public class MainActivity
     }
 
     /**
+     * veritabanindan verileri alir
+     */
+    public void verileriGetir()
+    {
+        if (!(Engine.getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
+        {
+            Engine.getVtKayit().veritabaniAc();
+        }
+        Engine.getVtKayit().verileriGetir();
+
+        Engine.getVtKayit().veritabaniKapat();
+    }
+
+    /**
      * uygulama acildigi zaman ilk yapilacak islemler
      *
      * @return hata olusursa false yoksa true doner
      */
     public boolean init()
     {
-        //uygulama klasorler var mi diye kontrol ediyor
-        if (Engine.klasorKontroluYap())
+        //uygulama klasorleri ve dosyalari var mi diye kontrol ediyor
+        if (Engine.klasorKontroluYap() && Engine.dosyaKontroluYap())
         {
-            //uygulama dosylar var mi diye kontrol ediyor
-            if (!Engine.dosyaKontroluYap())
-            {
-                return false;//hata durumunda uygulamadan cikilsin
-            }
+            verileriGetir();
         }
         else
         {

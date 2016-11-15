@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ekcdr on 11/5/16.
@@ -40,31 +42,31 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      */
     public void init()
     {
-        if (!veritabaniAc(getVT_DOSYA_YOLU()))//veritabani dosyasi yoksa olusturup tablolari ve ontanimli verileri yazar, varsa sadece acar
+        if (!veritabaniAc())//veritabani dosyasi yoksa olusturup tablolari ve ontanimli verileri yazar, varsa sadece acar
         {
             tablolariOlustur();
             ontaminliVerileriYaz();
         }
-        verileriGetir();
+        //verileriGetir();
         veritabaniKapat();
     }
 
     /**
      * * veritabanini crud islemleri icin acar
      *
-     * @param vtDosyaYolu : veritabani dosyasinin dosya yolu
      * @return : veritabani dosyasi varsa true, yoksa false doner
      */
-    public boolean veritabaniAc(String vtDosyaYolu)
+    public boolean veritabaniAc()
     {
-        File dbfile = new File(vtDosyaYolu);
+        //File dbfile = new File(vtDosyaYolu);
+        File dbfile = new File(getVT_DOSYA_YOLU());
 
         //SQLiteDatabase db = this.getWritableDatabase();
         SQLiteDatabase db;
 
         try//veritabani dosyasi var, sadece acilacak
         {
-            db = SQLiteDatabase.openDatabase(vtDosyaYolu, null, SQLiteDatabase.OPEN_READONLY);
+            db = SQLiteDatabase.openDatabase(getVT_DOSYA_YOLU(), null, SQLiteDatabase.OPEN_READONLY);
             setVT(db);
 
             return true;
@@ -102,9 +104,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         //override
     }
 
-    public void verileriGetir()
+    public List<String> verileriGetir()
     {
         //override
+
+        return new ArrayList<>();
     }
 
     /////getter & setter/////
