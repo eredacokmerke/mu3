@@ -49,19 +49,6 @@ public class MainActivity
         cnt = getApplicationContext();
     }
 
-    /**
-     * veritabanindan verileri alir
-     */
-    public void verileriGetir()
-    {
-        if (!(Engine.getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
-        {
-            Engine.getVtKayit().veritabaniAc();
-        }
-        Engine.getVtKayit().verileriGetir();
-
-        Engine.getVtKayit().veritabaniKapat();
-    }
 
     /**
      * uygulama acildigi zaman ilk yapilacak islemler
@@ -73,7 +60,8 @@ public class MainActivity
         //uygulama klasorleri ve dosyalari var mi diye kontrol ediyor
         if (Engine.klasorKontroluYap() && Engine.dosyaKontroluYap())
         {
-            verileriGetir();
+
+            Engine.verileriGetir();//dosyalarda hata yoksa veritabanindan verileri alinsin
         }
         else
         {
@@ -81,13 +69,13 @@ public class MainActivity
         }
 
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        //FragmentYoneticisi.fragmentAc(MainFragment.newInstance(Engine.getXmlVeri().getXmlEnBuyukID(), "2"), MainActivity.this);
+        Engine.fragmentAc(MainActivity.this);
 
         //fab lar olusturuluyor
-        new FABYoneticisi(MainActivity.this);
+        Engine.initFABYoneticisi(MainActivity.this);
 
         //uygulama basladiginda etkin ekran kayit ekrani
-        SabitYoneticisi.etkinEkran = SabitYoneticisi.EKRAN_KAYIT;
+        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
         return true;
     }

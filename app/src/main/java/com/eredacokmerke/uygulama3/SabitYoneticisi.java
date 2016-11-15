@@ -176,4 +176,13 @@ public class SabitYoneticisi
 
     //izinler
     public static final int IZIN_WRITE_EXTERNAL_STORAGE = 0;
+
+
+    /////getter & setter/////
+
+
+    public static void setEtkinEkran(int etkinEkran)
+    {
+        SabitYoneticisi.etkinEkran = etkinEkran;
+    }
 }

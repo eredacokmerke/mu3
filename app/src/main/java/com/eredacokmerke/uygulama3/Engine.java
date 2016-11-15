@@ -222,6 +222,62 @@ public class Engine
         }
     }
 
+    /**
+     * veritabanindan verileri alir
+     */
+    public static void verileriGetir()
+    {
+
+        if (!(getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
+        {
+            getVtKayit().veritabaniAc();
+        }
+        List<String> listVeriler;
+        listVeriler = getVtKayit().verileriGetir();
+
+        getVtKayit().veritabaniKapat();
+
+        verileriEkranaYerlestir(listVeriler);
+    }
+
+    /**
+     * veritabaindan alinan verileri fragment e yerlestirir
+     *
+     * @param liste : veritabanindan gelen veriler
+     */
+    public static void verileriEkranaYerlestir(List<String> liste)
+    {
+
+        for (String s : liste)
+        {
+        }
+    }
+
+
+    /**
+     * yeni fragment acar
+     *
+     * @param ma : main activity nesnesi
+     */
+    public static void fragmentAc(MainActivity ma)
+    {
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma);
+    }
+
+    /**
+     * floating action button yoneticisini baslatir. ekranda fab i gosterir
+     *
+     * @param ma : main activity nesnesi
+     */
+    public static void initFABYoneticisi(MainActivity ma)
+    {
+        new FABYoneticisi(ma);
+    }
+
+
+    /////getter & setter/////
+
+
     /*
     public static XmlVeri getXmlVeri()
     {
