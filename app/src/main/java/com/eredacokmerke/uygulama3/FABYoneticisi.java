@@ -63,7 +63,8 @@ public class FABYoneticisi extends FloatingActionButton
             public void onClick(View v)
             {
                 durumuDegistir();
-                FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma);
+                fab.setImageResource(R.drawable.ic_menu_camera);
+                FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma, ma.get_savedInstanceState());
             }
         });
         fab2.setOnClickListener(new View.OnClickListener()

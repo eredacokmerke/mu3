@@ -2,9 +2,14 @@ package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Environment;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.File;
+import java.util.List;
 
 
 public class Engine
@@ -223,21 +228,27 @@ public class Engine
     }
 
     /**
+     * main fragment icin verileri veritabanindan alir ve ekrana yerlestirir
+     */
+    public static void mainFragmentVerileriEkranaGetir()
+    {
+        List<String> listeVeriler = mainFragmentVerileriVeritabanindanAl();
+        mainFragmentVerileriEkranaYerlestir(listeVeriler);//veriler ekrana yerlestiriliyor
+    }
+
+    /**
      * veritabanindan verileri alir
      */
-    public static void verileriGetir()
+    public static List<String> mainFragmentVerileriVeritabanindanAl()
     {
-
         if (!(getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
         {
             getVtKayit().veritabaniAc();
         }
-        List<String> listVeriler;
-        listVeriler = getVtKayit().verileriGetir();
-
+        List<String> listVeriler = getVtKayit().verileriGetir();
         getVtKayit().veritabaniKapat();
 
-        verileriEkranaYerlestir(listVeriler);
+        return listVeriler;
     }
 
     /**
@@ -245,23 +256,21 @@ public class Engine
      *
      * @param liste : veritabanindan gelen veriler
      */
-    public static void verileriEkranaYerlestir(List<String> liste)
+    public static void mainFragmentVerileriEkranaYerlestir(List<String> liste)
     {
-
         for (String s : liste)
         {
         }
     }
-
 
     /**
      * yeni fragment acar
      *
      * @param ma : main activity nesnesi
      */
-    public static void fragmentAc(MainActivity ma)
+    public static void fragmentAc(MainActivity ma, Bundle b)
     {
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma, b);
     }
 
     /**
@@ -277,18 +286,6 @@ public class Engine
 
     /////getter & setter/////
 
-
-    /*
-    public static XmlVeri getXmlVeri()
-    {
-        return xmlVeri;
-    }
-
-    public static void setXmlVeri(XmlVeri xmlVeri)
-    {
-        Engine.xmlVeri = xmlVeri;
-    }
-    */
 
     public static VeritabaniKayit getVtKayit()
     {

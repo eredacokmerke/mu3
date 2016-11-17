@@ -22,11 +22,15 @@ public class MainActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniFragment.OnFragmentInteractionListener
 {
     private static Context cnt;
+    private static Bundle _savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        _savedInstanceState = savedInstanceState;
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,7 +53,6 @@ public class MainActivity
         cnt = getApplicationContext();
     }
 
-
     /**
      * uygulama acildigi zaman ilk yapilacak islemler
      *
@@ -58,24 +61,10 @@ public class MainActivity
     public boolean init()
     {
         //uygulama klasorleri ve dosyalari var mi diye kontrol ediyor
-        if (Engine.klasorKontroluYap() && Engine.dosyaKontroluYap())
-        {
-
-            Engine.verileriGetir();//dosyalarda hata yoksa veritabanindan verileri alinsin
-        }
-        else
+        if (!(Engine.klasorKontroluYap() && Engine.dosyaKontroluYap()))
         {
             return false;//hata durumunda uygulamadan cikilsin
         }
-
-        //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        Engine.fragmentAc(MainActivity.this);
-
-        //fab lar olusturuluyor
-        Engine.initFABYoneticisi(MainActivity.this);
-
-        //uygulama basladiginda etkin ekran kayit ekrani
-        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
         return true;
     }
@@ -98,13 +87,10 @@ public class MainActivity
                 //izin kullanici tarafindan verildi
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    if (init())
+                    if (init())//init adimi basarili ise veriler ekrana yerlestirilsin
                     {
-                        //xml de veri varsa ekrana yerlestirsin
-                        //if (Engine.getXmlVeri().getXmlEnBuyukID() > 0)
-                        {
-
-                        }
+                        mainFragmentAc();
+                        //verileriEkranaYerlestir();
                     }
                     else//init adiminda hata olustuysa uygulama kapansin
                     {
@@ -121,6 +107,21 @@ public class MainActivity
             default:
                 HataYoneticisi.ekranaHataYazdir("4", MainActivity.getCnt().getString(R.string.hatali_izin_id) + " : " + requestCode);
         }
+    }
+
+    /**
+     * mainFragmenti acar
+     */
+    public void mainFragmentAc()
+    {
+        //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
+        Engine.fragmentAc(MainActivity.this, _savedInstanceState);
+
+        //fab lar olusturuluyor
+        Engine.initFABYoneticisi(MainActivity.this);
+
+        //uygulama basladiginda etkin ekran kayit ekrani
+        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
     }
 
     @Override
@@ -208,5 +209,10 @@ public class MainActivity
     public static Context getCnt()
     {
         return cnt;
+    }
+
+    public static Bundle get_savedInstanceState()
+    {
+        return _savedInstanceState;
     }
 }
