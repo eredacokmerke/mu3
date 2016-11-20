@@ -86,6 +86,26 @@ public class MainFragment extends FragmentYoneticisi
 
         FragmentYoneticisi.setFragmentRootView(rootView);
         FragmentYoneticisi.fragmentBasladi();
+        if (!FragmentYoneticisi.isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
+        {
+            FragmentYoneticisi.setFragmentRootView(rootView);
+            FragmentYoneticisi.fragmentBasladi();
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
+        FragmentYoneticisi.setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

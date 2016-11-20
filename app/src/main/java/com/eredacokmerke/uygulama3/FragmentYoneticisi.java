@@ -9,6 +9,7 @@ import android.view.View;
 public class FragmentYoneticisi extends Fragment
 {
     private static View fragmentRootView;//acilan fragmentin root view i
+    private static boolean fragmentAcikMi = false;//fragment arka tarafa atilip tekrar on plana alindiginda acik olup olmadigini anlamak icin
 
     /**
      * yeni fragment i ekranda gosterir
@@ -47,5 +48,15 @@ public class FragmentYoneticisi extends Fragment
     public static void setFragmentRootView(View fragmentRootView)
     {
         FragmentYoneticisi.fragmentRootView = fragmentRootView;
+    }
+
+    public static boolean isFragmentAcikMi()
+    {
+        return fragmentAcikMi;
+    }
+
+    public static void setFragmentAcikMi(boolean fragmentAcikMi)
+    {
+        FragmentYoneticisi.fragmentAcikMi = fragmentAcikMi;
     }
 }
