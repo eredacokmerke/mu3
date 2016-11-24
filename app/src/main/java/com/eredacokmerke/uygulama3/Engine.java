@@ -2,8 +2,10 @@ package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -232,20 +234,20 @@ public class Engine
      */
     public static void mainFragmentVerileriEkranaGetir()
     {
-        List<String> listeVeriler = mainFragmentVerileriVeritabanindanAl();
+        List<KayitLayout> listeVeriler = mainFragmentVerileriVeritabanindanAl();
         mainFragmentVerileriEkranaYerlestir(listeVeriler);//veriler ekrana yerlestiriliyor
     }
 
     /**
      * veritabanindan verileri alir
      */
-    public static List<String> mainFragmentVerileriVeritabanindanAl()
+    public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
     {
         if (!(getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
         {
             getVtKayit().veritabaniAc();
         }
-        List<String> listVeriler = getVtKayit().verileriGetir();
+        List<KayitLayout> listVeriler = getVtKayit().verileriGetir();
         getVtKayit().veritabaniKapat();
 
         return listVeriler;
@@ -256,10 +258,47 @@ public class Engine
      *
      * @param liste : veritabanindan gelen veriler
      */
-    public static void mainFragmentVerileriEkranaYerlestir(List<String> liste)
+    public static void mainFragmentVerileriEkranaYerlestir(List<KayitLayout> liste)
     {
-        for (String s : liste)
+        for (int i = 0; i < liste.size(); i++)
         {
+            View v = FragmentYoneticisi.getFragmentRootView();
+            RelativeLayout rl = (RelativeLayout) v.findViewById(R.id.mainFragmentRelativeLayout);
+
+            //KayitLayout kl = new KayitLayout(MainActivity.getCnt());
+            KayitLayout kl = liste.get(i);
+            kl.setId(i + 100000);
+            //kl.setBackgroundColor(Color.RED);
+            kl.setPadding(20, 20, 20, 20);
+
+            RelativeLayout.LayoutParams kl_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            kl_lp.setMargins(20, 20, 20, 0);
+
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(10);
+            shape.setColor(Color.parseColor(kl.getRenk()));
+
+            kl.setBackground(shape);
+            ViewCompat.setElevation(kl, 5);
+
+            if (i != 0)
+            {
+                kl_lp.addRule(RelativeLayout.BELOW, i - 1 + 100000);
+            }
+            if (i == liste.size() - 1)
+            {
+                kl_lp.setMargins(20, 20, 20, 20);
+            }
+            kl.setLayoutParams(kl_lp);
+
+
+            TextView tv = new TextView(MainActivity.getCnt());
+            tv.setText(kl.getBaslik());
+            tv.setTextColor(Color.YELLOW);
+
+            kl.addView(tv);
+
+            rl.addView(kl);
         }
     }
 

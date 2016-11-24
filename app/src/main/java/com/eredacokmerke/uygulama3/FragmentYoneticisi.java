@@ -23,17 +23,44 @@ public class FragmentYoneticisi extends Fragment
         {
             FragmentTransaction ft = ma.getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.container, fy);
-            ft.commit();//java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState hatasindan kurtulmak icin alttaki metodu kullandim
-            //ft.commitAllowingStateLoss();
+            //ft.commit();//java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState hatasindan kurtulmak icin alttaki metodu kullandim
+            ft.commitAllowingStateLoss();
         }
     }
 
     /**
-     * fragment onStart metodundan Engine sinifina gecis yapabilmek icin
+     * fragment onStart metodunda yapilacaklar
      */
-    public static void fragmentBasladi()
+    public void fragmentBasladi()
     {
-        Engine.mainFragmentVerileriEkranaGetir();
+        //override
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        if (!isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
+        {
+            //setFragmentRootView(rootView);
+            fragmentBasladi();
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
+        setFragmentAcikMi(true);
     }
 
 

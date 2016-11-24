@@ -104,7 +104,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         //override
     }
 
-    public List<String> verileriGetir()
+    public List<KayitLayout> verileriGetir()
     {
         //override
 

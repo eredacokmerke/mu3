@@ -67,30 +67,27 @@ public class MainFragment extends FragmentYoneticisi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         this.rootView = v;
+        FragmentYoneticisi.setFragmentRootView(rootView);
 
         return v;
+    }
+
+    @Override
+    public void fragmentBasladi()
+    {
+        super.fragmentBasladi();
+        Engine.mainFragmentVerileriEkranaGetir();
     }
 
     @Override
     public void onStart()
     {
         super.onStart();
-
-        FragmentYoneticisi.setFragmentRootView(rootView);
-        FragmentYoneticisi.fragmentBasladi();
-        if (!FragmentYoneticisi.isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
-        {
-            FragmentYoneticisi.setFragmentRootView(rootView);
-            FragmentYoneticisi.fragmentBasladi();
-        }
     }
 
     @Override
@@ -103,9 +100,6 @@ public class MainFragment extends FragmentYoneticisi
     public void onPause()
     {
         super.onPause();
-
-        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
-        FragmentYoneticisi.setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -144,7 +138,7 @@ public class MainFragment extends FragmentYoneticisi
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
