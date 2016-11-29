@@ -33,15 +33,24 @@ public class FABYoneticisi extends FloatingActionButton
             {
                 switch (SabitYoneticisi.etkinEkran)
                 {
+                    //kayit ekrani aciliyken fab a basildi
                     case SabitYoneticisi.EKRAN_KAYIT:
-                        //kayit ekraninda tiklanirsa yeni kayit ekrani acilacak
-                        SabitYoneticisi.etkinEkran = SabitYoneticisi.EKRAN_YENI_KAYIT;
 
                         //acik olan fab menusu kapaniyor
-                        durumuDegistir();
+                        menuDurumunuDegistir();
+
                         break;
 
+                    //yeni kayit ekrani aciliyken fab a basildi
                     case SabitYoneticisi.EKRAN_YENI_KAYIT:
+
+                        Engine.yeniFragmentVeriKaydet();
+
+                        Engine.mainFragmentAc(ma, MainActivity.get_savedInstanceState());
+                        fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
+
+                        Engine.klavyeKapat(ma, view);
+
                         break;
 
                     default:
@@ -62,9 +71,31 @@ public class FABYoneticisi extends FloatingActionButton
             @Override
             public void onClick(View v)
             {
-                durumuDegistir();
-                fab.setImageResource(R.drawable.ic_menu_camera);
-                FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma, ma.get_savedInstanceState());
+                menuDurumunuDegistir();
+
+                switch (SabitYoneticisi.etkinEkran)
+                {
+                    //kayit ekrani aciliyken fab1 e basildi
+                    case SabitYoneticisi.EKRAN_KAYIT:
+
+                        //kayit ekraninda tiklanirsa yeni kayit ekrani acilacak
+                        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KAYIT);
+
+                        fab.setImageResource(R.drawable.ic_menu_camera);//fab in resmi degisiyor
+                        FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma, MainActivity.get_savedInstanceState());
+
+                        break;
+
+                    //yeni kayit ekrani aciliyken fab a basildi
+                    case SabitYoneticisi.EKRAN_YENI_KAYIT:
+
+                        //bu menu yeni kayit ekraninda gozukmuyor
+
+                        break;
+
+                    default:
+                }
+
             }
         });
         fab2.setOnClickListener(new View.OnClickListener()
@@ -72,7 +103,7 @@ public class FABYoneticisi extends FloatingActionButton
             @Override
             public void onClick(View v)
             {
-                durumuDegistir();
+                menuDurumunuDegistir();
             }
         });
 
@@ -130,7 +161,7 @@ public class FABYoneticisi extends FloatingActionButton
     /**
      * menu aciksa kapatacak, kapaliysa acacak
      */
-    public void durumuDegistir()
+    public void menuDurumunuDegistir()
     {
         if (!FABdurumu)
         {

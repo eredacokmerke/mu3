@@ -2,13 +2,10 @@ package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.view.ViewCompat;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.List;
 public class Engine
 {
     //private static XmlVeri xmlVeri;//veri xml dosyasi
-    private static VeritabaniKayit vtKayit;//veri veritabani dosyasi
+    //private static VeritabaniKayit vtKayit;//veri veritabani nesnesi
     private static XmlAyar xmlAyar;//ayar xml dosyasi
     private static File uygulamaKlasoru;//uygulama dosyalarinin bulundugu klasor
 
@@ -30,12 +27,15 @@ public class Engine
     {
         //String xmlVeriDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_DOSYA_ADI;
         String xmlAyarDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
-        String vtDosyaIsmi = "kayit.db";
-        String vtDosyaYolu = getUygulamaKlasoru() + "/" + vtDosyaIsmi;
+        //String vtDosyaIsmi = "kayit.db";
+        //String vtDosyaYolu = getUygulamaKlasoru() + "/" + vtDosyaIsmi;
 
-        //setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
+        //veritaani dosyalari kontrol ediliyor, veritabani nesneleri dolduruluyor
+        VeritabaniYoneticisi.dosyaKontroluYap(getUygulamaKlasoru());
+
+        ////setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
         setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
-        setVtKayit(new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu));
+        //setVtKayit(new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu));
 
         if ((getXmlAyar().getDocument() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
         {
@@ -230,86 +230,45 @@ public class Engine
     }
 
     /**
-     * main fragment icin verileri veritabanindan alir ve ekrana yerlestirir
-     */
-    public static void mainFragmentVerileriEkranaGetir()
-    {
-        List<KayitLayout> listeVeriler = mainFragmentVerileriVeritabanindanAl();
-        mainFragmentVerileriEkranaYerlestir(listeVeriler);//veriler ekrana yerlestiriliyor
-    }
-
-    /**
      * veritabanindan verileri alir
      */
     public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
     {
-        if (!(getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
-        {
-            getVtKayit().veritabaniAc();
-        }
-        List<KayitLayout> listVeriler = getVtKayit().verileriGetir();
-        getVtKayit().veritabaniKapat();
-
-        return listVeriler;
+        return VeritabaniYoneticisi.mainFragmentVerileriVeritabanindanAl();
     }
 
     /**
-     * veritabaindan alinan verileri fragment e yerlestirir
-     *
-     * @param liste : veritabanindan gelen veriler
+     * yeniFragment te kaydet tusuna basilinca ekrnadaki verileri veritabanina kaydeder
      */
-    public static void mainFragmentVerileriEkranaYerlestir(List<KayitLayout> liste)
+    public static void yeniFragmentVeriKaydet()
     {
-        for (int i = 0; i < liste.size(); i++)
-        {
-            View v = FragmentYoneticisi.getFragmentRootView();
-            RelativeLayout rl = (RelativeLayout) v.findViewById(R.id.mainFragmentRelativeLayout);
+        int seciliVeriTuru = FragmentYoneticisi.yeniFragmentSpinnerSeciliNesneyiGetir();
+        String baslik = FragmentYoneticisi.yeniFragmentBaslikGetir();
+        String icerik = FragmentYoneticisi.yeniFragmentIcerikGetir();
 
-            //KayitLayout kl = new KayitLayout(MainActivity.getCnt());
-            KayitLayout kl = liste.get(i);
-            kl.setId(i + 100000);
-            //kl.setBackgroundColor(Color.RED);
-            kl.setPadding(20, 20, 20, 20);
-
-            RelativeLayout.LayoutParams kl_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            kl_lp.setMargins(20, 20, 20, 0);
-
-            GradientDrawable shape = new GradientDrawable();
-            shape.setCornerRadius(10);
-            shape.setColor(Color.parseColor(kl.getRenk()));
-
-            kl.setBackground(shape);
-            ViewCompat.setElevation(kl, 5);
-
-            if (i != 0)
-            {
-                kl_lp.addRule(RelativeLayout.BELOW, i - 1 + 100000);
-            }
-            if (i == liste.size() - 1)
-            {
-                kl_lp.setMargins(20, 20, 20, 20);
-            }
-            kl.setLayoutParams(kl_lp);
-
-
-            TextView tv = new TextView(MainActivity.getCnt());
-            tv.setText(kl.getBaslik());
-            tv.setTextColor(Color.YELLOW);
-
-            kl.addView(tv);
-
-            rl.addView(kl);
-        }
+        VeritabaniYoneticisi.yeniFragmentVeritababinaKaydet(seciliVeriTuru, baslik, icerik);
     }
 
     /**
-     * yeni fragment acar
+     * mainFragment acar
      *
      * @param ma : main activity nesnesi
      */
-    public static void fragmentAc(MainActivity ma, Bundle b)
+    public static void mainFragmentAc(MainActivity ma, Bundle b)
     {
+        //mainFragment ta etkin ekran kayit ekrani
+        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
+
         FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma, b);
+    }
+
+    /**
+     * ekran klavyesini kapatir
+     */
+    public static void klavyeKapat(MainActivity ma, View view)
+    {
+        InputMethodManager imm = (InputMethodManager) ma.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
@@ -322,19 +281,14 @@ public class Engine
         new FABYoneticisi(ma);
     }
 
+    public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
+    {
+        return VeritabaniYoneticisi.yeniFragmentVeriTurleriniVeritabanindanAl();
+    }
+
 
     /////getter & setter/////
 
-
-    public static VeritabaniKayit getVtKayit()
-    {
-        return vtKayit;
-    }
-
-    public static void setVtKayit(VeritabaniKayit vtKayit)
-    {
-        Engine.vtKayit = vtKayit;
-    }
 
     public static XmlAyar getXmlAyar()
     {

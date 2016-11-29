@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +14,7 @@ import java.util.List;
  */
 public class VeritabaniYoneticisi extends SQLiteOpenHelper
 {
+    private static VeritabaniKayit vtKayit;
     private String VT_ISIM;//veritabani dosyasinin ismi
     private String VT_DOSYA_YOLU;//veritabani dosyasinin yolu
     private SQLiteDatabase VT;//veritabani islemleri (crud) yapabilmek icin veritabani nesnesi
@@ -47,7 +47,6 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
             tablolariOlustur();
             ontaminliVerileriYaz();
         }
-        //verileriGetir();
         veritabaniKapat();
     }
 
@@ -58,7 +57,6 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      */
     public boolean veritabaniAc()
     {
-        //File dbfile = new File(vtDosyaYolu);
         File dbfile = new File(getVT_DOSYA_YOLU());
 
         //SQLiteDatabase db = this.getWritableDatabase();
@@ -66,7 +64,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
 
         try//veritabani dosyasi var, sadece acilacak
         {
-            db = SQLiteDatabase.openDatabase(getVT_DOSYA_YOLU(), null, SQLiteDatabase.OPEN_READONLY);
+            db = SQLiteDatabase.openDatabase(getVT_DOSYA_YOLU(), null, SQLiteDatabase.OPEN_READWRITE);
             setVT(db);
 
             return true;
@@ -88,6 +86,21 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         getVT().close();
     }
 
+    public static void kayitVeritabaniniAc(String vtDosyaIsmi, String vtDosyaYolu)
+    {
+        vtKayit = new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu);
+        setVtKayit(vtKayit);
+    }
+
+    // TODO: 11/27/16 : farkli veritabani dosyalari oldugu zaman burada hepsi nasil cagrilacak
+    public static void dosyaKontroluYap(File uygulamaKlasoru)
+    {
+        String vtDosyaIsmi = "kayit.db";
+        String vtDosyaYolu = uygulamaKlasoru + "/" + vtDosyaIsmi;
+
+        kayitVeritabaniniAc(vtDosyaIsmi, vtDosyaYolu);
+    }
+
     /**
      * veritabani ilk olusturuldugunda ontanimli verileri veritabanina yazar
      */
@@ -104,14 +117,85 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         //override
     }
 
-    public List<KayitLayout> verileriGetir()
+    /**
+     * yeniFragment icin gerekli bilgileri veritabanindan alir
+     *
+     * @return
+     */
+    public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
     {
-        //override
+        if (veritabaniAcikDegilseAc())
+        {
+            List<String> listVeriler = getVtKayit().yeniFragmentVerileriGetir();
+            getVtKayit().veritabaniKapat();
 
-        return new ArrayList<>();
+            return listVeriler;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir("9", "veritabani baglantisi acilamadi");
+
+            return null;
+        }
     }
 
+    /**
+     * yeniFragment icin gerekli bilgileri veritabanindan alir
+     *
+     * @return
+     */
+    public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
+    {
+        if (veritabaniAcikDegilseAc())
+        {
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentVerileriGetir();
+            getVtKayit().veritabaniKapat();
+
+            return listVeriler;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir("15", "veritabani baglantisi acilamadi");
+
+            return null;
+        }
+    }
+
+    /**
+     * yeniFragment ekraninda kaydet e tiklayinca verileri veritabanina kaydeder
+     *
+     * @param seciliVeriTuruID : secili veri turunun id si
+     * @param baslik           : ekranda girilen baslik
+     * @param icerik           : ekranda girilen veri
+     */
+    public static void yeniFragmentVeritababinaKaydet(int seciliVeriTuruID, String baslik, String icerik)
+    {
+        if (veritabaniAcikDegilseAc())
+        {
+            getVtKayit().yeniFragmentVerileriKaydet(seciliVeriTuruID, baslik, icerik);
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir("16", "veritabani baglantisi acilamadi");
+        }
+    }
+
+    /**
+     * veritabani baglantisini acar
+     */
+    public static boolean veritabaniAcikDegilseAc()
+    {
+        if (!(getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
+        {
+            return getVtKayit().veritabaniAc();
+        }
+
+        return true;
+    }
+
+
     /////getter & setter/////
+
 
     public String getVT_ISIM()
     {
@@ -141,5 +225,15 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     public void setVT_DOSYA_YOLU(String VT_DOSYA_YOLU)
     {
         this.VT_DOSYA_YOLU = VT_DOSYA_YOLU;
+    }
+
+    public static VeritabaniKayit getVtKayit()
+    {
+        return vtKayit;
+    }
+
+    public static void setVtKayit(VeritabaniKayit vtKayit)
+    {
+        VeritabaniYoneticisi.vtKayit = vtKayit;
     }
 }

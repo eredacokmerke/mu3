@@ -1,12 +1,20 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.util.List;
 
 
 /**
@@ -28,7 +36,6 @@ public class MainFragment extends FragmentYoneticisi
     private String mParam1;
     private String mParam2;
     private View rootView;
-
     private OnFragmentInteractionListener mListener;
 
     public MainFragment()
@@ -78,10 +85,92 @@ public class MainFragment extends FragmentYoneticisi
     }
 
     @Override
-    public void fragmentBasladi()
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        super.fragmentBasladi();
-        Engine.mainFragmentVerileriEkranaGetir();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        setAcikFragment(this);
+        setFragmentAcikMi(false);
+    }
+
+    @Override
+    public void UIYukle()
+    {
+        super.UIYukle();
+
+        List<KayitLayout> listeVeriler = verileriVeritabanindanAl();
+        verileriEkranaYazdir(listeVeriler);
+    }
+
+    /**
+     * parametrede gelen verileri ekrana yazdirir
+     *
+     * @param listeVeriler : ekrana yazdirilacak verilerin listesi
+     */
+    public void verileriEkranaYazdir(List<KayitLayout> listeVeriler)
+    {
+        RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.mainFragmentRelativeLayout);
+
+        for (int i = 0; i < listeVeriler.size(); i++)
+        {
+            KayitLayout kl = listeVeriler.get(i);
+            kl.setId(i + 100000);
+            kl.setPadding(20, 20, 20, 20);
+
+            RelativeLayout.LayoutParams kl_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            //layout koselerini yumustamak icin
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(10);
+            shape.setColor(Color.parseColor(kl.getRenk()));
+            kl.setBackground(shape);
+
+            kl_lp.setMargins(20, 20, 20, 0);
+
+            //layout a golge eklemek icin
+            ViewCompat.setElevation(kl, 5);
+
+            if (i != 0)
+            {
+                kl_lp.addRule(RelativeLayout.BELOW, i - 1 + 100000);//ilk kayit layout elemani en uste yerlesecek. digerleri kendilerinden onceki elemanin altina yerlesecek
+            }
+            if (i == listeVeriler.size() - 1)
+            {
+                kl_lp.setMargins(20, 20, 20, 20);//son kaydin alt margini var
+            }
+            kl.setLayoutParams(kl_lp);
+
+            TextView tv = new TextView(MainActivity.getCnt());
+            tv.setText(kl.getBaslik());
+            tv.setTextColor(Color.YELLOW);
+
+            kl.addView(tv);
+            rl.addView(kl);
+        }
+    }
+
+    public List<KayitLayout> verileriVeritabanindanAl()
+    {
+        return FragmentYoneticisi.mainFragmentVerileriVeritabanindanAl();
+    }
+
+    /*
+    @Override
+    public void setAcikFragment(FragmentYoneticisi acikFragment)
+    {
+        super.setAcikFragment(acikFragment);
+    }
+    */
+
+    @Override
+    public void setFragmentAcikMi(boolean fragmentAcikMi)
+    {
+        super.setFragmentAcikMi(fragmentAcikMi);
     }
 
     @Override
@@ -100,6 +189,9 @@ public class MainFragment extends FragmentYoneticisi
     public void onPause()
     {
         super.onPause();
+
+        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
+        setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -138,7 +230,7 @@ public class MainFragment extends FragmentYoneticisi
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

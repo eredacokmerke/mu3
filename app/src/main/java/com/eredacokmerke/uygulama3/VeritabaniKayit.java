@@ -44,10 +44,14 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         getVT().execSQL("CREATE TABLE RENK (ID INTEGER PRIMARY KEY,RENK_ISIM VARCHAR(20));");
     }
 
-    @Override
-    public List<KayitLayout> verileriGetir()
+    /**
+     * mainFragment icin gerekli olan verileri veritabanindan alir
+     *
+     * @return : veri listesi
+     */
+    public List<KayitLayout> mainFragmentVerileriGetir()
     {
-        String selectQuery = "select R.RENK_ISIM, BASLIK, VERI, VERI_TURU_ID from KAYIT as K, RENK as R where K.RENK_KODU_ID = R.ID";
+        String selectQuery = "select R.RENK_ISIM, BASLIK, VERI, VERI_TURU_ID from KAYIT as K, RENK as R where K.RENK_KODU_ID = R.ID;";
         Cursor cursor = getVT().rawQuery(selectQuery, null);
         List<KayitLayout> listeVeri = new ArrayList<>();
 
@@ -64,6 +68,46 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
             } while (cursor.moveToNext());
         }
 
+        cursor.close();
+
         return listeVeri;
+    }
+
+    /**
+     * yeniFragment icin gerekli olan verileri veritabanindan alir
+     *
+     * @return : veri listesi
+     */
+    public List<String> yeniFragmentVerileriGetir()
+    {
+        String selectQuery = "select TUR_ISIM from TUR;";
+        Cursor cursor = getVT().rawQuery(selectQuery, null);
+        List<String> listeVeri = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                String veritTurIsim = cursor.getString(0);
+
+                listeVeri.add(veritTurIsim);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return listeVeri;
+    }
+
+    /**
+     * yeniFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
+     *
+     * @param seciliVeriTuruID : secili veri turunun id si
+     * @param baslik           : ekranda girilen baslik
+     * @param icerik           : ekranda girilen veri
+     */
+    public void yeniFragmentVerileriKaydet(int seciliVeriTuruID, String baslik, String icerik)
+    {
+        String insertQuery = "INSERT INTO KAYIT (VERI_TURU_ID, RENK_KODU_ID, BASLIK, VERI) VALUES (" + seciliVeriTuruID + ", 1, '" + baslik + "', '" + icerik + "');";
+        getVT().execSQL(insertQuery);
     }
 }

@@ -87,10 +87,9 @@ public class MainActivity
                 //izin kullanici tarafindan verildi
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    if (init())//init adimi basarili ise veriler ekrana yerlestirilsin
+                    if (init())//init adimi basarili ise ui nesneleri ekrana yerlestirilsin
                     {
-                        mainFragmentAc();
-                        //verileriEkranaYerlestir();
+                        UIYukle();
                     }
                     else//init adiminda hata olustuysa uygulama kapansin
                     {
@@ -112,16 +111,13 @@ public class MainActivity
     /**
      * mainFragmenti acar
      */
-    public void mainFragmentAc()
+    public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        Engine.fragmentAc(MainActivity.this, _savedInstanceState);
+        Engine.mainFragmentAc(MainActivity.this, _savedInstanceState);
 
         //fab lar olusturuluyor
         Engine.initFABYoneticisi(MainActivity.this);
-
-        //uygulama basladiginda etkin ekran kayit ekrani
-        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
     }
 
     @Override
@@ -204,7 +200,6 @@ public class MainActivity
     public void onFragmentInteraction(Uri uri)
     {
     }
-
 
     public static Context getCnt()
     {

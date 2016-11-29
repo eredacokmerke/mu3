@@ -6,10 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
+import java.util.List;
+
 public class FragmentYoneticisi extends Fragment
 {
     private static View fragmentRootView;//acilan fragmentin root view i
-    private static boolean fragmentAcikMi = false;//fragment arka tarafa atilip tekrar on plana alindiginda acik olup olmadigini anlamak icin
+    private static FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
+    private boolean fragmentAcikMi = false;
 
     /**
      * yeni fragment i ekranda gosterir
@@ -33,34 +36,100 @@ public class FragmentYoneticisi extends Fragment
      */
     public void fragmentBasladi()
     {
+        UIYukle();
+    }
+
+    /**
+     * fragment ui nesnelerini yukler
+     */
+    public void UIYukle()
+    {
         //override
     }
 
+    /**
+     * fragment basladi
+     */
     @Override
     public void onStart()
     {
         super.onStart();
 
-        if (!isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
+        if (!getAcikFragment().isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
         {
-            //setFragmentRootView(rootView);
             fragmentBasladi();
         }
     }
 
+    /**
+     * fragment arkaplandan onplana getirildi
+     */
     @Override
     public void onResume()
     {
         super.onResume();
     }
 
+    /**
+     * fragment arkaplana atildi
+     */
     @Override
     public void onPause()
     {
         super.onPause();
+        //override
+    }
 
-        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
-        setFragmentAcikMi(true);
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+    }
+
+
+    public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
+    {
+        return Engine.mainFragmentVerileriVeritabanindanAl();
+    }
+
+    /**
+     * yeniFragment te spinner da secili nesneyi dondurur
+     */
+    public static int yeniFragmentSpinnerSeciliNesneyiGetir()
+    {
+        YeniFragment yf = (YeniFragment) getAcikFragment();
+        int seciliID = yf.spinnerSeciliNesneyiGetir();
+        yf = null;
+
+        return seciliID;
+    }
+
+    public static String yeniFragmentBaslikGetir()
+    {
+        YeniFragment yf = (YeniFragment) getAcikFragment();
+        String baslik = yf.baslikGetir();
+        yf = null;
+
+        return baslik;
+    }
+
+    public static String yeniFragmentIcerikGetir()
+    {
+        YeniFragment yf = (YeniFragment) getAcikFragment();
+        String baslik = yf.icerikGetir();
+        yf = null;
+
+        return baslik;
+    }
+
+    /**
+     * spinner a doldurulacak verileri veritabanindan alir
+     *
+     * @return
+     */
+    public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
+    {
+        return Engine.yeniFragmentVeriTurleriniVeritabanindanAl();
     }
 
 
@@ -77,13 +146,23 @@ public class FragmentYoneticisi extends Fragment
         FragmentYoneticisi.fragmentRootView = fragmentRootView;
     }
 
-    public static boolean isFragmentAcikMi()
+    public static FragmentYoneticisi getAcikFragment()
+    {
+        return acikFragment;
+    }
+
+    public static void setAcikFragment(FragmentYoneticisi acikFragment)
+    {
+        FragmentYoneticisi.acikFragment = acikFragment;
+    }
+
+    public boolean isFragmentAcikMi()
     {
         return fragmentAcikMi;
     }
 
-    public static void setFragmentAcikMi(boolean fragmentAcikMi)
+    public void setFragmentAcikMi(boolean fragmentAcikMi)
     {
-        FragmentYoneticisi.fragmentAcikMi = fragmentAcikMi;
+        this.fragmentAcikMi = fragmentAcikMi;
     }
 }
