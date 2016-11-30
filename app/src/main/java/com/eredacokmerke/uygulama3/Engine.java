@@ -242,24 +242,26 @@ public class Engine
      */
     public static void yeniFragmentVeriKaydet()
     {
-        int seciliVeriTuru = FragmentYoneticisi.yeniFragmentSpinnerSeciliNesneyiGetir();
+        int seciliIcerikTuru = FragmentYoneticisi.yeniFragmentSpinnerSeciliNesneyiGetir();
         String baslik = FragmentYoneticisi.yeniFragmentBaslikGetir();
         String icerik = FragmentYoneticisi.yeniFragmentIcerikGetir();
 
-        VeritabaniYoneticisi.yeniFragmentVeritababinaKaydet(seciliVeriTuru, baslik, icerik);
+        VeritabaniYoneticisi.yeniFragmentVeritababinaKaydet(seciliIcerikTuru, baslik, icerik);
     }
 
     /**
      * mainFragment acar
      *
-     * @param ma : main activity nesnesi
+     * @param ma       : mainActivity nesnesi
+     * @param b
+     * @param klasorID : acilan klasorun id si
      */
-    public static void mainFragmentAc(MainActivity ma, Bundle b)
+    public static void mainFragmentAc(MainActivity ma, Bundle b, int klasorID)
     {
         //mainFragment ta etkin ekran kayit ekrani
         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma, b);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma, b, klasorID);
     }
 
     /**
@@ -281,11 +283,25 @@ public class Engine
         new FABYoneticisi(ma);
     }
 
+    /**
+     * yeniFragment spinner da gosterilecek icerik turlerini veritabanindan alir
+     *
+     * @return
+     */
     public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
     {
         return VeritabaniYoneticisi.yeniFragmentVeriTurleriniVeritabanindanAl();
     }
 
+    /**
+     * fragment te acik olan klasorun id sini getirir
+     *
+     * @return
+     */
+    public static int getFragmentKlasorID()
+    {
+        return FragmentYoneticisi.getFragmentKlasorID();
+    }
 
     /////getter & setter/////
 

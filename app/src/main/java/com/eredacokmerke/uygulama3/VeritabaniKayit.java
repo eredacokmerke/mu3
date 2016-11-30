@@ -23,6 +23,8 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     @Override
     public void ontaminliVerileriYaz()
     {
+        getVT().execSQL("INSERT INTO KLASOR (KLASOR_ISIM) VALUES ('ANA');");
+
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#118580');");
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#162e1b');");
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#abc123');");
@@ -31,17 +33,18 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         getVT().execSQL("INSERT INTO TUR (TUR_ISIM) VALUES ('calar_saat');");
         getVT().execSQL("INSERT INTO TUR (TUR_ISIM) VALUES ('yapilacaklar_listesi');");
 
-        getVT().execSQL("INSERT INTO KAYIT (VERI_TURU_ID, RENK_KODU_ID, BASLIK, VERI) VALUES (1, 1, 'baslik1', 'veri1');");
-        getVT().execSQL("INSERT INTO KAYIT (VERI_TURU_ID, RENK_KODU_ID, BASLIK, VERI) VALUES (1, 2, 'baslik2', 'veri2');");
-        getVT().execSQL("INSERT INTO KAYIT (VERI_TURU_ID, RENK_KODU_ID, BASLIK, VERI) VALUES (1, 3, 'baslik3', 'veri3');");
+        getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 1, 0, 'baslik1', 'icerik1');");
+        getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 2, 0, 'baslik2', 'icerik2');");
+        getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 3, 0, 'baslik3', 'icerik3');");
     }
 
     @Override
     public void tablolariOlustur()
     {
-        getVT().execSQL("CREATE TABLE KAYIT (ID INTEGER PRIMARY KEY,VERI_TURU_ID INTEGER,RENK_KODU_ID INTEGER,BASLIK TEXT, VERI TEXT,FOREIGN KEY(VERI_TURU_ID) REFERENCES TUR(ID)FOREIGN KEY(RENK_KODU_ID) REFERENCES RENK(ID));");
-        getVT().execSQL("CREATE TABLE TUR (ID INTEGER PRIMARY KEY,TUR_ISIM TEXT);");
-        getVT().execSQL("CREATE TABLE RENK (ID INTEGER PRIMARY KEY,RENK_ISIM VARCHAR(20));");
+        getVT().execSQL("CREATE TABLE KLASOR (ID INTEGER PRIMARY KEY,KLASOR_ISIM TEXT);");
+        getVT().execSQL("CREATE TABLE TUR (ID INTEGER PRIMARY KEY, TUR_ISIM TEXT);");
+        getVT().execSQL("CREATE TABLE RENK (ID INTEGER PRIMARY KEY, RENK_ISIM VARCHAR(20));");
+        getVT().execSQL("CREATE TABLE KAYIT (ID INTEGER PRIMARY KEY, ICERIK_TURU_ID INTEGER, RENK_KODU_ID INTEGER,KLASOR_ID INTEGER,BASLIK TEXT, ICERIK TEXT, FOREIGN KEY(ICERIK_TURU_ID) REFERENCES TUR(ID), FOREIGN KEY(RENK_KODU_ID) REFERENCES RENK(ID), FOREIGN KEY(KLASOR_ID) REFERENCES KLASOR(ID));");
     }
 
     /**
@@ -51,7 +54,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
      */
     public List<KayitLayout> mainFragmentVerileriGetir()
     {
-        String selectQuery = "select R.RENK_ISIM, BASLIK, VERI, VERI_TURU_ID from KAYIT as K, RENK as R where K.RENK_KODU_ID = R.ID;";
+        String selectQuery = "select R.RENK_ISIM, BASLIK, ICERIK, ICERIK_TURU_ID from KAYIT as K, RENK as R where K.RENK_KODU_ID = R.ID;";
         Cursor cursor = getVT().rawQuery(selectQuery, null);
         List<KayitLayout> listeVeri = new ArrayList<>();
 
@@ -101,13 +104,13 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     /**
      * yeniFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
      *
-     * @param seciliVeriTuruID : secili veri turunun id si
-     * @param baslik           : ekranda girilen baslik
-     * @param icerik           : ekranda girilen veri
+     * @param seciliIcerikTuruID : secili veri turunun id si
+     * @param baslik             : ekranda girilen baslik
+     * @param icerik             : ekranda girilen veri
      */
-    public void yeniFragmentVerileriKaydet(int seciliVeriTuruID, String baslik, String icerik)
+    public void yeniFragmentVerileriKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
-        String insertQuery = "INSERT INTO KAYIT (VERI_TURU_ID, RENK_KODU_ID, BASLIK, VERI) VALUES (" + seciliVeriTuruID + ", 1, '" + baslik + "', '" + icerik + "');";
+        String insertQuery = "INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (" + seciliIcerikTuruID + ", 1,"+VeritabaniYoneticisi.getFragmentKlasorID()+" ,'" + baslik + "', '" + icerik + "');";
         getVT().execSQL(insertQuery);
     }
 }

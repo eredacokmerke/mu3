@@ -164,20 +164,25 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     /**
      * yeniFragment ekraninda kaydet e tiklayinca verileri veritabanina kaydeder
      *
-     * @param seciliVeriTuruID : secili veri turunun id si
+     * @param seciliIcerikTuruID : secili veri turunun id si
      * @param baslik           : ekranda girilen baslik
      * @param icerik           : ekranda girilen veri
      */
-    public static void yeniFragmentVeritababinaKaydet(int seciliVeriTuruID, String baslik, String icerik)
+    public static void yeniFragmentVeritababinaKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
         if (veritabaniAcikDegilseAc())
         {
-            getVtKayit().yeniFragmentVerileriKaydet(seciliVeriTuruID, baslik, icerik);
+            getVtKayit().yeniFragmentVerileriKaydet(seciliIcerikTuruID, baslik, icerik);
         }
         else
         {
             HataYoneticisi.ekranaHataYazdir("16", "veritabani baglantisi acilamadi");
         }
+    }
+
+    public static int getFragmentKlasorID()
+    {
+        return Engine.getFragmentKlasorID();
     }
 
     /**

@@ -13,17 +13,21 @@ public class FragmentYoneticisi extends Fragment
     private static View fragmentRootView;//acilan fragmentin root view i
     private static FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
     private boolean fragmentAcikMi = false;
+    private static int fragmentKlasorID = 0;
 
     /**
      * yeni fragment i ekranda gosterir
      *
-     * @param fy : gosterilecek fragment
-     * @param ma : activity nesnesi
+     * @param fy       : gosterilecek fragment
+     * @param ma       : activity nesnesi
+     * @param klasorID : fragment te gosterilecek klasorun id si
      */
-    public static void fragmentAc(Fragment fy, MainActivity ma, Bundle b)
+    public static void fragmentAc(Fragment fy, MainActivity ma, Bundle b, int klasorID)
     {
         if (b == null)
         {
+            setFragmentKlasorID(klasorID);
+
             FragmentTransaction ft = ma.getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.container, fy);
             //ft.commit();//java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState hatasindan kurtulmak icin alttaki metodu kullandim
@@ -164,5 +168,15 @@ public class FragmentYoneticisi extends Fragment
     public void setFragmentAcikMi(boolean fragmentAcikMi)
     {
         this.fragmentAcikMi = fragmentAcikMi;
+    }
+
+    public static int getFragmentKlasorID()
+    {
+        return fragmentKlasorID;
+    }
+
+    public static void setFragmentKlasorID(int fragmentKlasorID)
+    {
+        FragmentYoneticisi.fragmentKlasorID = fragmentKlasorID;
     }
 }

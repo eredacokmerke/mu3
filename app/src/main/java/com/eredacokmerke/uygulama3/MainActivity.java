@@ -114,7 +114,7 @@ public class MainActivity
     public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        Engine.mainFragmentAc(MainActivity.this, _savedInstanceState);
+        Engine.mainFragmentAc(MainActivity.this, _savedInstanceState, 1);
 
         //fab lar olusturuluyor
         Engine.initFABYoneticisi(MainActivity.this);
