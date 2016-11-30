@@ -1,0 +1,4 @@
+1-veritabani dosyasini silip uygulamayi baslat -> veritabani tablolari olusup, default kayitlar veritabanina girilmeli
+2-mainFragment ekraninda fab tusuna bas -> fab menusu acilmali
+3-mainFragment ekraninda fab1 tusuna bas -> yeniFragment acilmali
+4-yeniFragment ekraninda alanlari doldurup fab a bas -> veritabanina kayit eklenmeli, mainFragment acilmali, yeni eklenen kayit listede gozukmeli
