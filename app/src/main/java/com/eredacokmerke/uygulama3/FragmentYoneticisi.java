@@ -1,11 +1,18 @@
 package com.eredacokmerke.uygulama3;
 
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class FragmentYoneticisi extends Fragment
@@ -47,6 +54,15 @@ public class FragmentYoneticisi extends Fragment
      * fragment ui nesnelerini yukler
      */
     public void UIYukle()
+    {
+        renkleriAyarla();
+        //override
+    }
+
+    /**
+     * fragmentteki bilesenleri renklerini ontanimli degerlerle degistirir
+     */
+    public void renkleriAyarla()
     {
         //override
     }
@@ -136,6 +152,83 @@ public class FragmentYoneticisi extends Fragment
         return Engine.yeniFragmentVeriTurleriniVeritabanindanAl();
     }
 
+    /**
+     * edittextlerdeki imlec ve alt cizgi renklerini degistirir
+     */
+    public static void editTextImlecRenginiAyarla(EditText et, int color)
+    {
+        try
+        {
+            Field fCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+            fCursorDrawableRes.setAccessible(true);
+            int mCursorDrawableRes = fCursorDrawableRes.getInt(et);
+            Field fEditor = TextView.class.getDeclaredField("mEditor");
+            fEditor.setAccessible(true);
+            Object editor = fEditor.get(et);
+            Class<?> clazz = editor.getClass();
+            Field fCursorDrawable = clazz.getDeclaredField("mCursorDrawable");
+            fCursorDrawable.setAccessible(true);
+            Drawable[] drawables = new Drawable[2];
+            drawables[0] = et.getContext().getResources().getDrawable(mCursorDrawableRes);
+            drawables[1] = et.getContext().getResources().getDrawable(mCursorDrawableRes);
+            drawables[0].setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            drawables[1].setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            fCursorDrawable.set(editor, drawables);
+        }
+        catch (Throwable ignored)
+        {
+        }
+
+        et.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+    }
+
+    /**
+     * parametredeki view in zemin rengini hex olarak doner
+     *
+     * @param view : zemin rengi alinacak view
+     * @return : hex olarak zemin rengi
+     */
+    public static String zeminRenginiGetir(View view)
+    {
+        try
+        {
+            ColorDrawable viewColor = (ColorDrawable) view.getBackground();
+            int colorId = viewColor.getColor();
+
+            int red = (colorId >> 16) & 0xFF;
+            int green = (colorId >> 8) & 0xFF;
+            int blue = (colorId >> 0) & 0xFF;
+
+            String hex = String.format("#%02x%02x%02x", red, green, blue);
+
+            return hex;
+        }
+        catch (NullPointerException e)
+        {
+            HataYoneticisi.ekranaHataYazdir("8", "ui hatasi");
+            return null;
+        }
+    }
+
+    /**
+     * verilen rengin koyu,açık bilgisini döndürür
+     *
+     * @param renk renk kodu
+     * @return acik ise false koyu ise true doner
+     */
+    public static boolean renkKoyuMu(String renk)
+    {
+        int irenk = Color.parseColor(renk);
+        double darkness = 1 - (0.299 * Color.red(irenk) + 0.587 * Color.green(irenk) + 0.114 * Color.blue(irenk)) / 255;
+        if (darkness < 0.5)
+        {
+            return false; //açık renk
+        }
+        else
+        {
+            return true; //koyu renk
+        }
+    }
 
     /////getter & setter/////
 
