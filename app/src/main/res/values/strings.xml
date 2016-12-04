@@ -40,6 +40,7 @@
     <string name="renk">color</string>
     <string name="dosya">file</string>
     <string name="klasor">folder</string>
+    <string name="klasor_ismi">folder name</string>
     <string name="id">id</string>
     <string name="tur">type</string>
     <string name="tamam">OK</string>

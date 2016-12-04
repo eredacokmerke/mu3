@@ -1,0 +1,45 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".YeniKayitFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/fragment_yeni_klasor_rl1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".15">
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_yeni_klasor_rl2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".70">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+
+            <EditText
+                android:id="@+id/fragment_yeni_klasor_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/klasor_ismi"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_yeni_klasor_rl3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".15">
+    </RelativeLayout>
+</LinearLayout>

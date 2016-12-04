@@ -26,6 +26,9 @@ public class FABYoneticisi extends FloatingActionButton
         super(ma);
 
         final FloatingActionButton fab = (FloatingActionButton) ma.findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) ma.findViewById(R.id.fab_1);
+        fab2 = (FloatingActionButton) ma.findViewById(R.id.fab_2);
+
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -63,9 +66,6 @@ public class FABYoneticisi extends FloatingActionButton
             }
         });
 
-        fab1 = (FloatingActionButton) ma.findViewById(R.id.fab_1);
-        fab2 = (FloatingActionButton) ma.findViewById(R.id.fab_2);
-
         fab1.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -78,15 +78,18 @@ public class FABYoneticisi extends FloatingActionButton
                     //kayit ekrani aciliyken fab1 e basildi
                     case SabitYoneticisi.EKRAN_KAYIT:
 
-                        //kayit ekraninda tiklanirsa yeni kayit ekrani acilacak
+                        //yeni kayit ekrani acilacak
                         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KAYIT);
 
-                        fab.setImageResource(R.drawable.ic_menu_camera);//fab in resmi degisiyor
-                        FragmentYoneticisi.fragmentAc(YeniFragment.newInstance(), ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+                        //fab in resmi degisiyor
+                        fab.setImageResource(R.drawable.ic_menu_camera);
+
+                        //fragment aciliyor
+                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(), ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
 
                         break;
 
-                    //yeni kayit ekrani aciliyken fab a basildi
+                    //yeni kayit ekrani aciliyken fab1 e basildi
                     case SabitYoneticisi.EKRAN_YENI_KAYIT:
 
                         //bu menu yeni kayit ekraninda gozukmuyor
@@ -104,6 +107,33 @@ public class FABYoneticisi extends FloatingActionButton
             public void onClick(View v)
             {
                 menuDurumunuDegistir();
+                switch (SabitYoneticisi.etkinEkran)
+                {
+                    //kayit ekrani aciliyken fab2 ye basildi
+                    case SabitYoneticisi.EKRAN_KAYIT:
+
+                        //yeni klasor ekrani acilacak
+                        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KLASOR);
+
+                        //fab in resmi degisiyor
+                        fab.setImageResource(R.drawable.ic_menu_camera);
+
+                        //fragment aciliyor
+                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(), ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+
+
+                        break;
+
+                    //yeni kayit ekrani aciliyken fab2 ye basildi
+                    case SabitYoneticisi.EKRAN_YENI_KAYIT:
+
+                        //bu menu yeni kayit ekraninda gozukmuyor
+
+                        break;
+
+                    default:
+
+                }
             }
         });
 

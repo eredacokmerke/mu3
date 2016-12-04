@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.eredacokmerke.uygulama3.YeniFragment">
+    tools:context=".YeniKayitFragment">
 
     <LinearLayout
         android:id="@+id/fragment_yeni_llBaslik"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:inputType="none"
+            android:inputType="text"
             android:maxLines="1"
             android:singleLine="true"/>
     </LinearLayout>

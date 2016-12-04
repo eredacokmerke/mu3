@@ -165,8 +165,8 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      * yeniFragment ekraninda kaydet e tiklayinca verileri veritabanina kaydeder
      *
      * @param seciliIcerikTuruID : secili veri turunun id si
-     * @param baslik           : ekranda girilen baslik
-     * @param icerik           : ekranda girilen veri
+     * @param baslik             : ekranda girilen baslik
+     * @param icerik             : ekranda girilen veri
      */
     public static void yeniFragmentVeritababinaKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {

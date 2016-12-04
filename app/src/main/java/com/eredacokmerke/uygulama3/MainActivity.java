@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 public class MainActivity
         extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniFragment.OnFragmentInteractionListener
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniKayitFragment.OnFragmentInteractionListener, YeniKlasorFragment.OnFragmentInteractionListener
 {
     private static Context cnt;
     private static Bundle _savedInstanceState;
@@ -44,10 +44,7 @@ public class MainActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ActivityCompat.requestPermissions(
-                MainActivity.this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
 
         //global context olusturuluyor
         cnt = getApplicationContext();

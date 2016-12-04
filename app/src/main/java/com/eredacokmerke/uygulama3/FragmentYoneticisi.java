@@ -106,7 +106,11 @@ public class FragmentYoneticisi extends Fragment
         super.onStop();
     }
 
-
+    /**
+     * mainFragment ta gosterilecek verileri veritabanindan alir
+     *
+     * @return
+     */
     public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
     {
         return Engine.mainFragmentVerileriVeritabanindanAl();
@@ -117,25 +121,31 @@ public class FragmentYoneticisi extends Fragment
      */
     public static int yeniFragmentSpinnerSeciliNesneyiGetir()
     {
-        YeniFragment yf = (YeniFragment) getAcikFragment();
+        YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         int seciliID = yf.spinnerSeciliNesneyiGetir();
         yf = null;
 
         return seciliID;
     }
 
+    /**
+     * yeniFragment te baslik verisini dondurur
+     */
     public static String yeniFragmentBaslikGetir()
     {
-        YeniFragment yf = (YeniFragment) getAcikFragment();
+        YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         String baslik = yf.baslikGetir();
         yf = null;
 
         return baslik;
     }
 
+    /**
+     * yeniFragment te icerik verisini dondurur
+     */
     public static String yeniFragmentIcerikGetir()
     {
-        YeniFragment yf = (YeniFragment) getAcikFragment();
+        YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         String baslik = yf.icerikGetir();
         yf = null;
 
