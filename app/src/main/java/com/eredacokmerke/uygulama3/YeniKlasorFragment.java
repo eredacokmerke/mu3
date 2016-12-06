@@ -3,10 +3,12 @@ package com.eredacokmerke.uygulama3;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -17,7 +19,7 @@ import android.view.ViewGroup;
  * Use the {@link YeniKlasorFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class YeniKlasorFragment extends Fragment
+public class YeniKlasorFragment extends FragmentYoneticisi
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +29,8 @@ public class YeniKlasorFragment extends Fragment
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private View rootView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -70,7 +74,49 @@ public class YeniKlasorFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_yeni_klasor, container, false);
+        View v = inflater.inflate(R.layout.fragment_yeni_klasor, container, false);
+        this.rootView = v;
+        FragmentYoneticisi.setFragmentRootView(rootView);
+
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        setAcikFragment(this);
+        setFragmentAcikMi(false);//ilk deger
+    }
+
+    public String baslikGetir()
+    {
+        EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_klasor_edittext);
+        String baslik = et.getText().toString();
+        et = null;
+
+        return baslik;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
+        setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

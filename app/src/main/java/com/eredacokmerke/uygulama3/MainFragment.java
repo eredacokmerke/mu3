@@ -95,7 +95,7 @@ public class MainFragment extends FragmentYoneticisi
     {
         super.onActivityCreated(savedInstanceState);
         setAcikFragment(this);
-        setFragmentAcikMi(false);
+        setFragmentAcikMi(false);//ilk deger
     }
 
     @Override
@@ -190,7 +190,7 @@ public class MainFragment extends FragmentYoneticisi
     {
         super.onPause();
 
-        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
+        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
         setFragmentAcikMi(true);
     }
 

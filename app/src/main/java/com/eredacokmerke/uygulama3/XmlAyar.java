@@ -46,7 +46,7 @@ public class XmlAyar extends XmlYoneticisi
         }
         catch (IOException e)
         {
-            HataYoneticisi.ekranaHataYazdir("9", MainActivity.getCnt().getString(R.string.xml_olusturulamadi) + " : " + e.getMessage() + "," + MainActivity.getCnt().getString(R.string.dosya) + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir("20", MainActivity.getCnt().getString(R.string.xml_olusturulamadi) + " : " + e.getMessage() + "," + MainActivity.getCnt().getString(R.string.dosya) + " : " + xmlDosyaYolu);
         }
     }
 

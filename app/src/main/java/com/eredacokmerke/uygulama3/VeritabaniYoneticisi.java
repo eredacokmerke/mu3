@@ -168,11 +168,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      * @param baslik             : ekranda girilen baslik
      * @param icerik             : ekranda girilen veri
      */
-    public static void yeniFragmentVeritababinaKaydet(int seciliIcerikTuruID, String baslik, String icerik)
+    public static void yeniKayitFragmentVeritabaninaKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
         if (veritabaniAcikDegilseAc())
         {
-            getVtKayit().yeniFragmentVerileriKaydet(seciliIcerikTuruID, baslik, icerik);
+            getVtKayit().yeniKayitFragmentVerileriKaydet(seciliIcerikTuruID, baslik, icerik);
         }
         else
         {
@@ -180,6 +180,23 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
     }
 
+    public static void yeniKlasorFragmentVeritabaninaKaydet(String baslik)
+    {
+        if (veritabaniAcikDegilseAc())
+        {
+            getVtKayit().yeniKlasorFragmentVerileriKaydet(baslik);
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir("21", "veritabani baglantisi acilamadi");
+        }
+    }
+
+    /**
+     * fragment te acik olan klasorun id sini getirir
+     *
+     * @return : klasor id si
+     */
     public static int getFragmentKlasorID()
     {
         return Engine.getFragmentKlasorID();

@@ -80,7 +80,7 @@ public class YeniKayitFragment extends FragmentYoneticisi
     {
         super.onActivityCreated(savedInstanceState);
         setAcikFragment(this);
-        setFragmentAcikMi(false);
+        setFragmentAcikMi(false);//ilk deger
     }
 
     /*
@@ -190,6 +190,11 @@ public class YeniKayitFragment extends FragmentYoneticisi
         return (int) spinner.getSelectedItemId();
     }
 
+    /**
+     * baslik edittext indeki degeri dondurur
+     *
+     * @return
+     */
     public String baslikGetir()
     {
         EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_llBaslik_edittext);
@@ -199,6 +204,11 @@ public class YeniKayitFragment extends FragmentYoneticisi
         return baslik;
     }
 
+    /**
+     * icerik edittext indeki degeri dondurur
+     *
+     * @return
+     */
     public String icerikGetir()
     {
         EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_llIcerik_edittext);
@@ -225,7 +235,7 @@ public class YeniKayitFragment extends FragmentYoneticisi
     {
         super.onPause();
 
-        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flah tutuyorum
+        //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
         setFragmentAcikMi(true);
     }
 

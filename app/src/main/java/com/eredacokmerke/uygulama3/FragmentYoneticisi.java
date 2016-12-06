@@ -117,9 +117,25 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * yeniFragment te spinner da secili nesneyi dondurur
+     * yeniKlasorFragment te baslik verisini dondurur
+     *
+     * @return
      */
-    public static int yeniFragmentSpinnerSeciliNesneyiGetir()
+    public static String yeniFragmentKlasorBaslikGetir()
+    {
+        YeniKlasorFragment ykf = (YeniKlasorFragment) getAcikFragment();
+        String baslik = ykf.baslikGetir();
+        ykf = null;
+
+        return baslik;
+    }
+
+    /**
+     * yeniKayitFragment te spinner da secili veriyi dondurur
+     *
+     * @return : spinner da secili verinin id si
+     */
+    public static int yeniKayitFragmentSpinnerSeciliNesneyiGetir()
     {
         YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         int seciliID = yf.spinnerSeciliNesneyiGetir();
@@ -129,9 +145,11 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * yeniFragment te baslik verisini dondurur
+     * yeniKayitFragment te baslik verisini dondurur
+     *
+     * @return : baslik verisi
      */
-    public static String yeniFragmentBaslikGetir()
+    public static String yeniKayitFragmentBaslikGetir()
     {
         YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         String baslik = yf.baslikGetir();
@@ -141,9 +159,11 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * yeniFragment te icerik verisini dondurur
+     * yeniKayitFragment te icerik verisini dondurur
+     *
+     * @return icerik verisi
      */
-    public static String yeniFragmentIcerikGetir()
+    public static String yeniKayitFragmentIcerikGetir()
     {
         YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         String baslik = yf.icerikGetir();
@@ -153,7 +173,7 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * spinner a doldurulacak verileri veritabanindan alir
+     * yeniKayitFragment ta spinner a doldurulacak verileri veritabanindan alir
      *
      * @return
      */

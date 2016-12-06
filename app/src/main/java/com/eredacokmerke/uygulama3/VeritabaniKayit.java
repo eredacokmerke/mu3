@@ -108,9 +108,15 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
      * @param baslik             : ekranda girilen baslik
      * @param icerik             : ekranda girilen veri
      */
-    public void yeniFragmentVerileriKaydet(int seciliIcerikTuruID, String baslik, String icerik)
+    public void yeniKayitFragmentVerileriKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
         String insertQuery = "INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (" + seciliIcerikTuruID + ", 1," + VeritabaniYoneticisi.getFragmentKlasorID() + " ,'" + baslik + "', '" + icerik + "');";
+        getVT().execSQL(insertQuery);
+    }
+
+    public void yeniKlasorFragmentVerileriKaydet(String baslik)
+    {
+        String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM) VALUES ('" + baslik + "');";
         getVT().execSQL(insertQuery);
     }
 }

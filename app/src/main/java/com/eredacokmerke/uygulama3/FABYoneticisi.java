@@ -47,7 +47,7 @@ public class FABYoneticisi extends FloatingActionButton
                     //yeni kayit ekrani aciliyken fab a basildi
                     case SabitYoneticisi.EKRAN_YENI_KAYIT:
 
-                        Engine.yeniFragmentVeriKaydet();
+                        Engine.yeniKayitFragmentKaydet();
 
                         Engine.mainFragmentAc(ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
@@ -55,6 +55,15 @@ public class FABYoneticisi extends FloatingActionButton
                         Engine.klavyeKapat(ma, view);
 
                         break;
+
+                    case SabitYoneticisi.EKRAN_YENI_KLASOR:
+
+                        Engine.yeniKlasorFragmentKaydet();
+
+                        Engine.mainFragmentAc(ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+                        fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
+
+                        Engine.klavyeKapat(ma, view);
 
                     default:
                 }

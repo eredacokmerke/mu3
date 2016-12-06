@@ -39,7 +39,7 @@ public class XmlVeri extends XmlYoneticisi
         }
         catch (IOException e)
         {
-            HataYoneticisi.ekranaHataYazdir("8", MainActivity.getCnt().getString(R.string.xml_olusturulamadi) + e.getMessage() + ", " + MainActivity.getCnt().getString(R.string.dosya) + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir("19", MainActivity.getCnt().getString(R.string.xml_olusturulamadi) + e.getMessage() + ", " + MainActivity.getCnt().getString(R.string.dosya) + " : " + xmlDosyaYolu);
         }
     }
 

@@ -152,7 +152,7 @@ public class Engine
         {
             if (!uygKlasoru.mkdirs())
             {
-                HataYoneticisi.ekranaHataYazdir("2", MainActivity.getCnt().getString(R.string.uygulama_klasoru_olusturulamadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + uygKlasoru);
+                HataYoneticisi.ekranaHataYazdir("17", MainActivity.getCnt().getString(R.string.uygulama_klasoru_olusturulamadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + uygKlasoru);
                 return null;
             }
         }
@@ -181,7 +181,7 @@ public class Engine
         {
             if (!xmlYedekKlasoru.mkdirs())
             {
-                HataYoneticisi.ekranaHataYazdir("3", MainActivity.getCnt().getString(R.string.yedek_klasoru_olusturulumadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + xmlYedekKlasoru);
+                HataYoneticisi.ekranaHataYazdir("18", MainActivity.getCnt().getString(R.string.yedek_klasoru_olusturulumadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + xmlYedekKlasoru);
                 return null;
             }
         }
@@ -217,15 +217,25 @@ public class Engine
     }
 
     /**
-     * yeniFragment te kaydet tusuna basilinca ekrnadaki verileri veritabanina kaydeder
+     * yeniKayitFragment te kaydet tusuna basilinca ekranadaki verileri veritabanina kaydeder
      */
-    public static void yeniFragmentVeriKaydet()
+    public static void yeniKayitFragmentKaydet()
     {
-        int seciliIcerikTuru = FragmentYoneticisi.yeniFragmentSpinnerSeciliNesneyiGetir();
-        String baslik = FragmentYoneticisi.yeniFragmentBaslikGetir();
-        String icerik = FragmentYoneticisi.yeniFragmentIcerikGetir();
+        int seciliIcerikTuru = FragmentYoneticisi.yeniKayitFragmentSpinnerSeciliNesneyiGetir();
+        String baslik = FragmentYoneticisi.yeniKayitFragmentBaslikGetir();
+        String icerik = FragmentYoneticisi.yeniKayitFragmentIcerikGetir();
 
-        VeritabaniYoneticisi.yeniFragmentVeritababinaKaydet(seciliIcerikTuru, baslik, icerik);
+        VeritabaniYoneticisi.yeniKayitFragmentVeritabaninaKaydet(seciliIcerikTuru, baslik, icerik);
+    }
+
+    /**
+     * yeniKlasorFragment te kaydet tusuna basilinca ekrandaki verileri veritabanina kaydeder
+     */
+    public static void yeniKlasorFragmentKaydet()
+    {
+        String baslik = FragmentYoneticisi.yeniFragmentKlasorBaslikGetir();
+
+        VeritabaniYoneticisi.yeniKlasorFragmentVeritabaninaKaydet(baslik);
     }
 
     /**
@@ -265,7 +275,7 @@ public class Engine
     /**
      * yeniFragment spinner da gosterilecek icerik turlerini veritabanindan alir
      *
-     * @return
+     * @return : icerik turleri listesi
      */
     public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
     {
@@ -275,7 +285,7 @@ public class Engine
     /**
      * fragment te acik olan klasorun id sini getirir
      *
-     * @return
+     * @return : klasor id si
      */
     public static int getFragmentKlasorID()
     {
