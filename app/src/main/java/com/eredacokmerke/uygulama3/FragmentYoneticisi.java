@@ -107,13 +107,23 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * mainFragment ta gosterilecek verileri veritabanindan alir
+     * mainFragment ta gosterilecek kayitlari veritabanindan alir
      *
      * @return
      */
-    public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
+    public static List<KayitLayout> mainFragmentKayitlariVeritabanindanAl()
     {
-        return Engine.mainFragmentVerileriVeritabanindanAl();
+        return Engine.mainFragmentKayitlariVeritabanindanAl();
+    }
+
+    /**
+     * mainFragment ta gosterilecek klasorleri veritabanindan alir
+     *
+     * @return
+     */
+    public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    {
+        return Engine.mainFragmentKlasorleriVeritabanindanAl();
     }
 
     /**

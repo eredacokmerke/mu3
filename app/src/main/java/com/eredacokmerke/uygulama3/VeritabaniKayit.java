@@ -23,7 +23,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     @Override
     public void ontaminliVerileriYaz()
     {
-        getVT().execSQL("INSERT INTO KLASOR (KLASOR_ISIM) VALUES ('ANA');");
+        getVT().execSQL("INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('ANA', 0, 1);");
 
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#118580');");
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#162e1b');");
@@ -41,20 +41,22 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     @Override
     public void tablolariOlustur()
     {
-        getVT().execSQL("CREATE TABLE KLASOR (ID INTEGER PRIMARY KEY,KLASOR_ISIM TEXT);");
+        getVT().execSQL("CREATE TABLE KLASOR (ID INTEGER PRIMARY KEY, KLASOR_ISIM TEXT, UST_KLASOR_ID VARCHAR(20), KLASOR_RENK_KODU_ID INTEGER, FOREIGN KEY(KLASOR_RENK_KODU_ID) REFERENCES RENK(ID));");
         getVT().execSQL("CREATE TABLE TUR (ID INTEGER PRIMARY KEY, TUR_ISIM TEXT);");
         getVT().execSQL("CREATE TABLE RENK (ID INTEGER PRIMARY KEY, RENK_ISIM VARCHAR(20));");
-        getVT().execSQL("CREATE TABLE KAYIT (ID INTEGER PRIMARY KEY, ICERIK_TURU_ID INTEGER, RENK_KODU_ID INTEGER,KLASOR_ID INTEGER,BASLIK TEXT, ICERIK TEXT, FOREIGN KEY(ICERIK_TURU_ID) REFERENCES TUR(ID), FOREIGN KEY(RENK_KODU_ID) REFERENCES RENK(ID), FOREIGN KEY(KLASOR_ID) REFERENCES KLASOR(ID));");
+        getVT().execSQL("CREATE TABLE KAYIT (ID INTEGER PRIMARY KEY, ICERIK_TURU_ID INTEGER, RENK_KODU_ID INTEGER, KLASOR_ID INTEGER,BASLIK TEXT, ICERIK TEXT, FOREIGN KEY(ICERIK_TURU_ID) REFERENCES TUR(ID), FOREIGN KEY(RENK_KODU_ID) REFERENCES RENK(ID), FOREIGN KEY(KLASOR_ID) REFERENCES KLASOR(ID));");
     }
 
     /**
-     * mainFragment icin gerekli olan verileri veritabanindan alir
+     * mainFragment de gosterilecek kayitlari veritabanindan alir
      *
-     * @return : veri listesi
+     * @param klasorID : ici gosterilecek klasorun id si
+     * @return : kayit listesi
      */
-    public List<KayitLayout> mainFragmentVerileriGetir()
+    public List<KayitLayout> mainFragmentKayitlariGetir(int klasorID)
     {
-        String selectQuery = "select R.RENK_ISIM, BASLIK, ICERIK, ICERIK_TURU_ID from KAYIT as K, RENK as R where K.RENK_KODU_ID = R.ID;";
+        String selectQuery = "select R.RENK_ISIM, BASLIK, ICERIK, ICERIK_TURU_ID from KAYIT as K, RENK as R where K.RENK_KODU_ID = R.ID and K.KLASOR_ID='" + klasorID + "';";
+
         Cursor cursor = getVT().rawQuery(selectQuery, null);
         List<KayitLayout> listeVeri = new ArrayList<>();
 
@@ -62,12 +64,12 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         {
             do
             {
-                String veriRenkIsim = cursor.getString(0);
-                String veriBaslik = cursor.getString(1);
-                String veriIcerik = cursor.getString(2);
-                String veriIcerikTuruID = cursor.getString(3);
+                String veriKayitRenk = cursor.getString(0);
+                String veriKayitBaslik = cursor.getString(1);
+                String veriKayitIcerik = cursor.getString(2);
+                String veriKayitIcerikTuruID = cursor.getString(3);
 
-                listeVeri.add(new KayitLayout(MainActivity.getCnt(), veriBaslik, veriIcerik, veriRenkIsim, veriIcerikTuruID));
+                listeVeri.add(new KayitLayout(MainActivity.getCnt(), veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID));
             } while (cursor.moveToNext());
         }
 
@@ -77,11 +79,40 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     }
 
     /**
-     * yeniFragment icin gerekli olan verileri veritabanindan alir
+     * mainFragment de gosterilecek klasorleri veritabanindan alir
+     *
+     * @param klasorID : klasorlerin icinde yer aldigi klasorun id si
+     * @return : klasor listesi
+     */
+    public List<KayitLayout> mainFragmentKlasorleriGetir(int klasorID)
+    {
+        String selectQuery = "select K.KLASOR_ISIM, R.RENK_ISIM from KLASOR as K, RENK as R where K.KLASOR_RENK_KODU_ID=R.ID and UST_KLASOR_ID='" + klasorID + "';";
+
+        Cursor cursor = getVT().rawQuery(selectQuery, null);
+        List<KayitLayout> listeVeri = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                String veriKlasorIsim = cursor.getString(0);
+                String veriKlasorRenk = cursor.getString(1);
+
+                listeVeri.add(new KayitLayout(MainActivity.getCnt(), veriKlasorIsim, veriKlasorRenk));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return listeVeri;
+    }
+
+    /**
+     * yeniKayitFragment icin gerekli olan verileri veritabanindan alir
      *
      * @return : veri listesi
      */
-    public List<String> yeniFragmentVerileriGetir()
+    public List<String> yeniKayitFragmentVeriTurleriniGetir()
     {
         String selectQuery = "select TUR_ISIM from TUR;";
         Cursor cursor = getVT().rawQuery(selectQuery, null);
@@ -91,9 +122,9 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         {
             do
             {
-                String veritTurIsim = cursor.getString(0);
+                String veriTurIsim = cursor.getString(0);
 
-                listeVeri.add(veritTurIsim);
+                listeVeri.add(veriTurIsim);
             } while (cursor.moveToNext());
         }
 
@@ -102,7 +133,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     }
 
     /**
-     * yeniFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
+     * yeniKayitFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
      *
      * @param seciliIcerikTuruID : secili veri turunun id si
      * @param baslik             : ekranda girilen baslik
@@ -114,9 +145,15 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         getVT().execSQL(insertQuery);
     }
 
-    public void yeniKlasorFragmentVerileriKaydet(String baslik)
+    /**
+     * yeniKlasorFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
+     *
+     * @param baslik    :klasor ismi
+     * @param klasorID: klasorun icinde olusturulacagi klasorun id si
+     */
+    public void yeniKlasorFragmentVerileriKaydet(String baslik, int klasorID)
     {
-        String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM) VALUES ('" + baslik + "');";
+        String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('" + baslik + "', " + klasorID + ", 2);";
         getVT().execSQL(insertQuery);
     }
 }

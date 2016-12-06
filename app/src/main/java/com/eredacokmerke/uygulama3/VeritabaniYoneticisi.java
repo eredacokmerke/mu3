@@ -122,11 +122,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      *
      * @return
      */
-    public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
+    public static List<String> yeniKayitFragmentVeriTurleriniVeritabanindanAl()
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<String> listVeriler = getVtKayit().yeniFragmentVerileriGetir();
+            List<String> listVeriler = getVtKayit().yeniKayitFragmentVeriTurleriniGetir();
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -140,15 +140,15 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     }
 
     /**
-     * yeniFragment icin gerekli bilgileri veritabanindan alir
+     * mainFragment ta gosterilecek kayitlarin verilerini veritabanindan alir
      *
      * @return
      */
-    public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
+    public static List<KayitLayout> mainFragmentKayitlariVeritabanindanAl()
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentVerileriGetir();
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(FragmentYoneticisi.getFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -156,6 +156,26 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         else
         {
             HataYoneticisi.ekranaHataYazdir("15", "veritabani baglantisi acilamadi");
+
+            return null;
+        }
+    }
+
+    /**
+     * @return
+     */
+    public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    {
+        if (veritabaniAcikDegilseAc())
+        {
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(FragmentYoneticisi.getFragmentKlasorID());
+            getVtKayit().veritabaniKapat();
+
+            return listVeriler;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir("22", "veritabani baglantisi acilamadi");
 
             return null;
         }
@@ -180,11 +200,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
     }
 
-    public static void yeniKlasorFragmentVeritabaninaKaydet(String baslik)
+    public static void yeniKlasorFragmentVeritabaninaKaydet(String baslik, int klasorID)
     {
         if (veritabaniAcikDegilseAc())
         {
-            getVtKayit().yeniKlasorFragmentVerileriKaydet(baslik);
+            getVtKayit().yeniKlasorFragmentVerileriKaydet(baslik, klasorID);
         }
         else
         {

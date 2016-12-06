@@ -103,23 +103,48 @@ public class MainFragment extends FragmentYoneticisi
     {
         super.UIYukle();
 
-        List<KayitLayout> listeVeriler = verileriVeritabanindanAl();
-        verileriEkranaYazdir(listeVeriler);
+        List<KayitLayout> listeKlasorler = klasorleriVeritabanindanAl();
+        List<KayitLayout> listeKayitlar = kayitlariVeritabanindanAl();
+
+        if (listeKlasorler != null && listeKayitlar != null)
+        {
+            KayitLayout sonKL = klasorleriEkranaYazdir(listeKlasorler, null);
+            kayitlariEkranaYazdir(listeKayitlar, sonKL);
+        }
+
+        /*
+        // TODO: 12/6/16 ekrana once kayit sonra klasor eklenirse bu sekilde olacak. ayarlardan degistirilebilir yap
+
+        List<KayitLayout> listeKayitlar = kayitlariVeritabanindanAl();
+        KayitLayout sonKL = kayitlariEkranaYazdir(listeKayitlar, null);
+
+        List<KayitLayout> listeKlasorler = klasorleriVeritabanindanAl();
+        klasorleriEkranaYazdir(listeKlasorler, sonKL);
+        */
     }
 
     /**
-     * parametrede gelen verileri ekrana yazdirir
+     * parametrede gelen klasorleri ekrana yazdirir
      *
-     * @param listeVeriler : ekrana yazdirilacak verilerin listesi
+     * @param listeKlasorler : ekrana yazdirilacak klasorlerin listesi
+     * @param sonKL          : ekrana onceden eklenmis son KayitLayout nesnesi
+     * @return : ekrana son eklenen kayitLayout nesnesi
      */
-    public void verileriEkranaYazdir(List<KayitLayout> listeVeriler)
+    public KayitLayout klasorleriEkranaYazdir(List<KayitLayout> listeKlasorler, KayitLayout sonKL)
     {
         RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.mainFragmentRelativeLayout);
 
-        for (int i = 0; i < listeVeriler.size(); i++)
+        int idBaslangic = 100000;
+
+        if (sonKL != null)//eger oncden ekrana yerlestirilmis klasor nesneleri varsa son nesnenin id sini aliyorum
         {
-            KayitLayout kl = listeVeriler.get(i);
-            kl.setId(i + 100000);
+            idBaslangic = sonKL.getId() + 1;
+        }
+
+        for (int i = 0; i < listeKlasorler.size(); i++)
+        {
+            KayitLayout kl = listeKlasorler.get(i);
+            kl.setId(i + idBaslangic);
             kl.setPadding(20, 20, 20, 20);
 
             RelativeLayout.LayoutParams kl_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -135,11 +160,15 @@ public class MainFragment extends FragmentYoneticisi
             //layout a golge eklemek icin
             ViewCompat.setElevation(kl, 5);
 
+            if (sonKL != null && i == 0)//eger onceden klasor eklenmisse, kayitlar son klasor nesnesinin altina yerlesecekler
+            {
+                kl_lp.addRule(RelativeLayout.BELOW, idBaslangic - 1);
+            }
             if (i != 0)
             {
-                kl_lp.addRule(RelativeLayout.BELOW, i - 1 + 100000);//ilk kayit layout elemani en uste yerlesecek. digerleri kendilerinden onceki elemanin altina yerlesecek
+                kl_lp.addRule(RelativeLayout.BELOW, i + idBaslangic - 1);//ilk kayit layout elemani en uste yerlesecek. digerleri kendilerinden onceki elemanin altina yerlesecek
             }
-            if (i == listeVeriler.size() - 1)
+            if (i == listeKlasorler.size() - 1)
             {
                 kl_lp.setMargins(20, 20, 20, 20);//son kaydin alt margini var
             }
@@ -152,11 +181,104 @@ public class MainFragment extends FragmentYoneticisi
             kl.addView(tv);
             rl.addView(kl);
         }
+
+        if (listeKlasorler.isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            return listeKlasorler.get(listeKlasorler.size() - 1);
+        }
     }
 
-    public List<KayitLayout> verileriVeritabanindanAl()
+    /**
+     * parametrede gelen kayitlari ekrana yazdirir
+     *
+     * @param listeKayitlar : ekrana yazdirilacak kayitlarin listesi
+     * @param sonKL         : ekrana onceden eklenmis son KayitLayout nesnesi
+     * @return : ekrana son eklenen kayitLayout nesnesi
+     */
+    public KayitLayout kayitlariEkranaYazdir(List<KayitLayout> listeKayitlar, KayitLayout sonKL)
     {
-        return FragmentYoneticisi.mainFragmentVerileriVeritabanindanAl();
+        RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.mainFragmentRelativeLayout);
+
+        int idBaslangic = 100000;
+
+        if (sonKL != null)//eger oncden ekrana yerlestirilmis klasor nesneleri varsa son nesnenin id sini aliyorum
+        {
+            idBaslangic = sonKL.getId() + 1;
+        }
+
+        for (int i = 0; i < listeKayitlar.size(); i++)
+        {
+            KayitLayout kl = listeKayitlar.get(i);
+            kl.setId(i + idBaslangic);
+            kl.setPadding(20, 20, 20, 20);
+
+            RelativeLayout.LayoutParams kl_lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            //layout koselerini yumustamak icin
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(10);
+            shape.setColor(Color.parseColor(kl.getRenk()));
+            kl.setBackground(shape);
+
+            kl_lp.setMargins(20, 20, 20, 0);
+
+            //layout a golge eklemek icin
+            ViewCompat.setElevation(kl, 5);
+
+            if (sonKL != null && i == 0)//eger onceden klasor eklenmisse, kayitlar son klasor nesnesinin altina yerlesecekler
+            {
+                kl_lp.addRule(RelativeLayout.BELOW, idBaslangic - 1);
+            }
+            if (i != 0)//ilk kayit layout elemani en uste yerlesecek. digerleri kendilerinden onceki elemanin altina yerlesecek
+            {
+                kl_lp.addRule(RelativeLayout.BELOW, i + idBaslangic - 1);
+            }
+            if (i == listeKayitlar.size() - 1)//son kaydin alt margini var
+            {
+                kl_lp.setMargins(20, 20, 20, 20);
+            }
+            kl.setLayoutParams(kl_lp);
+
+            TextView tv = new TextView(MainActivity.getCnt());
+            tv.setText(kl.getBaslik());
+            tv.setTextColor(Color.YELLOW);
+
+            kl.addView(tv);
+            rl.addView(kl);
+        }
+
+        if (listeKayitlar.isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            return listeKayitlar.get(listeKayitlar.size() - 1);
+        }
+    }
+
+    /**
+     * kayitlari veritabanindan alir
+     *
+     * @return
+     */
+    public List<KayitLayout> kayitlariVeritabanindanAl()
+    {
+        return FragmentYoneticisi.mainFragmentKayitlariVeritabanindanAl();
+    }
+
+    /**
+     * klsorleri veritabanindan alir
+     *
+     * @return
+     */
+    public List<KayitLayout> klasorleriVeritabanindanAl()
+    {
+        return FragmentYoneticisi.mainFragmentKlasorleriVeritabanindanAl();
     }
 
     /*

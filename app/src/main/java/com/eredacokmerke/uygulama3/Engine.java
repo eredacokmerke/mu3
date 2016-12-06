@@ -209,11 +209,19 @@ public class Engine
     }
 
     /**
-     * veritabanindan verileri alir
+     * veritabanindan kayitlari alir
      */
-    public static List<KayitLayout> mainFragmentVerileriVeritabanindanAl()
+    public static List<KayitLayout> mainFragmentKayitlariVeritabanindanAl()
     {
-        return VeritabaniYoneticisi.mainFragmentVerileriVeritabanindanAl();
+        return VeritabaniYoneticisi.mainFragmentKayitlariVeritabanindanAl();
+    }
+
+    /**
+     * veritabanindan klasorleri alir
+     */
+    public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    {
+        return VeritabaniYoneticisi.mainFragmentKlasorleriVeritabanindanAl();
     }
 
     /**
@@ -235,7 +243,7 @@ public class Engine
     {
         String baslik = FragmentYoneticisi.yeniFragmentKlasorBaslikGetir();
 
-        VeritabaniYoneticisi.yeniKlasorFragmentVeritabaninaKaydet(baslik);
+        VeritabaniYoneticisi.yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
     }
 
     /**
@@ -279,7 +287,7 @@ public class Engine
      */
     public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
     {
-        return VeritabaniYoneticisi.yeniFragmentVeriTurleriniVeritabanindanAl();
+        return VeritabaniYoneticisi.yeniKayitFragmentVeriTurleriniVeritabanindanAl();
     }
 
     /**
