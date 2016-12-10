@@ -3,6 +3,7 @@ package com.eredacokmerke.uygulama3;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -250,15 +251,14 @@ public class Engine
      * mainFragment acar
      *
      * @param ma       : mainActivity nesnesi
-     * @param b
      * @param klasorID : acilan klasorun id si
      */
-    public static void mainFragmentAc(MainActivity ma, Bundle b, int klasorID)
+    public static void mainFragmentAc(MainActivity ma, int klasorID)
     {
         //mainFragment ta etkin ekran kayit ekrani
         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma, b, klasorID);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma,klasorID);
     }
 
     /**

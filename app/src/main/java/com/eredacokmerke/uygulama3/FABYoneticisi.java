@@ -49,7 +49,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         Engine.yeniKayitFragmentKaydet();
 
-                        Engine.mainFragmentAc(ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+                        Engine.mainFragmentAc(ma, FragmentYoneticisi.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(ma, view);
@@ -60,7 +60,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         Engine.yeniKlasorFragmentKaydet();
 
-                        Engine.mainFragmentAc(ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+                        Engine.mainFragmentAc(ma, FragmentYoneticisi.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(ma, view);
@@ -94,7 +94,7 @@ public class FABYoneticisi extends FloatingActionButton
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(), ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(), ma, FragmentYoneticisi.getFragmentKlasorID());
 
                         break;
 
@@ -128,7 +128,7 @@ public class FABYoneticisi extends FloatingActionButton
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(), ma, MainActivity.get_savedInstanceState(), FragmentYoneticisi.getFragmentKlasorID());
+                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(), ma, FragmentYoneticisi.getFragmentKlasorID());
 
 
                         break;

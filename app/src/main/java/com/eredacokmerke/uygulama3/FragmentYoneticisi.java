@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -29,17 +28,14 @@ public class FragmentYoneticisi extends Fragment
      * @param ma       : activity nesnesi
      * @param klasorID : fragment te gosterilecek klasorun id si
      */
-    public static void fragmentAc(Fragment fy, MainActivity ma, Bundle b, int klasorID)
+    public static void fragmentAc(Fragment fy, MainActivity ma, int klasorID)
     {
-        if (b == null)
-        {
-            setFragmentKlasorID(klasorID);
+        setFragmentKlasorID(klasorID);
 
-            FragmentTransaction ft = ma.getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.container, fy);
-            //ft.commit();//java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState hatasindan kurtulmak icin alttaki metodu kullandim
-            ft.commitAllowingStateLoss();
-        }
+        FragmentTransaction ft = ma.getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container, fy);
+        //ft.commit();//java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState hatasindan kurtulmak icin alttaki metodu kullandim
+        ft.commitAllowingStateLoss();
     }
 
     /**

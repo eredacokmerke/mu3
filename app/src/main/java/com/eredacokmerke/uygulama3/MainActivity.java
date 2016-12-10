@@ -22,14 +22,14 @@ public class MainActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniKayitFragment.OnFragmentInteractionListener, YeniKlasorFragment.OnFragmentInteractionListener
 {
     private static Context cnt;
-    private static Bundle _savedInstanceState;
+    //private static Bundle _savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        _savedInstanceState = savedInstanceState;
+        //_savedInstanceState = savedInstanceState;
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -111,7 +111,7 @@ public class MainActivity
     public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        Engine.mainFragmentAc(MainActivity.this, _savedInstanceState, 1);
+        Engine.mainFragmentAc(MainActivity.this, 1);
 
         //fab lar olusturuluyor
         Engine.initFABYoneticisi(MainActivity.this);
@@ -201,10 +201,5 @@ public class MainActivity
     public static Context getCnt()
     {
         return cnt;
-    }
-
-    public static Bundle get_savedInstanceState()
-    {
-        return _savedInstanceState;
     }
 }
