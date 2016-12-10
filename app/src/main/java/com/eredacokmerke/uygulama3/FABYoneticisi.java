@@ -49,10 +49,10 @@ public class FABYoneticisi extends FloatingActionButton
 
                         Engine.yeniKayitFragmentKaydet();
 
-                        Engine.mainFragmentAc(ma, FragmentYoneticisi.getFragmentKlasorID());
+                        Engine.mainFragmentAc(FragmentYoneticisi.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
-                        Engine.klavyeKapat(ma, view);
+                        Engine.klavyeKapat(view);
 
                         break;
 
@@ -60,10 +60,10 @@ public class FABYoneticisi extends FloatingActionButton
 
                         Engine.yeniKlasorFragmentKaydet();
 
-                        Engine.mainFragmentAc(ma, FragmentYoneticisi.getFragmentKlasorID());
+                        Engine.mainFragmentAc(FragmentYoneticisi.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
-                        Engine.klavyeKapat(ma, view);
+                        Engine.klavyeKapat(view);
 
                     default:
                 }

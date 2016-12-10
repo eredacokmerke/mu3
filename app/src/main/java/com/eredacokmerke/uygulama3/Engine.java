@@ -1,7 +1,6 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +16,7 @@ public class Engine
     //private static VeritabaniKayit vtKayit;//veri veritabani nesnesi
     private static XmlAyar xmlAyar;//ayar xml dosyasi
     private static File uygulamaKlasoru;//uygulama dosyalarinin bulundugu klasor
+    private static MainActivity ma;
 
     /**
      * uygulama icin gerekli dosyalar olusturulur
@@ -250,34 +250,31 @@ public class Engine
     /**
      * mainFragment acar
      *
-     * @param ma       : mainActivity nesnesi
      * @param klasorID : acilan klasorun id si
      */
-    public static void mainFragmentAc(MainActivity ma, int klasorID)
+    public static void mainFragmentAc(int klasorID)
     {
         //mainFragment ta etkin ekran kayit ekrani
         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), ma,klasorID);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), getMa(), klasorID);
     }
 
     /**
      * ekran klavyesini kapatir
      */
-    public static void klavyeKapat(MainActivity ma, View view)
+    public static void klavyeKapat(View view)
     {
-        InputMethodManager imm = (InputMethodManager) ma.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getMa().getSystemService(MainActivity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
      * floating action button yoneticisini baslatir. ekranda fab i gosterir
-     *
-     * @param ma : main activity nesnesi
      */
-    public static void initFABYoneticisi(MainActivity ma)
+    public static void initFABYoneticisi()
     {
-        new FABYoneticisi(ma);
+        new FABYoneticisi(getMa());
     }
 
     /**

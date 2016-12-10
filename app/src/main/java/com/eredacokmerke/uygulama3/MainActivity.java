@@ -48,6 +48,7 @@ public class MainActivity
 
         //global context olusturuluyor
         cnt = getApplicationContext();
+        Engine.setMa(MainActivity.this);
     }
 
     /**
@@ -111,10 +112,10 @@ public class MainActivity
     public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        Engine.mainFragmentAc(MainActivity.this, 1);
+        Engine.mainFragmentAc(1);
 
         //fab lar olusturuluyor
-        Engine.initFABYoneticisi(MainActivity.this);
+        Engine.initFABYoneticisi();
     }
 
     @Override
