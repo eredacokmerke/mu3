@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class XmlYoneticisi
 {
     private Document document;
+    private MainActivity ma;
     private XmlAyar xmlAyar;
 
     public XmlYoneticisi()
@@ -69,6 +70,7 @@ public class XmlYoneticisi
         xmlAyar.init(xmlAyarDosyaYolu);
     }
 
+    /**
      * xml i okumank için Document nesnesi olusturur
      *
      * @param xmlDosyaYolu : xml dosyasinin dosya yolu
@@ -87,22 +89,22 @@ public class XmlYoneticisi
         }
         catch (ParserConfigurationException e)
         {
-            HataYoneticisi.ekranaHataYazdir("10", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "10", getMa().getApplicationContext().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
         catch (FileNotFoundException e)
         {
-            HataYoneticisi.ekranaHataYazdir("11", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "11", getMa().getApplicationContext().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
         catch (IOException e)
         {
-            HataYoneticisi.ekranaHataYazdir("12", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "12", getMa().getApplicationContext().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
         catch (SAXException e)
         {
-            HataYoneticisi.ekranaHataYazdir("13", MainActivity.getCnt().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "13", getMa().getApplicationContext().getString(R.string.xml_document_olusamadi) + e.getMessage() + " : " + xmlDosyaYolu);
             return null;
         }
     }
@@ -148,5 +150,15 @@ public class XmlYoneticisi
     public void setXmlAyar(XmlAyar xmlAyar)
     {
         this.xmlAyar = xmlAyar;
+    }
+
+    public MainActivity getMa()
+    {
+        return ma;
+    }
+
+    public void setMa(MainActivity ma)
+    {
+        this.ma = ma;
     }
 }

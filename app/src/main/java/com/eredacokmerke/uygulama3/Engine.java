@@ -47,7 +47,7 @@ public class Engine
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("1", "xml hatasi olustu");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "1", getMa().getApplicationContext().getString(R.string.xml_hata_olustu));
             return false;
         }
 
@@ -125,13 +125,13 @@ public class Engine
             }
             else
             {
-                HataYoneticisi.ekranaHataYazdir("2", "uygulama klasoru yok");
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "2", "uygulama klasoru yok");
                 return false;
             }
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("3", "klasor hatasi olustu");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "3", "klasor hatasi olustu");
             return false;
         }
     }
@@ -157,7 +157,7 @@ public class Engine
         {
             if (!uygKlasoru.mkdirs())
             {
-                HataYoneticisi.ekranaHataYazdir("17", MainActivity.getCnt().getString(R.string.uygulama_klasoru_olusturulamadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + uygKlasoru);
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "17", getMa().getApplicationContext().getString(R.string.uygulama_klasoru_olusturulamadi) + ", " + getMa().getApplicationContext().getString(R.string.klasor) + " : " + uygKlasoru);
                 return null;
             }
         }
@@ -186,7 +186,7 @@ public class Engine
         {
             if (!xmlYedekKlasoru.mkdirs())
             {
-                HataYoneticisi.ekranaHataYazdir("18", MainActivity.getCnt().getString(R.string.yedek_klasoru_olusturulumadi) + ", " + MainActivity.getCnt().getString(R.string.klasor) + " : " + xmlYedekKlasoru);
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "18", getMa().getApplicationContext().getString(R.string.yedek_klasoru_olusturulumadi) + ", " + getMa().getApplicationContext().getString(R.string.klasor) + " : " + xmlYedekKlasoru);
                 return null;
             }
         }

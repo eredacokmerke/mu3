@@ -1,11 +1,12 @@
 package com.eredacokmerke.uygulama3;
 
+import android.content.Context;
 import android.widget.Toast;
 
 public class HataYoneticisi
 {
-    public static void ekranaHataYazdir(String id, String hata)
+    public static void ekranaHataYazdir(Context cnt, String id, String hata)
     {
-        Toast.makeText(MainActivity.getCnt(), "hata [" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
+        Toast.makeText(cnt, "hata [" + id + "]: " + hata, Toast.LENGTH_SHORT).show();
     }
 }

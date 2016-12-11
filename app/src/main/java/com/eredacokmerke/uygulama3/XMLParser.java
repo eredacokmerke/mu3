@@ -80,7 +80,7 @@ public class XMLParser
             }
         }
 
-        HataYoneticisi.ekranaHataYazdir("14", MainActivity.getCnt().getString(R.string.xml_etiket_okunamadi) + " : " + etiketAdi);
+        //HataYoneticisi.ekranaHataYazdir("14", getMa().getApplicationContext().getString(R.string.xml_etiket_okunamadi) + " : " + etiketAdi);
         return "";
     }
 

@@ -45,7 +45,7 @@ public class XmlAyar extends XmlYoneticisi
         }
         catch (IOException e)
         {
-            HataYoneticisi.ekranaHataYazdir("20", MainActivity.getCnt().getString(R.string.xml_olusturulamadi) + " : " + e.getMessage() + "," + MainActivity.getCnt().getString(R.string.dosya) + " : " + xmlDosyaYolu);
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "20", getMa().getApplicationContext().getString(R.string.xml_olusturulamadi) + " : " + e.getMessage() + "," + getMa().getApplicationContext().getString(R.string.dosya) + " : " + xmlDosyaYolu);
         }
     }
 
@@ -192,15 +192,15 @@ public class XmlAyar extends XmlYoneticisi
             }
             catch (TransformerConfigurationException e)
             {
-                HataYoneticisi.ekranaHataYazdir("5", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "5", getMa().getApplicationContext().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
             }
             catch (TransformerException e)
             {
-                HataYoneticisi.ekranaHataYazdir("6", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "6", getMa().getApplicationContext().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
             }
             catch (IOException e)
             {
-                HataYoneticisi.ekranaHataYazdir("7", MainActivity.getCnt().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "7", getMa().getApplicationContext().getString(R.string.document_dosyaya_yazilirken_hata_olustu) + " : " + e.getMessage());
             }
         }
     }

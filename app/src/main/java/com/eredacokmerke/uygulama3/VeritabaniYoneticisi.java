@@ -134,7 +134,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("9", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "9", "veritabani baglantisi acilamadi");
 
             return null;
         }
@@ -156,7 +156,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("15", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "15", "veritabani baglantisi acilamadi");
 
             return null;
         }
@@ -176,7 +176,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("22", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
 
             return null;
         }
@@ -197,7 +197,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("16", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "16", "veritabani baglantisi acilamadi");
         }
     }
 
@@ -209,7 +209,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir("21", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "21", "veritabani baglantisi acilamadi");
         }
     }
 

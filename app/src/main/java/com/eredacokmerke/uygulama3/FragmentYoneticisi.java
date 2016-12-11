@@ -241,7 +241,7 @@ public class FragmentYoneticisi extends Fragment
         }
         catch (NullPointerException e)
         {
-            HataYoneticisi.ekranaHataYazdir("8", "ui hatasi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "8", "ui hatasi");
             return null;
         }
     }

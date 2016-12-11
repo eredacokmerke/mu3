@@ -102,7 +102,7 @@ public class MainActivity
                 return;
             }
             default:
-                HataYoneticisi.ekranaHataYazdir("4", MainActivity.getCnt().getString(R.string.hatali_izin_id) + " : " + requestCode);
+                HataYoneticisi.ekranaHataYazdir(getApplicationContext(), "4", getApplicationContext().getString(R.string.hatali_izin_id) + " : " + requestCode);
         }
     }
 
