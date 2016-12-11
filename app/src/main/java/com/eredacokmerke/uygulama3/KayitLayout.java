@@ -1,6 +1,7 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
@@ -13,6 +14,7 @@ public class KayitLayout extends RelativeLayout
     private String renk;
     private String icerikTuruID;
     private int tur;//layout turu. ture gore gorunus degisecek. 0:kayit 1:klasor
+    private int klasorID;//layut bir klasorse id sini tutuyor
 
     public final static int TUR_KAYIT = 0;//layout turu kayit
     public final static int TUR_KLASOR = 1;//layout turu klasor
@@ -26,14 +28,54 @@ public class KayitLayout extends RelativeLayout
         this.renk = renk;
         this.icerikTuruID = icerikTuruID;
         setTur(TUR_KAYIT);
+
+        this.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                tiklandi(getTur());
+            }
+        });
     }
 
-    public KayitLayout(Context context, String baslik, String renk)
+    public KayitLayout(Context context, String baslik, String renk, int klasorID)
     {
         super(context);
         this.baslik = baslik;
         this.renk = renk;
+        this.klasorID = klasorID;
         setTur(TUR_KLASOR);
+
+        this.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                tiklandi(getTur());
+            }
+        });
+    }
+
+    /**
+     * kayitLayout a tiklandigi zaman buraya geliyor
+     *
+     * @param tur : kayit yada klasor e tiklandigini anlamak icin
+     */
+    public void tiklandi(int tur)
+    {
+        switch (tur)
+        {
+            case TUR_KAYIT:
+                break;
+
+            case TUR_KLASOR:
+                Engine.klasorAc(getKlasorID());
+                break;
+
+            default:
+                break;
+        }
     }
 
 
@@ -89,4 +131,16 @@ public class KayitLayout extends RelativeLayout
     {
         this.tur = tur;
     }
+
+    public int getKlasorID()
+    {
+        return klasorID;
+    }
+
+    public void setKlasorID(int klasorID)
+    {
+        this.klasorID = klasorID;
+    }
+
+
 }

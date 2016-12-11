@@ -89,7 +89,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
      */
     public List<KayitLayout> mainFragmentKlasorleriGetir(int klasorID)
     {
-        String selectQuery = "select K.KLASOR_ISIM, R.RENK_ISIM from KLASOR as K, RENK as R where K.KLASOR_RENK_KODU_ID=R.ID and UST_KLASOR_ID='" + klasorID + "';";
+        String selectQuery = "select K.KLASOR_ISIM, R.RENK_ISIM, K.ID from KLASOR as K, RENK as R where K.KLASOR_RENK_KODU_ID=R.ID and UST_KLASOR_ID='" + klasorID + "';";
 
         Cursor cursor = getVT().rawQuery(selectQuery, null);
         List<KayitLayout> listeVeri = new ArrayList<>();
@@ -100,6 +100,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
             {
                 String veriKlasorIsim = cursor.getString(0);
                 String veriKlasorRenk = cursor.getString(1);
+                int veriKlasorID = cursor.getInt(2);
 
                 listeVeri.add(new KayitLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID));
             } while (cursor.moveToNext());

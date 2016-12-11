@@ -301,6 +301,17 @@ public class Engine
         return FragmentYoneticisi.getFragmentKlasorID();
     }
 
+    /**
+     * klasore tiklandigi zaman icini gosterir
+     *
+     * @param acilacakKlasorID : ici gosterilecek klasorun id si
+     */
+    public static void klasorAc(int acilacakKlasorID)
+    {
+        mainFragmentAc(acilacakKlasorID);
+    }
+
+
     /////getter & setter/////
 
 
