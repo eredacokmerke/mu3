@@ -15,9 +15,11 @@ import javax.xml.parsers.ParserConfigurationException;
 public class XmlYoneticisi
 {
     private Document document;
+    private XmlAyar xmlAyar;
 
-    public XmlYoneticisi(String xmlDosyaYolu)
+    public XmlYoneticisi()
     {
+        /*
         xmlDosyasiKontrolEt(xmlDosyaYolu);
 
         setDocument(xmlDocumentNesnesiOlustur(xmlDosyaYolu));
@@ -25,6 +27,7 @@ public class XmlYoneticisi
         {
             xmlDosyasiniBellegeAl(getDocument(), xmlDosyaYolu);
         }
+        */
     }
 
     /**
@@ -43,6 +46,29 @@ public class XmlYoneticisi
     }
 
     /**
+     * xmlAyar nesnesinin ilk ayarlari yapiliyor
+     *
+     * @param xmlAyarDosyaYolu
+     */
+    public void init(String xmlAyarDosyaYolu)
+    {
+        xmlDosyasiKontrolEt(xmlAyarDosyaYolu);
+
+        setDocument(xmlDocumentNesnesiOlustur(xmlAyarDosyaYolu));
+        if (getDocument() != null)
+        {
+            xmlDosyasiniBellegeAl(getDocument(), xmlAyarDosyaYolu);
+        }
+    }
+
+    public void xmlAyarOlustur(String xmlAyarDosyaYolu)
+    {
+        xmlAyar = new XmlAyar();
+        setXmlAyar(xmlAyar);
+
+        xmlAyar.init(xmlAyarDosyaYolu);
+    }
+
      * xml i okumank için Document nesnesi olusturur
      *
      * @param xmlDosyaYolu : xml dosyasinin dosya yolu
@@ -112,5 +138,15 @@ public class XmlYoneticisi
     public void setDocument(Document document)
     {
         this.document = document;
+    }
+
+    public XmlAyar getXmlAyar()
+    {
+        return xmlAyar;
+    }
+
+    public void setXmlAyar(XmlAyar xmlAyar)
+    {
+        this.xmlAyar = xmlAyar;
     }
 }

@@ -21,9 +21,8 @@ import javax.xml.transform.stream.StreamResult;
 
 public class XmlAyar extends XmlYoneticisi
 {
-    public XmlAyar(String xmlDosyaYolu)
+    public XmlAyar()
     {
-        super(xmlDosyaYolu);
     }
 
     @Override
@@ -57,7 +56,6 @@ public class XmlAyar extends XmlYoneticisi
 
         yeniAyarVarsaEkle(document, xmlDosyaYolu);
     }
-
 
     /**
      * yeni ayar varsa xml ayar dosyasına ekliyor

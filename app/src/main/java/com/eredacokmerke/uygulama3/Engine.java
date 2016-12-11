@@ -14,9 +14,10 @@ public class Engine
 {
     //private static XmlVeri xmlVeri;//veri xml dosyasi
     //private static VeritabaniKayit vtKayit;//veri veritabani nesnesi
-    private static XmlAyar xmlAyar;//ayar xml dosyasi
+    //private static XmlAyar xmlAyar;//ayar xml dosyasi
     private static File uygulamaKlasoru;//uygulama dosyalarinin bulundugu klasor
     private static MainActivity ma;
+    private static XmlYoneticisi xmly;
 
     /**
      * uygulama icin gerekli dosyalar olusturulur
@@ -34,10 +35,13 @@ public class Engine
         VeritabaniYoneticisi.dosyaKontroluYap(getUygulamaKlasoru());
 
         ////setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
-        setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
+        //setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
         //setVtKayit(new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu));
 
-        if ((getXmlAyar().getDocument() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
+        getXmly().xmlAyarOlustur(xmlAyarDosyaYolu);
+
+
+        if ((getXmly().getXmlAyar().getDocument() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
         {
             return true;
         }
