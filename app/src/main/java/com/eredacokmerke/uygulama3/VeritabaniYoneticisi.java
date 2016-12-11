@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class VeritabaniYoneticisi extends SQLiteOpenHelper
 {
-    private static VeritabaniKayit vtKayit;
     private MainActivity ma;
+    private VeritabaniKayit vtKayit;
     private String VT_ISIM;//veritabani dosyasinin ismi
     private String VT_DOSYA_YOLU;//veritabani dosyasinin yolu
     private SQLiteDatabase VT;//veritabani islemleri (crud) yapabilmek icin veritabani nesnesi
@@ -23,9 +23,13 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     public VeritabaniYoneticisi(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler, String dosyaYolu)
     {
         super(context, name, factory, version, errorHandler);
-        setVT_ISIM(name);
-        setVT_DOSYA_YOLU(dosyaYolu);
-        init();
+
+        if (dosyaYolu != null)//veritabani yonetici bir veritabani dosyasi acmayacagi icin parametreler null geliyor
+        {
+            setVT_ISIM(name);
+            setVT_DOSYA_YOLU(dosyaYolu);
+            init();
+        }
     }
 
     @Override
@@ -87,14 +91,14 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         getVT().close();
     }
 
-    public static void kayitVeritabaniniAc(String vtDosyaIsmi, String vtDosyaYolu)
+    public void kayitVeritabaniniAc(String vtDosyaIsmi, String vtDosyaYolu)
     {
         vtKayit = new VeritabaniKayit(getMa().getApplicationContext(), vtDosyaIsmi, vtDosyaYolu);
         setVtKayit(vtKayit);
     }
 
     // TODO: 11/27/16 : farkli veritabani dosyalari oldugu zaman burada hepsi nasil cagrilacak
-    public static void dosyaKontroluYap(File uygulamaKlasoru)
+    public void dosyaKontroluYap(File uygulamaKlasoru)
     {
         String vtDosyaIsmi = "kayit.db";
         String vtDosyaYolu = uygulamaKlasoru + "/" + vtDosyaIsmi;
@@ -123,7 +127,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      *
      * @return
      */
-    public static List<String> yeniKayitFragmentVeriTurleriniVeritabanindanAl()
+    public List<String> yeniKayitFragmentVeriTurleriniVeritabanindanAl()
     {
         if (veritabaniAcikDegilseAc())
         {
@@ -145,11 +149,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      *
      * @return
      */
-    public static List<KayitLayout> mainFragmentKayitlariVeritabanindanAl()
+    public List<KayitLayout> mainFragmentKayitlariVeritabanindanAl()
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(FragmentYoneticisi.getFragmentKlasorID());
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(Engine.getFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -165,11 +169,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     /**
      * @return
      */
-    public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    public List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(FragmentYoneticisi.getFragmentKlasorID());
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(Engine.getFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -189,7 +193,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      * @param baslik             : ekranda girilen baslik
      * @param icerik             : ekranda girilen veri
      */
-    public static void yeniKayitFragmentVeritabaninaKaydet(int seciliIcerikTuruID, String baslik, String icerik)
+    public void yeniKayitFragmentVeritabaninaKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
         if (veritabaniAcikDegilseAc())
         {
@@ -201,7 +205,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
     }
 
-    public static void yeniKlasorFragmentVeritabaninaKaydet(String baslik, int klasorID)
+    public void yeniKlasorFragmentVeritabaninaKaydet(String baslik, int klasorID)
     {
         if (veritabaniAcikDegilseAc())
         {
@@ -226,7 +230,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     /**
      * veritabani baglantisini acar
      */
-    public static boolean veritabaniAcikDegilseAc()
+    public boolean veritabaniAcikDegilseAc()
     {
         if (!(getVtKayit().getVT().isOpen()))//veritabani kapaliysa acalim
         {
@@ -270,12 +274,16 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         this.VT_DOSYA_YOLU = VT_DOSYA_YOLU;
     }
 
-    public static VeritabaniKayit getVtKayit()
+    public VeritabaniKayit getVtKayit()
     {
         return vtKayit;
     }
 
-    public static void setVtKayit(VeritabaniKayit vtKayit)
+    public void setVtKayit(VeritabaniKayit vtKayit)
+    {
+        this.vtKayit = vtKayit;
+    }
+
     public MainActivity getMa()
     {
         return ma;
@@ -283,7 +291,6 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
 
     public void setMa(MainActivity ma)
     {
-        VeritabaniYoneticisi.vtKayit = vtKayit;
         this.ma = ma;
     }
 }

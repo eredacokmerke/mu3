@@ -33,7 +33,7 @@ public class MainFragment extends FragmentYoneticisi
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private int mParam1;
     private String mParam2;
     private View rootView;
     private OnFragmentInteractionListener mListener;
@@ -52,13 +52,14 @@ public class MainFragment extends FragmentYoneticisi
      * @return A new instance of fragment MainFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2)
+    public static MainFragment newInstance(int param1, String param2)
     {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -68,7 +69,7 @@ public class MainFragment extends FragmentYoneticisi
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -79,7 +80,7 @@ public class MainFragment extends FragmentYoneticisi
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         this.rootView = v;
-        FragmentYoneticisi.setFragmentRootView(rootView);
+        //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
     }
@@ -94,8 +95,8 @@ public class MainFragment extends FragmentYoneticisi
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setAcikFragment(this);
-        setFragmentAcikMi(false);//ilk deger
+        getFragmentYoneticisi().setAcikFragment(this);
+        getFragmentYoneticisi().setFragmentAcikMi(false);//ilk deger
     }
 
     @Override
@@ -268,7 +269,7 @@ public class MainFragment extends FragmentYoneticisi
      */
     public List<KayitLayout> kayitlariVeritabanindanAl()
     {
-        return FragmentYoneticisi.mainFragmentKayitlariVeritabanindanAl();
+        return mainFragmentKayitlariVeritabanindanAl();
     }
 
     /**
@@ -278,7 +279,7 @@ public class MainFragment extends FragmentYoneticisi
      */
     public List<KayitLayout> klasorleriVeritabanindanAl()
     {
-        return FragmentYoneticisi.mainFragmentKlasorleriVeritabanindanAl();
+        return mainFragmentKlasorleriVeritabanindanAl();
     }
 
     /*
@@ -313,7 +314,7 @@ public class MainFragment extends FragmentYoneticisi
         super.onPause();
 
         //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
-        setFragmentAcikMi(true);
+        getFragmentYoneticisi().setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

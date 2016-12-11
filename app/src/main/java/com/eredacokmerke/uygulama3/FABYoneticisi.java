@@ -21,7 +21,7 @@ public class FABYoneticisi extends FloatingActionButton
     //true -> fab = open
     private boolean FABdurumu = false;
 
-    public FABYoneticisi(final MainActivity ma)
+    public FABYoneticisi(final MainActivity ma, final Engine eng)
     {
         super(ma);
 
@@ -47,23 +47,23 @@ public class FABYoneticisi extends FloatingActionButton
                     //yeni kayit ekrani aciliyken fab a basildi
                     case SabitYoneticisi.EKRAN_YENI_KAYIT:
 
-                        Engine.yeniKayitFragmentKaydet();
+                        eng.yeniKayitFragmentKaydet();
 
-                        Engine.mainFragmentAc(FragmentYoneticisi.getFragmentKlasorID());
+                        Engine.mainFragmentAc(Engine.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
-                        Engine.klavyeKapat(view);
+                        Engine.klavyeKapat(view, ma);
 
                         break;
 
                     case SabitYoneticisi.EKRAN_YENI_KLASOR:
 
-                        Engine.yeniKlasorFragmentKaydet();
+                        eng.yeniKlasorFragmentKaydet();
 
-                        Engine.mainFragmentAc(FragmentYoneticisi.getFragmentKlasorID());
+                        Engine.mainFragmentAc(Engine.getFragmentKlasorID());
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
-                        Engine.klavyeKapat(view);
+                        Engine.klavyeKapat(view, ma);
 
                     default:
                 }
@@ -94,7 +94,7 @@ public class FABYoneticisi extends FloatingActionButton
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(), ma, FragmentYoneticisi.getFragmentKlasorID());
+                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(), ma, Engine.getFragmentKlasorID());
 
                         break;
 
@@ -106,6 +106,7 @@ public class FABYoneticisi extends FloatingActionButton
                         break;
 
                     default:
+                        break;
                 }
 
             }
@@ -128,8 +129,7 @@ public class FABYoneticisi extends FloatingActionButton
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(), ma, FragmentYoneticisi.getFragmentKlasorID());
-
+                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(), ma, Engine.getFragmentKlasorID());
 
                         break;
 
@@ -142,6 +142,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                     default:
 
+                        break;
                 }
             }
         });

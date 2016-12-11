@@ -16,10 +16,11 @@ import java.util.List;
 
 public class FragmentYoneticisi extends Fragment
 {
-    private static View fragmentRootView;//acilan fragmentin root view i
-    private static FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
+    //private View fragmentRootView;//acilan fragmentin root view i
+    private FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
     private boolean fragmentAcikMi = false;
     private static int fragmentKlasorID = 0;
+    private MainActivity ma;
 
     /**
      * yeni fragment i ekranda gosterir
@@ -71,7 +72,7 @@ public class FragmentYoneticisi extends Fragment
     {
         super.onStart();
 
-        if (!getAcikFragment().isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
+        if (!getFragmentYoneticisi().getAcikFragment().isFragmentAcikMi())//eger fragment aciksa tekrardan islem yapmasin
         {
             fragmentBasladi();
         }
@@ -127,11 +128,10 @@ public class FragmentYoneticisi extends Fragment
      *
      * @return
      */
-    public static String yeniFragmentKlasorBaslikGetir()
+    public String yeniKlasorFragmentBaslikGetir()
     {
         YeniKlasorFragment ykf = (YeniKlasorFragment) getAcikFragment();
         String baslik = ykf.baslikGetir();
-        ykf = null;
 
         return baslik;
     }
@@ -141,11 +141,10 @@ public class FragmentYoneticisi extends Fragment
      *
      * @return : spinner da secili verinin id si
      */
-    public static int yeniKayitFragmentSpinnerSeciliNesneyiGetir()
+    public int yeniKayitFragmentSpinnerSeciliNesneyiGetir()
     {
         YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         int seciliID = yf.spinnerSeciliNesneyiGetir();
-        yf = null;
 
         return seciliID;
     }
@@ -155,11 +154,10 @@ public class FragmentYoneticisi extends Fragment
      *
      * @return : baslik verisi
      */
-    public static String yeniKayitFragmentBaslikGetir()
+    public String yeniKayitFragmentBaslikGetir()
     {
         YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         String baslik = yf.baslikGetir();
-        yf = null;
 
         return baslik;
     }
@@ -169,11 +167,10 @@ public class FragmentYoneticisi extends Fragment
      *
      * @return icerik verisi
      */
-    public static String yeniKayitFragmentIcerikGetir()
+    public String yeniKayitFragmentIcerikGetir()
     {
         YeniKayitFragment yf = (YeniKayitFragment) getAcikFragment();
         String baslik = yf.icerikGetir();
-        yf = null;
 
         return baslik;
     }
@@ -224,7 +221,7 @@ public class FragmentYoneticisi extends Fragment
      * @param view : zemin rengi alinacak view
      * @return : hex olarak zemin rengi
      */
-    public static String zeminRenginiGetir(View view)
+    public String zeminRenginiGetir(View view)
     {
         try
         {
@@ -269,24 +266,26 @@ public class FragmentYoneticisi extends Fragment
     /////getter & setter/////
 
 
-    public static View getFragmentRootView()
+    /*
+    public View getFragmentRootView()
     {
         return fragmentRootView;
     }
 
-    public static void setFragmentRootView(View fragmentRootView)
+    public void setFragmentRootView(View fragmentRootView)
     {
-        FragmentYoneticisi.fragmentRootView = fragmentRootView;
+        this.fragmentRootView = fragmentRootView;
     }
+    */
 
-    public static FragmentYoneticisi getAcikFragment()
+    public FragmentYoneticisi getAcikFragment()
     {
         return acikFragment;
     }
 
-    public static void setAcikFragment(FragmentYoneticisi acikFragment)
+    public void setAcikFragment(FragmentYoneticisi acikFragment)
     {
-        FragmentYoneticisi.acikFragment = acikFragment;
+        this.acikFragment = acikFragment;
     }
 
     public boolean isFragmentAcikMi()
@@ -307,5 +306,20 @@ public class FragmentYoneticisi extends Fragment
     public static void setFragmentKlasorID(int fragmentKlasorID)
     {
         FragmentYoneticisi.fragmentKlasorID = fragmentKlasorID;
+    }
+
+    public MainActivity getMa()
+    {
+        return ma;
+    }
+
+    public void setMa(MainActivity ma)
+    {
+        this.ma = ma;
+    }
+
+    public FragmentYoneticisi getFragmentYoneticisi()
+    {
+        return MainActivity.getEngine().getFry();
     }
 }

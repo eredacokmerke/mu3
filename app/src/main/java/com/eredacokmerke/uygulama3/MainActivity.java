@@ -1,7 +1,6 @@
 package com.eredacokmerke.uygulama3;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +20,10 @@ public class MainActivity
         extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, YeniKayitFragment.OnFragmentInteractionListener, YeniKlasorFragment.OnFragmentInteractionListener
 {
-    private static Context cnt;
+    //private Context cnt;
     //private static Bundle _savedInstanceState;
+    private static Engine engine;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,8 +48,10 @@ public class MainActivity
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
 
         //global context olusturuluyor
-        cnt = getApplicationContext();
-        Engine.setMa(MainActivity.this);
+        //cnt = getApplicationContext();
+
+        engine = new Engine();
+        engine.init(MainActivity.this);
     }
 
     /**
@@ -112,10 +115,10 @@ public class MainActivity
     public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        Engine.mainFragmentAc(1);
+        getEngine().mainFragmentAc(1);
 
         //fab lar olusturuluyor
-        Engine.initFABYoneticisi();
+        getEngine().initFABYoneticisi();
     }
 
     @Override
@@ -199,8 +202,18 @@ public class MainActivity
     {
     }
 
-    public static Context getCnt()
+    public static Engine getEngine()
     {
-        return cnt;
+        return engine;
     }
+
+    public static void setEngine(Engine engine)
+    {
+        MainActivity.engine = engine;
+    }
+
+//public Context getCnt()
+    //{
+    //   return cnt;
+    //}
 }

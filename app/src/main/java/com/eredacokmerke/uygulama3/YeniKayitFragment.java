@@ -70,7 +70,7 @@ public class YeniKayitFragment extends FragmentYoneticisi
         View v = inflater.inflate(R.layout.fragment_yeni_kayit, container, false);
         this.rootView = v;
         spinner = (Spinner) rootView.findViewById(R.id.fragment_yeni_spinner);
-        FragmentYoneticisi.setFragmentRootView(rootView);
+        //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
     }
@@ -79,8 +79,8 @@ public class YeniKayitFragment extends FragmentYoneticisi
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setAcikFragment(this);
-        setFragmentAcikMi(false);//ilk deger
+        getFragmentYoneticisi().setAcikFragment(this);
+        getFragmentYoneticisi().setFragmentAcikMi(false);//ilk deger
     }
 
     /*
@@ -152,7 +152,7 @@ public class YeniKayitFragment extends FragmentYoneticisi
      */
     public List<String> veriTurleriniVeritabanindanAl()
     {
-        return FragmentYoneticisi.yeniFragmentVeriTurleriniVeritabanindanAl();
+        return yeniFragmentVeriTurleriniVeritabanindanAl();
     }
 
     /**
@@ -162,7 +162,7 @@ public class YeniKayitFragment extends FragmentYoneticisi
      */
     public void veriTurleriniSpinneraDoldur(List<String> spinnerArray)
     {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.getCnt(), android.R.layout.simple_spinner_item, spinnerArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spinnerArray);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -199,7 +199,6 @@ public class YeniKayitFragment extends FragmentYoneticisi
     {
         EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_llBaslik_edittext);
         String baslik = et.getText().toString();
-        et = null;
 
         return baslik;
     }
@@ -213,7 +212,6 @@ public class YeniKayitFragment extends FragmentYoneticisi
     {
         EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_llIcerik_edittext);
         String icerik = et.getText().toString();
-        et = null;
 
         return icerik;
     }
@@ -236,7 +234,7 @@ public class YeniKayitFragment extends FragmentYoneticisi
         super.onPause();
 
         //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
-        setFragmentAcikMi(true);
+        getFragmentYoneticisi().setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -76,7 +76,7 @@ public class YeniKlasorFragment extends FragmentYoneticisi
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_yeni_klasor, container, false);
         this.rootView = v;
-        FragmentYoneticisi.setFragmentRootView(rootView);
+        //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
     }
@@ -85,8 +85,8 @@ public class YeniKlasorFragment extends FragmentYoneticisi
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setAcikFragment(this);
-        setFragmentAcikMi(false);//ilk deger
+        getFragmentYoneticisi().setAcikFragment(this);
+        getFragmentYoneticisi().setFragmentAcikMi(false);//ilk deger
     }
 
     public String baslikGetir()
@@ -116,7 +116,7 @@ public class YeniKlasorFragment extends FragmentYoneticisi
         super.onPause();
 
         //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
-        setFragmentAcikMi(true);
+        getFragmentYoneticisi().setFragmentAcikMi(true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

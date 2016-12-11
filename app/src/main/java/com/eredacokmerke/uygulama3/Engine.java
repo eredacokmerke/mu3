@@ -2,7 +2,6 @@ package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -17,7 +16,33 @@ public class Engine
     //private static XmlAyar xmlAyar;//ayar xml dosyasi
     private static File uygulamaKlasoru;//uygulama dosyalarinin bulundugu klasor
     private static MainActivity ma;
+    private static VeritabaniYoneticisi vty;
     private static XmlYoneticisi xmly;
+    private FragmentYoneticisi fry;
+
+    public Engine()
+    {
+
+    }
+
+    /**
+     * yoneticiler olusturuluyor
+     *
+     * @param mainActivity : mainActivity nesnesi
+     */
+    public void init(MainActivity mainActivity)
+    {
+        setMa(mainActivity);
+
+        vty = new VeritabaniYoneticisi(getMa().getApplicationContext(), null, null, 1, null, null);
+        vty.setMa(mainActivity);
+
+        xmly = new XmlYoneticisi();
+        xmly.setMa(mainActivity);
+
+        fry = new FragmentYoneticisi();
+        fry.setMa(mainActivity);
+    }
 
     /**
      * uygulama icin gerekli dosyalar olusturulur
@@ -26,20 +51,20 @@ public class Engine
      */
     public static boolean dosyaKontroluYap()
     {
+
         //String xmlVeriDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_DOSYA_ADI;
         String xmlAyarDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
         //String vtDosyaIsmi = "kayit.db";
         //String vtDosyaYolu = getUygulamaKlasoru() + "/" + vtDosyaIsmi;
 
         //veritaani dosyalari kontrol ediliyor, veritabani nesneleri dolduruluyor
-        VeritabaniYoneticisi.dosyaKontroluYap(getUygulamaKlasoru());
+        //VeritabaniYoneticisi.dosyaKontroluYap(getUygulamaKlasoru());
+        getVty().dosyaKontroluYap(getUygulamaKlasoru());
 
         ////setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
         //setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
         //setVtKayit(new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu));
-
         getXmly().xmlAyarOlustur(xmlAyarDosyaYolu);
-
 
         if ((getXmly().getXmlAyar().getDocument() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
         {
@@ -218,7 +243,7 @@ public class Engine
      */
     public static List<KayitLayout> mainFragmentKayitlariVeritabanindanAl()
     {
-        return VeritabaniYoneticisi.mainFragmentKayitlariVeritabanindanAl();
+        return getVty().mainFragmentKayitlariVeritabanindanAl();
     }
 
     /**
@@ -226,29 +251,29 @@ public class Engine
      */
     public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
     {
-        return VeritabaniYoneticisi.mainFragmentKlasorleriVeritabanindanAl();
+        return getVty().mainFragmentKlasorleriVeritabanindanAl();
     }
 
     /**
      * yeniKayitFragment te kaydet tusuna basilinca ekranadaki verileri veritabanina kaydeder
      */
-    public static void yeniKayitFragmentKaydet()
+    public void yeniKayitFragmentKaydet()
     {
-        int seciliIcerikTuru = FragmentYoneticisi.yeniKayitFragmentSpinnerSeciliNesneyiGetir();
-        String baslik = FragmentYoneticisi.yeniKayitFragmentBaslikGetir();
-        String icerik = FragmentYoneticisi.yeniKayitFragmentIcerikGetir();
+        int seciliIcerikTuru = getFry().yeniKayitFragmentSpinnerSeciliNesneyiGetir();
+        String baslik = getFry().yeniKayitFragmentBaslikGetir();
+        String icerik = getFry().yeniKayitFragmentIcerikGetir();
 
-        VeritabaniYoneticisi.yeniKayitFragmentVeritabaninaKaydet(seciliIcerikTuru, baslik, icerik);
+        getVty().yeniKayitFragmentVeritabaninaKaydet(seciliIcerikTuru, baslik, icerik);
     }
 
     /**
      * yeniKlasorFragment te kaydet tusuna basilinca ekrandaki verileri veritabanina kaydeder
      */
-    public static void yeniKlasorFragmentKaydet()
+    public void yeniKlasorFragmentKaydet()
     {
-        String baslik = FragmentYoneticisi.yeniFragmentKlasorBaslikGetir();
+        String baslik = getFry().yeniKlasorFragmentBaslikGetir();
 
-        VeritabaniYoneticisi.yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
+        getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
     }
 
     /**
@@ -267,7 +292,7 @@ public class Engine
     /**
      * ekran klavyesini kapatir
      */
-    public static void klavyeKapat(View view)
+    public static void klavyeKapat(View view, MainActivity ma)
     {
         InputMethodManager imm = (InputMethodManager) ma.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -276,9 +301,9 @@ public class Engine
     /**
      * floating action button yoneticisini baslatir. ekranda fab i gosterir
      */
-    public static void initFABYoneticisi()
+    public void initFABYoneticisi()
     {
-        new FABYoneticisi(getMa());
+        new FABYoneticisi(getMa(), this);
     }
 
     /**
@@ -288,7 +313,7 @@ public class Engine
      */
     public static List<String> yeniFragmentVeriTurleriniVeritabanindanAl()
     {
-        return VeritabaniYoneticisi.yeniKayitFragmentVeriTurleriniVeritabanindanAl();
+        return getVty().yeniKayitFragmentVeriTurleriniVeritabanindanAl();
     }
 
     /**
@@ -315,28 +340,43 @@ public class Engine
     /////getter & setter/////
 
 
-    public static XmlAyar getXmlAyar()
-    {
-        return xmlAyar;
-    }
-
-    public static void setXmlAyar(XmlAyar xmlAyar)
-    {
-        Engine.xmlAyar = xmlAyar;
-    }
-
     public static File getUygulamaKlasoru()
-    public static MainActivity getMa()
     {
         return uygulamaKlasoru;
-        return ma;
     }
 
     public static void setUygulamaKlasoru(File uygulamaKlasoru)
-    public static void setMa(MainActivity ma)
     {
         Engine.uygulamaKlasoru = uygulamaKlasoru;
+    }
+
+    public static MainActivity getMa()
+    {
+        return ma;
+    }
+
+    public static void setMa(MainActivity ma)
+    {
         Engine.ma = ma;
     }
+
+    public static VeritabaniYoneticisi getVty()
+    {
+        return vty;
+    }
+
+    public static XmlYoneticisi getXmly()
+    {
+        return xmly;
+    }
+
+    public FragmentYoneticisi getFry()
+    {
+        return fry;
+    }
+
+    public void setFry(FragmentYoneticisi fry)
+    {
+        this.fry = fry;
     }
 }
