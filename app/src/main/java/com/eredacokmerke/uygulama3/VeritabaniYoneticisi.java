@@ -15,6 +15,7 @@ import java.util.List;
 public class VeritabaniYoneticisi extends SQLiteOpenHelper
 {
     private static VeritabaniKayit vtKayit;
+    private MainActivity ma;
     private String VT_ISIM;//veritabani dosyasinin ismi
     private String VT_DOSYA_YOLU;//veritabani dosyasinin yolu
     private SQLiteDatabase VT;//veritabani islemleri (crud) yapabilmek icin veritabani nesnesi
@@ -88,7 +89,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
 
     public static void kayitVeritabaniniAc(String vtDosyaIsmi, String vtDosyaYolu)
     {
-        vtKayit = new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu);
+        vtKayit = new VeritabaniKayit(getMa().getApplicationContext(), vtDosyaIsmi, vtDosyaYolu);
         setVtKayit(vtKayit);
     }
 
@@ -275,7 +276,14 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     }
 
     public static void setVtKayit(VeritabaniKayit vtKayit)
+    public MainActivity getMa()
+    {
+        return ma;
+    }
+
+    public void setMa(MainActivity ma)
     {
         VeritabaniYoneticisi.vtKayit = vtKayit;
+        this.ma = ma;
     }
 }

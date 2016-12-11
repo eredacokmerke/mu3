@@ -1,5 +1,6 @@
 package com.eredacokmerke.uygulama3;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.DefaultDatabaseErrorHandler;
@@ -14,10 +15,12 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
 {
     private static final int DATABASE_VERSION = 1;
     private static DatabaseErrorHandler handler = new DefaultDatabaseErrorHandler();
+    private Context cnt;
 
-    public VeritabaniKayit(String vtDosyaIsmi, String vtDosyaYolu)
+    public VeritabaniKayit(Context cnt, String vtDosyaIsmi, String vtDosyaYolu)
     {
-        super(MainActivity.getCnt(), vtDosyaIsmi, null, DATABASE_VERSION, handler, vtDosyaYolu);
+        super(cnt, vtDosyaIsmi, null, DATABASE_VERSION, handler, vtDosyaYolu);
+        this.cnt = cnt;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKayitIcerik = cursor.getString(2);
                 String veriKayitIcerikTuruID = cursor.getString(3);
 
-                listeVeri.add(new KayitLayout(MainActivity.getCnt(), veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID));
+                listeVeri.add(new KayitLayout(cnt, veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID));
             } while (cursor.moveToNext());
         }
 
@@ -98,7 +101,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKlasorIsim = cursor.getString(0);
                 String veriKlasorRenk = cursor.getString(1);
 
-                listeVeri.add(new KayitLayout(MainActivity.getCnt(), veriKlasorIsim, veriKlasorRenk));
+                listeVeri.add(new KayitLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID));
             } while (cursor.moveToNext());
         }
 

@@ -174,7 +174,7 @@ public class MainFragment extends FragmentYoneticisi
             }
             kl.setLayoutParams(kl_lp);
 
-            TextView tv = new TextView(MainActivity.getCnt());
+            TextView tv = new TextView(getContext());
             tv.setText(kl.getBaslik());
             tv.setTextColor(Color.YELLOW);
 
@@ -243,7 +243,7 @@ public class MainFragment extends FragmentYoneticisi
             }
             kl.setLayoutParams(kl_lp);
 
-            TextView tv = new TextView(MainActivity.getCnt());
+            TextView tv = new TextView(getContext());
             tv.setText(kl.getBaslik());
             tv.setTextColor(Color.YELLOW);
 

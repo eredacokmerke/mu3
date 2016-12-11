@@ -151,7 +151,7 @@ public class Engine
         }
         else//sdcard yok
         {
-            uygKlasoru = MainActivity.getCnt().getDir(SabitYoneticisi.UYGULAMA_ADI, Context.MODE_PRIVATE);
+            uygKlasoru = getMa().getApplicationContext().getDir(SabitYoneticisi.UYGULAMA_ADI, Context.MODE_PRIVATE);
         }
         if (!uygKlasoru.exists())
         {
@@ -180,7 +180,7 @@ public class Engine
         }
         else//sdcard yok
         {
-            xmlYedekKlasoru = MainActivity.getCnt().getDir(SabitYoneticisi.UYGULAMA_ADI, Context.MODE_PRIVATE);
+            xmlYedekKlasoru = getMa().getApplicationContext().getDir(SabitYoneticisi.UYGULAMA_ADI, Context.MODE_PRIVATE);
         }
         if (!xmlYedekKlasoru.exists())
         {
@@ -269,7 +269,7 @@ public class Engine
      */
     public static void klavyeKapat(View view)
     {
-        InputMethodManager imm = (InputMethodManager) getMa().getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) ma.getSystemService(MainActivity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
@@ -315,12 +315,17 @@ public class Engine
     }
 
     public static File getUygulamaKlasoru()
+    public static MainActivity getMa()
     {
         return uygulamaKlasoru;
+        return ma;
     }
 
     public static void setUygulamaKlasoru(File uygulamaKlasoru)
+    public static void setMa(MainActivity ma)
     {
         Engine.uygulamaKlasoru = uygulamaKlasoru;
+        Engine.ma = ma;
+    }
     }
 }
