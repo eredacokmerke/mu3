@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ public class FragmentYoneticisi extends Fragment
      */
     public void fragmentBasladi()
     {
+        geriTusunuYakala();
         UIYukle();
     }
 
@@ -62,6 +64,37 @@ public class FragmentYoneticisi extends Fragment
     public void renkleriAyarla()
     {
         //override
+    }
+
+    /**
+     * geri tusuna basildiginda yapilacaklar
+     */
+    public void geriTusunaBasildi()
+    {
+        //override
+    }
+
+    /**
+     * geri tusuna basilmasinda fonksiyon cagrilabilmesi icin gerekli islemler yapiliyor
+     */
+    public void geriTusunuYakala()
+    {
+        getFragmentYoneticisi().getAcikFragment().getView().setFocusableInTouchMode(true);
+        getFragmentYoneticisi().getAcikFragment().getView().requestFocus();
+        getFragmentYoneticisi().getAcikFragment().getView().setOnKeyListener(new View.OnKeyListener()
+        {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent)
+            {
+                if ((keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK) && (keyEvent.getAction() == KeyEvent.ACTION_UP))
+                {
+                    geriTusunaBasildi();
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     /**
@@ -262,6 +295,7 @@ public class FragmentYoneticisi extends Fragment
             return true; //koyu renk
         }
     }
+
 
     /////getter & setter/////
 
