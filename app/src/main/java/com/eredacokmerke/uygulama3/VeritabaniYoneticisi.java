@@ -93,7 +93,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
 
     public void kayitVeritabaniniAc(String vtDosyaIsmi, String vtDosyaYolu)
     {
-        vtKayit = new VeritabaniKayit(getMa().getApplicationContext(), vtDosyaIsmi, vtDosyaYolu);
+        vtKayit = new VeritabaniKayit(getMa().getApplicationContext(), vtDosyaIsmi, vtDosyaYolu, ma);
         setVtKayit(vtKayit);
     }
 

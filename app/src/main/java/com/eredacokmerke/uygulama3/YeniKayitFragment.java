@@ -26,9 +26,8 @@ import java.util.List;
  */
 public class YeniKayitFragment extends FragmentYoneticisi
 {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private View rootView;
+    private MainActivity ma;
     private Spinner spinner;
     private OnFragmentInteractionListener mListener;
 
@@ -38,17 +37,13 @@ public class YeniKayitFragment extends FragmentYoneticisi
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment YeniKayitFragment.
+     * yeni bir fragment instance i baslatir
      */
-    // TODO: Rename and change types and number of parameters
-    public static YeniKayitFragment newInstance()
+    public static YeniKayitFragment newInstance(MainActivity ma)
     {
         YeniKayitFragment fragment = new YeniKayitFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.setMa(ma);
+
         return fragment;
     }
 
@@ -56,11 +51,6 @@ public class YeniKayitFragment extends FragmentYoneticisi
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -282,5 +272,17 @@ public class YeniKayitFragment extends FragmentYoneticisi
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public MainActivity getMa()
+    {
+        return ma;
+    }
+
+    @Override
+    public void setMa(MainActivity ma)
+    {
+        this.ma = ma;
     }
 }

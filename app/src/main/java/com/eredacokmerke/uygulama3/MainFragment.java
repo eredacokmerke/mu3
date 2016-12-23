@@ -32,6 +32,8 @@ public class MainFragment extends FragmentYoneticisi
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private MainActivity ma;
+
     // TODO: Rename and change types of parameters
     private int mParam1;
     private String mParam2;
@@ -52,13 +54,15 @@ public class MainFragment extends FragmentYoneticisi
      * @return A new instance of fragment MainFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(int param1, String param2)
+    public static MainFragment newInstance(int param1, String param2, MainActivity ma)
     {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
+        fragment.setMa(ma);
 
         return fragment;
     }
@@ -362,5 +366,21 @@ public class MainFragment extends FragmentYoneticisi
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+    /////getter & setter/////
+
+
+    @Override
+    public MainActivity getMa()
+    {
+        return ma;
+    }
+
+    @Override
+    public void setMa(MainActivity ma)
+    {
+        this.ma = ma;
     }
 }

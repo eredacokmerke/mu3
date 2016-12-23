@@ -354,6 +354,6 @@ public class FragmentYoneticisi extends Fragment
 
     public FragmentYoneticisi getFragmentYoneticisi()
     {
-        return MainActivity.getEngine().getFry();
+        return getMa().getEngine().getFry();
     }
 }

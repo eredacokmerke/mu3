@@ -22,7 +22,7 @@ public class MainActivity
 {
     //private Context cnt;
     //private static Bundle _savedInstanceState;
-    private static Engine engine;
+    private Engine engine;
 
 
     @Override
@@ -202,14 +202,18 @@ public class MainActivity
     {
     }
 
-    public static Engine getEngine()
+
+    /////getter & setter/////
+
+
+    public Engine getEngine()
     {
         return engine;
     }
 
-    public static void setEngine(Engine engine)
+    public void setEngine(Engine engine)
     {
-        MainActivity.engine = engine;
+        this.engine = engine;
     }
 
 //public Context getCnt()

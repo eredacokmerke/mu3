@@ -16,11 +16,13 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     private static final int DATABASE_VERSION = 1;
     private static DatabaseErrorHandler handler = new DefaultDatabaseErrorHandler();
     private Context cnt;
+    private MainActivity ma;
 
-    public VeritabaniKayit(Context cnt, String vtDosyaIsmi, String vtDosyaYolu)
+    public VeritabaniKayit(Context cnt, String vtDosyaIsmi, String vtDosyaYolu, MainActivity ma)
     {
         super(cnt, vtDosyaIsmi, null, DATABASE_VERSION, handler, vtDosyaYolu);
         this.cnt = cnt;
+        this.ma = ma;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKayitIcerik = cursor.getString(2);
                 String veriKayitIcerikTuruID = cursor.getString(3);
 
-                listeVeri.add(new KayitLayout(cnt, veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID));
+                listeVeri.add(new KayitLayout(cnt, veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID, ma));
             } while (cursor.moveToNext());
         }
 
@@ -102,7 +104,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKlasorRenk = cursor.getString(1);
                 int veriKlasorID = cursor.getInt(2);
 
-                listeVeri.add(new KayitLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID));
+                listeVeri.add(new KayitLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID, ma));
             } while (cursor.moveToNext());
         }
 
@@ -159,5 +161,17 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     {
         String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('" + baslik + "', " + klasorID + ", 2);";
         getVT().execSQL(insertQuery);
+    }
+
+    @Override
+    public MainActivity getMa()
+    {
+        return ma;
+    }
+
+    @Override
+    public void setMa(MainActivity ma)
+    {
+        this.ma = ma;
     }
 }

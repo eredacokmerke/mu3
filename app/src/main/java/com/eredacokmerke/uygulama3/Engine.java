@@ -51,19 +51,13 @@ public class Engine
      */
     public static boolean dosyaKontroluYap()
     {
-
         //String xmlVeriDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_DOSYA_ADI;
         String xmlAyarDosyaYolu = getUygulamaKlasoru() + "/" + SabitYoneticisi.XML_AYAR_DOSYA_ADI;
-        //String vtDosyaIsmi = "kayit.db";
-        //String vtDosyaYolu = getUygulamaKlasoru() + "/" + vtDosyaIsmi;
 
-        //veritaani dosyalari kontrol ediliyor, veritabani nesneleri dolduruluyor
-        //VeritabaniYoneticisi.dosyaKontroluYap(getUygulamaKlasoru());
+        //veritabani dosyalari kontrol ediliyor, veritabani nesneleri dolduruluyor
         getVty().dosyaKontroluYap(getUygulamaKlasoru());
 
-        ////setXmlVeri(new XmlVeri(xmlVeriDosyaYolu));
-        //setXmlAyar(new XmlAyar(xmlAyarDosyaYolu));
-        //setVtKayit(new VeritabaniKayit(vtDosyaIsmi, vtDosyaYolu));
+        //xmlAyar olusturuluyor
         getXmly().xmlAyarOlustur(xmlAyarDosyaYolu);
 
         if ((getXmly().getXmlAyar().getDocument() != null))//xml dosyaları ile ilgili hata yoksa devam etsin, varsa uygulamayı sonlandırsın
@@ -281,12 +275,12 @@ public class Engine
      *
      * @param klasorID : acilan klasorun id si
      */
-    public static void mainFragmentAc(int klasorID)
+    public void mainFragmentAc(int klasorID)
     {
         //mainFragment ta etkin ekran kayit ekrani
         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2"), getMa(), klasorID);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2", getMa()), getMa(), klasorID);
     }
 
     /**
@@ -331,7 +325,7 @@ public class Engine
      *
      * @param acilacakKlasorID : ici gosterilecek klasorun id si
      */
-    public static void klasorAc(int acilacakKlasorID)
+    public void klasorAc(int acilacakKlasorID)
     {
         mainFragmentAc(acilacakKlasorID);
     }
