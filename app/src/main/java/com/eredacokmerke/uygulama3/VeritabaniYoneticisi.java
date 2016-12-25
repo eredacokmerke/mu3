@@ -153,7 +153,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(Engine.getFragmentKlasorID());
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(getMa().getEngine().getFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -173,7 +173,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(Engine.getFragmentKlasorID());
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(getMa().getEngine().getFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -222,9 +222,37 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      *
      * @return : klasor id si
      */
-    public static int getFragmentKlasorID()
+    public int getFragmentKlasorID()
     {
-        return Engine.getFragmentKlasorID();
+        return getMa().getEngine().getFragmentKlasorID();
+    }
+
+    /**
+     * id si verilen klasorun parentinin id sini doner
+     *
+     * @param klasorID : parent i alinacacak klasorun id si
+     * @return : parent klasorun id si
+     */
+    public int parentKlasorIDyiVeritabanindanGetir(int klasorID)
+    {
+        if (veritabaniAcikDegilseAc())
+        {
+            int parentKlasorID = getVtKayit().parentKlasorIDyiGetir(klasorID);
+            getVtKayit().veritabaniKapat();
+
+            if (parentKlasorID == -1)
+            {
+                HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabanindan veri alinamadi");
+            }
+
+            return parentKlasorID;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
+
+            return -1;
+        }
     }
 
     /**

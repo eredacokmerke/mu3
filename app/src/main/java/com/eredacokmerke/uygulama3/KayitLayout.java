@@ -73,7 +73,7 @@ public class KayitLayout extends RelativeLayout
                 break;
 
             case TUR_KLASOR:
-                getMa().getEngine().klasorAc(getKlasorID());
+                getMa().getEngine().klasorAc(getKlasorID(), Engine.HAREKET.ILERI);
                 break;
 
             default:

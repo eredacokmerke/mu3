@@ -88,6 +88,12 @@ public class YeniKayitFragment extends FragmentYoneticisi
     }
 
     @Override
+    public void geriTusunaBasildi()
+    {
+        super.geriTusunaBasildi();
+    }
+
+    @Override
     public void UIYukle()
     {
         super.UIYukle();

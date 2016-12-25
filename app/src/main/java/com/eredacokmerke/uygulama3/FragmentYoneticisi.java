@@ -20,8 +20,24 @@ public class FragmentYoneticisi extends Fragment
     //private View fragmentRootView;//acilan fragmentin root view i
     private FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
     private boolean fragmentAcikMi = false;
-    private static int fragmentKlasorID = 0;
+    private static int fragmentKlasorID = 0;//acilan fragment in id si
+    private static int parentFragmentKlasorID = 0;//acilan fragment in parent inin id si
     private MainActivity ma;
+
+    /**
+     * harekete gore parent klasor id yi tanimlayip fragmentAc fonksiyonunu cagirir
+     *
+     * @param fy       : gosterilecek fragment
+     * @param ma       : activity nesnesi
+     * @param klasorID : fragment te gosterilecek klasorun id si
+     * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
+     */
+    public static void fragmentAc(Fragment fy, MainActivity ma, int klasorID, Engine.HAREKET hareket)
+    {
+        ma.getEngine().getFry().setFragmentParentID(hareket, klasorID);
+
+        fragmentAc(fy, ma, klasorID);
+    }
 
     /**
      * yeni fragment i ekranda gosterir
@@ -32,6 +48,7 @@ public class FragmentYoneticisi extends Fragment
      */
     public static void fragmentAc(Fragment fy, MainActivity ma, int klasorID)
     {
+        //setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
         setFragmentKlasorID(klasorID);
 
         FragmentTransaction ft = ma.getSupportFragmentManager().beginTransaction();
@@ -75,6 +92,31 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
+     * harekete gore parent id aliniyor
+     *
+     * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
+     * @param klasorID : acilan klasorun id si
+     */
+    public void setFragmentParentID(Engine.HAREKET hareket, int klasorID)
+    {
+        switch (hareket)
+        {
+            case ILERI:
+                setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
+
+                break;
+
+            case GERI:
+                setParentFragmentKlasorID(ma.getEngine().parentKlasorIDyiGetir(klasorID));//fragmentte acilan klasorun parent ini veritabanindan aliyorum
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
      * geri tusuna basilmasinda fonksiyon cagrilabilmesi icin gerekli islemler yapiliyor
      */
     public void geriTusunuYakala()
@@ -95,6 +137,21 @@ public class FragmentYoneticisi extends Fragment
                 return false;
             }
         });
+    }
+
+    /**
+     * klasor ekrani acikken geri tusuna basilirsa yapilacaklar
+     */
+    public void klasorEkranindaGeriTusunaBasildi()
+    {
+        if (getParentFragmentKlasorID() == 0)//parent id si 0 ise root klasordur. root klasordeyken geriye basilirsa uygulama kapanacak
+        {
+            getMa().finish();
+        }
+        else
+        {
+            getMa().getEngine().klasorAc(getParentFragmentKlasorID(), Engine.HAREKET.GERI);
+        }
     }
 
     /**
@@ -355,5 +412,15 @@ public class FragmentYoneticisi extends Fragment
     public FragmentYoneticisi getFragmentYoneticisi()
     {
         return getMa().getEngine().getFry();
+    }
+
+    public static int getParentFragmentKlasorID()
+    {
+        return parentFragmentKlasorID;
+    }
+
+    public static void setParentFragmentKlasorID(int parentFragmentKlasorID)
+    {
+        FragmentYoneticisi.parentFragmentKlasorID = parentFragmentKlasorID;
     }
 }

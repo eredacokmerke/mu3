@@ -33,6 +33,7 @@ public class MainFragment extends FragmentYoneticisi
     private static final String ARG_PARAM2 = "param2";
 
     private MainActivity ma;
+    private Engine.HAREKET hareket;
 
     // TODO: Rename and change types of parameters
     private int mParam1;
@@ -99,8 +100,16 @@ public class MainFragment extends FragmentYoneticisi
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
         getFragmentYoneticisi().setAcikFragment(this);
         getFragmentYoneticisi().setFragmentAcikMi(false);//ilk deger
+    }
+
+    @Override
+    public void geriTusunaBasildi()
+    {
+        super.geriTusunaBasildi();
+        getFragmentYoneticisi().klasorEkranindaGeriTusunaBasildi();
     }
 
     @Override

@@ -2,3 +2,4 @@
 2-mainFragment ekraninda fab tusuna bas -> fab menusu acilmali
 3-mainFragment ekraninda fab1 tusuna bas -> yeniFragment acilmali
 4-yeniFragment ekraninda alanlari doldurup fab a bas -> veritabanina kayit eklenmeli, mainFragment acilmali, yeni eklenen kayit listede gozukmeli
+5-klasor ekranindayken geri tusuna basildigi zaman parent klasor acilmali, eger root klasordeyse uygulama kapatilmali

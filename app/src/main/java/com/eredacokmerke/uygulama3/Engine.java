@@ -20,6 +20,14 @@ public class Engine
     private static XmlYoneticisi xmly;
     private FragmentYoneticisi fry;
 
+    //yeni acilan fragment layout a tiklanarak acilirsa ILERI
+    //geri tusuna basilarak acilirsa GERI
+    public enum HAREKET
+    {
+        ILERI,
+        GERI
+    }
+
     public Engine()
     {
 
@@ -274,13 +282,31 @@ public class Engine
      * mainFragment acar
      *
      * @param klasorID : acilan klasorun id si
+     * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
      */
-    public void mainFragmentAc(int klasorID)
+    public void mainFragmentAc(int klasorID, HAREKET hareket)
     {
         //mainFragment ta etkin ekran kayit ekrani
         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2", getMa()), getMa(), klasorID);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2", getMa()), getMa(), klasorID, hareket);
+    }
+
+    /**
+     * id si verilen klasorun parentinin id sini doner
+     *
+     * @param klasorID : parent i alinacacak klasorun id si
+     * @return : parent klasorun id si
+     */
+    public int parentKlasorIDyiGetir(int klasorID)
+    {
+        int parentID = getVty().parentKlasorIDyiVeritabanindanGetir(klasorID);
+        if (parentID == -1)
+        {
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "hatali parent id");
+        }
+
+        return parentID;
     }
 
     /**
@@ -315,7 +341,7 @@ public class Engine
      *
      * @return : klasor id si
      */
-    public static int getFragmentKlasorID()
+    public int getFragmentKlasorID()
     {
         return FragmentYoneticisi.getFragmentKlasorID();
     }
@@ -325,9 +351,9 @@ public class Engine
      *
      * @param acilacakKlasorID : ici gosterilecek klasorun id si
      */
-    public void klasorAc(int acilacakKlasorID)
+    public void klasorAc(int acilacakKlasorID, HAREKET hareket)
     {
-        mainFragmentAc(acilacakKlasorID);
+        mainFragmentAc(acilacakKlasorID, hareket);
     }
 
 

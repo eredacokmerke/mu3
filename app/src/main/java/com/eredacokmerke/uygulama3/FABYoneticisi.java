@@ -49,7 +49,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKayitFragmentKaydet();
 
-                        eng.mainFragmentAc(Engine.getFragmentKlasorID());
+                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI);
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -60,7 +60,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKlasorFragmentKaydet();
 
-                        eng.mainFragmentAc(Engine.getFragmentKlasorID());
+                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI);
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -94,7 +94,7 @@ public class FABYoneticisi extends FloatingActionButton
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(ma), ma, Engine.getFragmentKlasorID());
+                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(ma), ma, eng.getFragmentKlasorID());
 
                         break;
 
@@ -129,7 +129,7 @@ public class FABYoneticisi extends FloatingActionButton
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(ma), ma, Engine.getFragmentKlasorID());
+                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(ma), ma, eng.getFragmentKlasorID());
 
                         break;
 

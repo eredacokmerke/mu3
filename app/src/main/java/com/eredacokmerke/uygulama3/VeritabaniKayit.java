@@ -147,7 +147,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
      */
     public void yeniKayitFragmentVerileriKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
-        String insertQuery = "INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (" + seciliIcerikTuruID + ", 1," + VeritabaniYoneticisi.getFragmentKlasorID() + " ,'" + baslik + "', '" + icerik + "');";
+        String insertQuery = "INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (" + seciliIcerikTuruID + ", 1," + super.getFragmentKlasorID() + " ,'" + baslik + "', '" + icerik + "');";
         getVT().execSQL(insertQuery);
     }
 
@@ -161,6 +161,29 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     {
         String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('" + baslik + "', " + klasorID + ", 2);";
         getVT().execSQL(insertQuery);
+    }
+
+    /**
+     * id si verilen klasorun parentinin id sini doner
+     *
+     * @param klasorID : parent i alinacacak klasorun id si
+     * @return : parent klasorun id si
+     */
+    public int parentKlasorIDyiGetir(int klasorID)
+    {
+        String selectQuery = "select UST_KLASOR_ID from KLASOR where ID=" + String.valueOf(klasorID) + ";";
+
+        Cursor cursor = getVT().rawQuery(selectQuery, null);
+        if (cursor.moveToFirst())
+        {
+            int parentKlasorID = cursor.getInt(0);
+
+            return parentKlasorID;
+        }
+
+        cursor.close();
+
+        return -1;
     }
 
     @Override
