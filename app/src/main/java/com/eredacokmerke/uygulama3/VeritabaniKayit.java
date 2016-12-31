@@ -186,6 +186,33 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         return -1;
     }
 
+    /**
+     * veritabanindan verilen id li klasorun basligini getitir
+     *
+     * @param klasorID : basligi alinacak klasor
+     * @return : baslik
+     */
+    public String klasorBasliginiGetir(int klasorID)
+    {
+        String selectQuery = "SELECT KLASOR_ISIM FROM KLASOR WHERE ID=" + klasorID + ";";
+
+        Cursor cursor = getVT().rawQuery(selectQuery, null);
+        if (cursor.moveToFirst())
+        {
+            String klasorBaslik = cursor.getString(0);
+
+            return klasorBaslik;
+        }
+
+        cursor.close();
+
+        return "";
+    }
+
+
+    /////getter & setter/////
+
+
     @Override
     public MainActivity getMa()
     {

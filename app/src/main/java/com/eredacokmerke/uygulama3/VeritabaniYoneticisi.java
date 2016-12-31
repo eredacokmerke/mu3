@@ -198,6 +198,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         if (veritabaniAcikDegilseAc())
         {
             getVtKayit().yeniKayitFragmentVerileriKaydet(seciliIcerikTuruID, baslik, icerik);
+            getVtKayit().veritabaniKapat();
         }
         else
         {
@@ -210,6 +211,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         if (veritabaniAcikDegilseAc())
         {
             getVtKayit().yeniKlasorFragmentVerileriKaydet(baslik, klasorID);
+            getVtKayit().veritabaniKapat();
         }
         else
         {
@@ -252,6 +254,29 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
             HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
 
             return -1;
+        }
+    }
+
+    /**
+     * veritabanindan verilen id li klasorun basligini getitir
+     *
+     * @param klasorID : basligi alinacak klasor
+     * @return :baslik
+     */
+    public String klasorBasliginiVeritabanindanGetir(int klasorID)
+    {
+        if (veritabaniAcikDegilseAc())
+        {
+            String baslik = getVtKayit().klasorBasliginiGetir(klasorID);
+            getVtKayit().veritabaniKapat();
+
+            return baslik;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
+
+            return "";
         }
     }
 

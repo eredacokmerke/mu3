@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity
@@ -24,7 +25,6 @@ public class MainActivity
     //private static Bundle _savedInstanceState;
     private Engine engine;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -34,6 +34,7 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -46,9 +47,6 @@ public class MainActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SabitYoneticisi.IZIN_WRITE_EXTERNAL_STORAGE);
-
-        //global context olusturuluyor
-        //cnt = getApplicationContext();
 
         engine = new Engine();
         engine.init(MainActivity.this);
@@ -115,7 +113,7 @@ public class MainActivity
     public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        getEngine().mainFragmentAc(1, Engine.HAREKET.ILERI);
+        getEngine().mainFragmentAc(1, Engine.HAREKET.ILERI, getApplicationContext().getString(R.string.app_name));
 
         //fab lar olusturuluyor
         getEngine().initFABYoneticisi();
@@ -158,6 +156,17 @@ public class MainActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * actionBar basligini degistirir
+     *
+     * @param baslik : actionBar da yazilacak baslik
+     */
+    public void toolbarBaslikGuncelle(String baslik)
+    {
+        TextView toolbarBaslik = (TextView) findViewById(R.id.toolbar_title);
+        toolbarBaslik.setText(baslik);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -215,9 +224,4 @@ public class MainActivity
     {
         this.engine = engine;
     }
-
-//public Context getCnt()
-    //{
-    //   return cnt;
-    //}
 }

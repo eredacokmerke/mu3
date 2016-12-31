@@ -21,7 +21,7 @@ public class KayitLayout extends RelativeLayout
     public final static int TUR_KLASOR = 1;//layout turu klasor
 
 
-    public KayitLayout(Context context, String baslik, String icerik, String renk, String icerikTuruID, MainActivity ma)
+    public KayitLayout(Context context, final String baslik, String icerik, String renk, String icerikTuruID, MainActivity ma)
     {
         super(context);
         this.baslik = baslik;
@@ -36,7 +36,7 @@ public class KayitLayout extends RelativeLayout
             @Override
             public void onClick(View view)
             {
-                tiklandi(getTur());
+                tiklandi(getTur(), getBaslik());
             }
         });
     }
@@ -55,7 +55,7 @@ public class KayitLayout extends RelativeLayout
             @Override
             public void onClick(View view)
             {
-                tiklandi(getTur());
+                tiklandi(getTur(), getBaslik());
             }
         });
     }
@@ -65,15 +65,16 @@ public class KayitLayout extends RelativeLayout
      *
      * @param tur : kayit yada klasor e tiklandigini anlamak icin
      */
-    public void tiklandi(int tur)
+    public void tiklandi(int tur, String baslik)
     {
+
         switch (tur)
         {
             case TUR_KAYIT:
                 break;
 
             case TUR_KLASOR:
-                getMa().getEngine().klasorAc(getKlasorID(), Engine.HAREKET.ILERI);
+                getMa().getEngine().mainFragmentAc(getKlasorID(), Engine.HAREKET.ILERI, baslik);
                 break;
 
             default:

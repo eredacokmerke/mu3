@@ -284,12 +284,12 @@ public class Engine
      * @param klasorID : acilan klasorun id si
      * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
      */
-    public void mainFragmentAc(int klasorID, HAREKET hareket)
+    public void mainFragmentAc(int klasorID, HAREKET hareket, String baslik)
     {
         //mainFragment ta etkin ekran kayit ekrani
         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2", getMa()), getMa(), klasorID, hareket);
+        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2", getMa()), getMa(), klasorID, hareket, baslik);
     }
 
     /**
@@ -307,6 +307,17 @@ public class Engine
         }
 
         return parentID;
+    }
+
+    /**
+     * veritabanindan verilen id li klasorun basligini getitir
+     *
+     * @param klasorID : basligi alinacak klasor
+     * @return :baslik
+     */
+    public String klasorBaslikGetir(int klasorID)
+    {
+        return getVty().klasorBasliginiVeritabanindanGetir(klasorID);
     }
 
     /**
@@ -344,16 +355,6 @@ public class Engine
     public int getFragmentKlasorID()
     {
         return FragmentYoneticisi.getFragmentKlasorID();
-    }
-
-    /**
-     * klasore tiklandigi zaman icini gosterir
-     *
-     * @param acilacakKlasorID : ici gosterilecek klasorun id si
-     */
-    public void klasorAc(int acilacakKlasorID, HAREKET hareket)
-    {
-        mainFragmentAc(acilacakKlasorID, hareket);
     }
 
 

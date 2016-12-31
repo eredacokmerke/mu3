@@ -49,7 +49,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKayitFragmentKaydet();
 
-                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI);
+                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI, "");
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -60,7 +60,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKlasorFragmentKaydet();
 
-                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI);
+                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI, "");
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);

@@ -25,16 +25,16 @@ public class FragmentYoneticisi extends Fragment
     private MainActivity ma;
 
     /**
-     * harekete gore parent klasor id yi tanimlayip fragmentAc fonksiyonunu cagirir
+     * fragment ile alakali bilgileri set edip fragmentAc foksiyonunu cagirir
      *
      * @param fy       : gosterilecek fragment
      * @param ma       : activity nesnesi
      * @param klasorID : fragment te gosterilecek klasorun id si
      * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
      */
-    public static void fragmentAc(Fragment fy, MainActivity ma, int klasorID, Engine.HAREKET hareket)
+    public static void fragmentAc(Fragment fy, MainActivity ma, int klasorID, Engine.HAREKET hareket, String baslik)
     {
-        ma.getEngine().getFry().setFragmentParentID(hareket, klasorID);
+        ma.getEngine().getFry().fragmentBilgileriniAyarla(klasorID, hareket, baslik);
 
         fragmentAc(fy, ma, klasorID);
     }
@@ -55,6 +55,43 @@ public class FragmentYoneticisi extends Fragment
         ft.replace(R.id.container, fy);
         //ft.commit();//java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState hatasindan kurtulmak icin alttaki metodu kullandim
         ft.commitAllowingStateLoss();
+    }
+
+    /**
+     * fragment ile alakali bilgileri set eder
+     *
+     * @param klasorID : acilan klasorun id si
+     * @param hareket  : klasorunu acilma bicimi
+     * @param baslik   : klasorun basligi
+     */
+    public void fragmentBilgileriniAyarla(int klasorID, Engine.HAREKET hareket, String baslik)
+    {
+        //fragment parent inin id si ayarlaniyor
+        //ma.getEngine().getFry().setFragmentParentID(hareket, klasorID);
+
+        switch (hareket)
+        {
+            case ILERI:
+                setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
+
+                //eger hareket ileri ise ve baslik bos gelmisse baslik degistirilmeyecek
+                //ornegin yeni klasor ekraninda tamam a basinca hareket ileri fakat basligin degismesine gerek yok
+                if (!baslik.equals(""))
+                {
+                    ma.toolbarBaslikGuncelle(baslik);
+                }
+
+                break;
+
+            case GERI:
+                setParentFragmentKlasorID(ma.getEngine().parentKlasorIDyiGetir(klasorID));//fragmentte acilan klasorun parent ini veritabanindan aliyorum
+                ma.toolbarBaslikGuncelle(ma.getEngine().klasorBaslikGetir(klasorID));
+
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -150,7 +187,7 @@ public class FragmentYoneticisi extends Fragment
         }
         else
         {
-            getMa().getEngine().klasorAc(getParentFragmentKlasorID(), Engine.HAREKET.GERI);
+            getMa().getEngine().mainFragmentAc(getParentFragmentKlasorID(), Engine.HAREKET.GERI, "");
         }
     }
 
