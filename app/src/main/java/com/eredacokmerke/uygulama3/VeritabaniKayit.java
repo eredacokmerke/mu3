@@ -38,9 +38,9 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         getVT().execSQL("INSERT INTO TUR (TUR_ISIM) VALUES ('calar_saat');");
         getVT().execSQL("INSERT INTO TUR (TUR_ISIM) VALUES ('yapilacaklar_listesi');");
 
-        getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 1, 0, 'baslik1', 'icerik1');");
-        getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 2, 0, 'baslik2', 'icerik2');");
-        getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 3, 0, 'baslik3', 'icerik3');");
+        //getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 1, 0, 'baslik1', 'icerik1');");
+        //getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 2, 0, 'baslik2', 'icerik2');");
+        //getVT().execSQL("INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (1, 3, 0, 'baslik3', 'icerik3');");
     }
 
     @Override
