@@ -74,7 +74,7 @@ public class KayitLayout extends RelativeLayout
                 break;
 
             case TUR_KLASOR:
-                getMa().getEngine().mainFragmentAc(getKlasorID(), Engine.HAREKET.ILERI, baslik);
+                getMa().getEngine().klasorAc(getKlasorID(), Engine.HAREKET.ILERI, baslik);
                 break;
 
             default:

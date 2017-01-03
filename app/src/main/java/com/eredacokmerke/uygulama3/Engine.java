@@ -284,12 +284,14 @@ public class Engine
      * @param klasorID : acilan klasorun id si
      * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
      */
-    public void mainFragmentAc(int klasorID, HAREKET hareket, String baslik)
+    public void klasorAc(int klasorID, HAREKET hareket, String baslik)
     {
         //mainFragment ta etkin ekran kayit ekrani
-        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KAYIT);
+        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KLASOR);
 
-        FragmentYoneticisi.fragmentAc(MainFragment.newInstance(1, "2", getMa()), getMa(), klasorID, hareket, baslik);
+        FragmentYoneticisi.fragmentAc(KlasorFragment.newInstance(1, "2", getMa()), getMa(), klasorID, hareket, baslik);
+    }
+
     }
 
     /**

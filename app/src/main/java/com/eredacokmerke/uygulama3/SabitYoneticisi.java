@@ -17,7 +17,8 @@ public class SabitYoneticisi
     public static final int EKRAN_YENI_KAYIT = 1;
     public static final int EKRAN_KAYIT = 2;
     public static final int EKRAN_YENI_KLASOR = 3;
-    public static int etkinEkran = EKRAN_YENI_KAYIT;
+    public static final int EKRAN_KLASOR = 4;
+    public static int etkinEkran = EKRAN_KLASOR;
 
 
     //xml etiketleri

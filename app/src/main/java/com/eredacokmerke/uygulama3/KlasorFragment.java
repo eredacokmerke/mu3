@@ -20,12 +20,12 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
+ * {@link KlasorFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
+ * Use the {@link KlasorFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends FragmentYoneticisi
+public class KlasorFragment extends FragmentYoneticisi
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +41,7 @@ public class MainFragment extends FragmentYoneticisi
     private View rootView;
     private OnFragmentInteractionListener mListener;
 
-    public MainFragment()
+    public KlasorFragment()
     {
         // Required empty public constructor
     }
@@ -52,12 +52,12 @@ public class MainFragment extends FragmentYoneticisi
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MainFragment.
+     * @return A new instance of fragment KlasorFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(int param1, String param2, MainActivity ma)
+    public static KlasorFragment newInstance(int param1, String param2, MainActivity ma)
     {
-        MainFragment fragment = new MainFragment();
+        KlasorFragment fragment = new KlasorFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

@@ -27,7 +27,7 @@
                 android:layout_gravity="center"
                 android:textAppearance="@android:style/TextAppearance.Medium"
                 android:textColor="#ffffff"
-                tools:text="sadsad"/>
+                tools:text=""/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

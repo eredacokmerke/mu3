@@ -187,7 +187,7 @@ public class FragmentYoneticisi extends Fragment
         }
         else
         {
-            getMa().getEngine().mainFragmentAc(getParentFragmentKlasorID(), Engine.HAREKET.GERI, "");
+            getMa().getEngine().klasorAc(getParentFragmentKlasorID(), Engine.HAREKET.GERI, "");
         }
     }
 

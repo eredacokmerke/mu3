@@ -37,7 +37,7 @@ public class FABYoneticisi extends FloatingActionButton
                 switch (SabitYoneticisi.etkinEkran)
                 {
                     //kayit ekrani aciliyken fab a basildi
-                    case SabitYoneticisi.EKRAN_KAYIT:
+                    case SabitYoneticisi.EKRAN_KLASOR:
 
                         //acik olan fab menusu kapaniyor
                         menuDurumunuDegistir();
@@ -49,7 +49,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKayitFragmentKaydet();
 
-                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI, "");
+                        eng.klasorAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI, "");
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -60,7 +60,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKlasorFragmentKaydet();
 
-                        eng.mainFragmentAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI, "");
+                        eng.klasorAc(eng.getFragmentKlasorID(), Engine.HAREKET.ILERI, "");
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -85,7 +85,7 @@ public class FABYoneticisi extends FloatingActionButton
                 switch (SabitYoneticisi.etkinEkran)
                 {
                     //kayit ekrani aciliyken fab1 e basildi
-                    case SabitYoneticisi.EKRAN_KAYIT:
+                    case SabitYoneticisi.EKRAN_KLASOR:
 
                         //yeni kayit ekrani acilacak
                         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KAYIT);
@@ -120,7 +120,7 @@ public class FABYoneticisi extends FloatingActionButton
                 switch (SabitYoneticisi.etkinEkran)
                 {
                     //kayit ekrani aciliyken fab2 ye basildi
-                    case SabitYoneticisi.EKRAN_KAYIT:
+                    case SabitYoneticisi.EKRAN_KLASOR:
 
                         //yeni klasor ekrani acilacak
                         SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KLASOR);
