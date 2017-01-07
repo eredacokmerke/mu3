@@ -279,17 +279,22 @@ public class Engine
     }
 
     /**
-     * mainFragment acar
+     * KlasorFragment acar
      *
      * @param klasorID : acilan klasorun id si
      * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
      */
     public void klasorAc(int klasorID, HAREKET hareket, String baslik)
     {
-        //mainFragment ta etkin ekran kayit ekrani
-        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KLASOR);
+        KlasorFragment fr = KlasorFragment.newInstance(getMa());
 
-        FragmentYoneticisi.fragmentAc(KlasorFragment.newInstance(1, "2", getMa()), getMa(), klasorID, hareket, baslik);
+        Bundle args = new Bundle();
+        args.putString(SabitYoneticisi.BILGI_KLASORFRAGMENT_BASLIK, baslik);
+        args.putInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_KLASOR_ID, klasorID);
+        args.putSerializable(SabitYoneticisi.BILGI_KLASORFRAGMENT_HAREKET, hareket);
+        fr.setArguments(args);
+
+        FragmentYoneticisi.fragmentAc(fr, getMa());
     }
 
     }

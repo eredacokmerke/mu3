@@ -23,7 +23,7 @@
               android:layout_height="match_parent"
               app:layout_behavior="@string/appbar_scrolling_view_behavior"
               tools:context="com.eredacokmerke.uygulama3.MainActivity"
-              tools:layout="@layout/fragment_main"
+              tools:layout="@layout/fragment_klasor"
               tools:showIn="@layout/app_bar_main"/>
     -->
 

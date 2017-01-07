@@ -179,6 +179,10 @@ public class SabitYoneticisi
     //izinler
     public static final int IZIN_WRITE_EXTERNAL_STORAGE = 0;
 
+    //KlasorFragment gerekli bilgiler
+    public static final String BILGI_KLASORFRAGMENT_KLASOR_ID = "BILGI_KLASORFRAGMENT_KLASOR_ID";
+    public static final String BILGI_KLASORFRAGMENT_BASLIK = "BILGI_KLASORFRAGMENT_BASLIK";
+    public static final String BILGI_KLASORFRAGMENT_HAREKET = "BILGI_KLASORFRAGMENT_HAREKET";
 
     /////getter & setter/////
 

@@ -27,17 +27,7 @@ import java.util.List;
  */
 public class KlasorFragment extends FragmentYoneticisi
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private MainActivity ma;
-    private Engine.HAREKET hareket;
-
-    // TODO: Rename and change types of parameters
-    private int mParam1;
-    private String mParam2;
     private View rootView;
     private OnFragmentInteractionListener mListener;
 
@@ -50,19 +40,12 @@ public class KlasorFragment extends FragmentYoneticisi
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment KlasorFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static KlasorFragment newInstance(int param1, String param2, MainActivity ma)
+    public static KlasorFragment newInstance(MainActivity ma)
     {
         KlasorFragment fragment = new KlasorFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-
         fragment.setMa(ma);
 
         return fragment;
@@ -72,20 +55,14 @@ public class KlasorFragment extends FragmentYoneticisi
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getInt(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_main, container, false);
+        View v = inflater.inflate(R.layout.fragment_klasor, container, false);
         this.rootView = v;
-        //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
     }
@@ -110,6 +87,49 @@ public class KlasorFragment extends FragmentYoneticisi
     {
         super.geriTusunaBasildi();
         getFragmentYoneticisi().klasorEkranindaGeriTusunaBasildi();
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+
+        if (getArguments() != null)
+        {
+            String klasorBaslik = getArguments().getString(SabitYoneticisi.BILGI_KLASORFRAGMENT_BASLIK);
+            int klasorID = getArguments().getInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_KLASOR_ID);
+            Engine.HAREKET hareket = (Engine.HAREKET) getArguments().get(SabitYoneticisi.BILGI_KLASORFRAGMENT_HAREKET);
+
+            //KlasorFragment ta etkin ekran klasor ekrani
+            SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KLASOR);
+
+            switch (hareket)
+            {
+                case ILERI:
+                    setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
+
+                    //eger hareket ileri ise ve baslik bos gelmisse baslik degistirilmeyecek
+                    //ornegin yeni klasor ekraninda tamam a basinca hareket ileri fakat basligin degismesine gerek yok
+                    if (!klasorBaslik.equals(""))
+                    {
+                        ma.toolbarBaslikGuncelle(klasorBaslik);
+                    }
+
+                    break;
+
+                case GERI:
+                    setParentFragmentKlasorID(ma.getEngine().parentKlasorIDyiGetir(klasorID));//fragmentte acilan klasorun parent ini veritabanindan aliyorum
+                    ma.toolbarBaslikGuncelle(ma.getEngine().klasorBaslikGetir(klasorID));
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            //ilk once parentFragmentID set edilmeli
+            setFragmentKlasorID(klasorID);
+        }
     }
 
     @Override
