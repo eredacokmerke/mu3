@@ -137,12 +137,12 @@ public class KlasorFragment extends FragmentYoneticisi
     {
         super.UIYukle();
 
-        List<KayitLayout> listeKlasorler = klasorleriVeritabanindanAl();
+        List<KlasorLayout> listeKlasorler = klasorleriVeritabanindanAl();
         List<KayitLayout> listeKayitlar = kayitlariVeritabanindanAl();
 
         if (listeKlasorler != null && listeKayitlar != null)
         {
-            KayitLayout sonKL = klasorleriEkranaYazdir(listeKlasorler, null);
+            KlasorLayout sonKL = klasorleriEkranaYazdir(listeKlasorler, null);
             kayitlariEkranaYazdir(listeKayitlar, sonKL);
         }
 
@@ -164,7 +164,7 @@ public class KlasorFragment extends FragmentYoneticisi
      * @param sonKL          : ekrana onceden eklenmis son KayitLayout nesnesi
      * @return : ekrana son eklenen kayitLayout nesnesi
      */
-    public KayitLayout klasorleriEkranaYazdir(List<KayitLayout> listeKlasorler, KayitLayout sonKL)
+    public KlasorLayout klasorleriEkranaYazdir(List<KlasorLayout> listeKlasorler, KayitLayout sonKL)
     {
         RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.mainFragmentRelativeLayout);
 
@@ -177,7 +177,7 @@ public class KlasorFragment extends FragmentYoneticisi
 
         for (int i = 0; i < listeKlasorler.size(); i++)
         {
-            KayitLayout kl = listeKlasorler.get(i);
+            KlasorLayout kl = listeKlasorler.get(i);
             kl.setId(i + idBaslangic);
             kl.setPadding(20, 20, 20, 20);
 
@@ -233,7 +233,7 @@ public class KlasorFragment extends FragmentYoneticisi
      * @param sonKL         : ekrana onceden eklenmis son KayitLayout nesnesi
      * @return : ekrana son eklenen kayitLayout nesnesi
      */
-    public KayitLayout kayitlariEkranaYazdir(List<KayitLayout> listeKayitlar, KayitLayout sonKL)
+    public KayitLayout kayitlariEkranaYazdir(List<KayitLayout> listeKayitlar, KlasorLayout sonKL)
     {
         RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.mainFragmentRelativeLayout);
 
@@ -310,7 +310,7 @@ public class KlasorFragment extends FragmentYoneticisi
      *
      * @return
      */
-    public List<KayitLayout> klasorleriVeritabanindanAl()
+    public List<KlasorLayout> klasorleriVeritabanindanAl()
     {
         return mainFragmentKlasorleriVeritabanindanAl();
     }

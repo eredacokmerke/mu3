@@ -184,6 +184,10 @@ public class SabitYoneticisi
     public static final String BILGI_KLASORFRAGMENT_BASLIK = "BILGI_KLASORFRAGMENT_BASLIK";
     public static final String BILGI_KLASORFRAGMENT_HAREKET = "BILGI_KLASORFRAGMENT_HAREKET";
 
+    //KayitFragment gerekli bilgiler
+    public static final String BILGI_KAYITFRAGMENT_BASLIK = "BILGI_KAYITFRAGMENT_BASLIK";
+
+
     /////getter & setter/////
 
 

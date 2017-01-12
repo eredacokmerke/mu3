@@ -74,7 +74,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKayitIcerik = cursor.getString(2);
                 String veriKayitIcerikTuruID = cursor.getString(3);
 
-                listeVeri.add(new KayitLayout(cnt, veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID, ma));
+                listeVeri.add(new KayitLayout(cnt, veriKayitBaslik, veriKayitIcerik, veriKayitRenk, veriKayitIcerikTuruID, klasorID, ma));
             } while (cursor.moveToNext());
         }
 
@@ -89,12 +89,12 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
      * @param klasorID : klasorlerin icinde yer aldigi klasorun id si
      * @return : klasor listesi
      */
-    public List<KayitLayout> mainFragmentKlasorleriGetir(int klasorID)
+    public List<KlasorLayout> mainFragmentKlasorleriGetir(int klasorID)
     {
         String selectQuery = "select K.KLASOR_ISIM, R.RENK_ISIM, K.ID from KLASOR as K, RENK as R where K.KLASOR_RENK_KODU_ID=R.ID and UST_KLASOR_ID='" + klasorID + "';";
 
         Cursor cursor = getVT().rawQuery(selectQuery, null);
-        List<KayitLayout> listeVeri = new ArrayList<>();
+        List<KlasorLayout> listeVeri = new ArrayList<>();
 
         if (cursor.moveToFirst())
         {
@@ -104,7 +104,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKlasorRenk = cursor.getString(1);
                 int veriKlasorID = cursor.getInt(2);
 
-                listeVeri.add(new KayitLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID, ma));
+                listeVeri.add(new KlasorLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID, ma));
             } while (cursor.moveToNext());
         }
 

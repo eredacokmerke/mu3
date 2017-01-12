@@ -172,7 +172,7 @@ public class FragmentYoneticisi extends Fragment
      *
      * @return
      */
-    public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    public static List<KlasorLayout> mainFragmentKlasorleriVeritabanindanAl()
     {
         return Engine.mainFragmentKlasorleriVeritabanindanAl();
     }

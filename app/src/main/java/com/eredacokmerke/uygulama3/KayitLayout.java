@@ -1,85 +1,46 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 /**
  * Created by ekcdr on 11/15/16.
  */
-public class KayitLayout extends RelativeLayout
+public class KayitLayout extends LayoutYoneticisi
 {
-    private String baslik;
-    private String icerik;
-    private String renk;
-    private String icerikTuruID;
-    private int tur;//layout turu. ture gore gorunus degisecek. 0:kayit 1:klasor
-    private int klasorID;//layut bir klasorse id sini tutuyor
+    private String baslik;//kaydin basligi, layoutta yatacak
+    private String icerik;//kaydin icerigi
+    private String renk;//kaydin rengi
+    private String icerikTuruID;//kayitta gosterilecek icerigin id si
+    private int kayitID;//kaydin id si
     private MainActivity ma;
 
-    public final static int TUR_KAYIT = 0;//layout turu kayit
-    public final static int TUR_KLASOR = 1;//layout turu klasor
-
-
-    public KayitLayout(Context context, final String baslik, String icerik, String renk, String icerikTuruID, MainActivity ma)
+    /**
+     * kayitlari gostermek icin constructor
+     *
+     * @param context
+     * @param baslik
+     * @param icerik
+     * @param renk
+     * @param icerikTuruID
+     * @param ma
+     */
+    public KayitLayout(Context context, final String baslik, String icerik, String renk, String icerikTuruID, int kayitID, MainActivity ma)
     {
         super(context);
         this.baslik = baslik;
         this.icerik = icerik;
         this.renk = renk;
         this.icerikTuruID = icerikTuruID;
+        this.kayitID = kayitID;
         this.ma = ma;
-        setTur(TUR_KAYIT);
-
-        this.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                tiklandi(getTur(), getBaslik());
-            }
-        });
     }
 
-    public KayitLayout(Context context, String baslik, String renk, int klasorID, MainActivity ma)
+    @Override
+    public void tiklandi()
     {
-        super(context);
-        this.baslik = baslik;
-        this.renk = renk;
-        this.klasorID = klasorID;
-        this.ma = ma;
-        setTur(TUR_KLASOR);
+        super.tiklandi();
 
-        this.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                tiklandi(getTur(), getBaslik());
-            }
-        });
-    }
-
-    /**
-     * kayitLayout a tiklandigi zaman buraya geliyor
-     *
-     * @param tur : kayit yada klasor e tiklandigini anlamak icin
-     */
-    public void tiklandi(int tur, String baslik)
-    {
-
-        switch (tur)
-        {
-            case TUR_KAYIT:
-                break;
-
-            case TUR_KLASOR:
-                getMa().getEngine().klasorAc(getKlasorID(), Engine.HAREKET.ILERI, baslik);
-                break;
-
-            default:
-                break;
-        }
+        getMa().getEngine().kayitAc(getBaslik());
     }
 
 
@@ -126,24 +87,14 @@ public class KayitLayout extends RelativeLayout
         this.icerikTuruID = icerikTuruID;
     }
 
-    public int getTur()
+    public int getKayitID()
     {
-        return tur;
+        return kayitID;
     }
 
-    public void setTur(int tur)
+    public void setKayitID(int kayitID)
     {
-        this.tur = tur;
-    }
-
-    public int getKlasorID()
-    {
-        return klasorID;
-    }
-
-    public void setKlasorID(int klasorID)
-    {
-        this.klasorID = klasorID;
+        this.kayitID = kayitID;
     }
 
     public MainActivity getMa()

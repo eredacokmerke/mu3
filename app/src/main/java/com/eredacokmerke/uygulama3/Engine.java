@@ -251,7 +251,7 @@ public class Engine
     /**
      * veritabanindan klasorleri alir
      */
-    public static List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    public static List<KlasorLayout> mainFragmentKlasorleriVeritabanindanAl()
     {
         return getVty().mainFragmentKlasorleriVeritabanindanAl();
     }

@@ -169,11 +169,11 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     /**
      * @return
      */
-    public List<KayitLayout> mainFragmentKlasorleriVeritabanindanAl()
+    public List<KlasorLayout> mainFragmentKlasorleriVeritabanindanAl()
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(getMa().getEngine().getFragmentKlasorID());
+            List<KlasorLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(getMa().getEngine().getFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
