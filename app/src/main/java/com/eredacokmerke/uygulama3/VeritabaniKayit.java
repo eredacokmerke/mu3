@@ -28,7 +28,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     @Override
     public void ontaminliVerileriYaz()
     {
-        getVT().execSQL("INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('ANA', 0, 1);");
+        getVT().execSQL("INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('" + SabitYoneticisi.UYGULAMA_ADI + "', 0, 1);");
 
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#118580');");
         getVT().execSQL("INSERT INTO RENK (RENK_ISIM) VALUES ('#162e1b');");
@@ -111,6 +111,29 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
         cursor.close();
 
         return listeVeri;
+    }
+
+    /**
+     * kaydin icerigini veritabindan getirir
+     *
+     * @param kayitID
+     * @return
+     */
+    public String kayitFragmentKayitAyrintisiniGetir(int kayitID)
+    {
+        String selectQuery = "SELECT ICERIK FROM KAYIT WHERE ID='" + kayitID + "';";
+
+        Cursor cursor = getVT().rawQuery(selectQuery, null);
+        if (cursor.moveToFirst())
+        {
+            String icerik = cursor.getString(0);
+
+            return icerik;
+        }
+
+        cursor.close();
+
+        return "";
     }
 
     /**

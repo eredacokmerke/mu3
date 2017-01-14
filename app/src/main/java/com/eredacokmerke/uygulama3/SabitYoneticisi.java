@@ -187,6 +187,8 @@ public class SabitYoneticisi
 
     //KayitFragment gerekli bilgiler
     public static final String BILGI_KAYITFRAGMENT_BASLIK = "BILGI_KAYITFRAGMENT_BASLIK";
+    public static final String BILGI_KAYITFRAGMENT_KAYIT_ID = "BILGI_KAYITFRAGMENT_KAYIT_ID";
+    public static final String BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID = "BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID";
 
 
     /////getter & setter/////

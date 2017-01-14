@@ -115,7 +115,7 @@ public class FragmentYoneticisi extends Fragment
      */
     public void kayitEkranindaGeriTusunaBasildi()
     {
-        getMa().getEngine().klasorAc(getFragmentKlasorID(), -1, Engine.HAREKET.GERI, "");
+        getMa().getEngine().klasorAc(getFragmentKayitKlasorID(), -1, Engine.HAREKET.GERI, "");
     }
 
     /**
@@ -175,6 +175,11 @@ public class FragmentYoneticisi extends Fragment
     public static List<KlasorLayout> mainFragmentKlasorleriVeritabanindanAl()
     {
         return Engine.mainFragmentKlasorleriVeritabanindanAl();
+    }
+
+    public String kayitFragmentKayitAyrintisiniVeritabanindanAl()
+    {
+        return getMa().getEngine().kayitFragmentKayitAyrintisiniVeritabanindanAl();
     }
 
     /**
@@ -317,22 +322,48 @@ public class FragmentYoneticisi extends Fragment
         }
     }
 
+    /**
+     * fragment te acik olan klasorun id sini getirir
+     *
+     * @return : klasor id si
+     */
     public int getFragmentKlasorID()
     {
         KlasorFragment kf = (KlasorFragment) getAcikFragment();
         return kf.getKlasorID();
     }
 
+    /**
+     * fragment te acik olan klasorun parent ini getirir
+     *
+     * @return
+     */
     public int getFragmentParentKlasorID()
     {
         KlasorFragment kf = (KlasorFragment) getAcikFragment();
         return kf.getParentKlasorID();
     }
 
+    /**
+     * fragment te acik olan kaydin id sini getirir
+     *
+     * @return
+     */
     public int getFragmentKayitID()
     {
         KayitFragment kf = (KayitFragment) getAcikFragment();
         return kf.getKayitID();
+    }
+
+    /**
+     * kaydin icinde yer aldigi klasorun id si
+     *
+     * @return
+     */
+    public int getFragmentKayitKlasorID()
+    {
+        KayitFragment kf = (KayitFragment) getAcikFragment();
+        return kf.getKayitKlasorID();
     }
 
 

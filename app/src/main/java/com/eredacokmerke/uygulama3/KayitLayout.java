@@ -40,7 +40,7 @@ public class KayitLayout extends LayoutYoneticisi
     {
         super.tiklandi();
 
-        getMa().getEngine().kayitAc(getBaslik());
+        getMa().getEngine().kayitAc(getKayitID(), getBaslik());
     }
 
 

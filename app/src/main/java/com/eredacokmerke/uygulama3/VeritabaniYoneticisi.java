@@ -145,7 +145,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     }
 
     /**
-     * mainFragment ta gosterilecek kayitlarin verilerini veritabanindan alir
+     * klasorFragment ta gosterilecek kayitlarin verilerini veritabanindan alir
      *
      * @return
      */
@@ -167,6 +167,8 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     }
 
     /**
+     * klasorFragment ta gosterilecek klasorlerin verilerini veritabanindan alir
+     *
      * @return
      */
     public List<KlasorLayout> mainFragmentKlasorleriVeritabanindanAl()
@@ -180,7 +182,30 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "19", "veritabani baglantisi acilamadi");
+
+            return null;
+        }
+    }
+
+    /**
+     * kayitFragment ta gosterilecek icerigi veritabanindan alir
+     *
+     * @return
+     */
+    public String kayitFragmentKayitAyrintisiniVeritabanindanAl()
+    {
+
+        if (veritabaniAcikDegilseAc())
+        {
+            String icerik = getVtKayit().kayitFragmentKayitAyrintisiniGetir(getMa().getEngine().getFragmentKayitID());
+            getVtKayit().veritabaniKapat();
+
+            return icerik;
+        }
+        else
+        {
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "25", "veritabani baglantisi acilamadi");
 
             return null;
         }
@@ -251,7 +276,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "23", "veritabani baglantisi acilamadi");
 
             return -1;
         }
@@ -274,7 +299,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
         else
         {
-            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "veritabani baglantisi acilamadi");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "24", "veritabani baglantisi acilamadi");
 
             return "";
         }

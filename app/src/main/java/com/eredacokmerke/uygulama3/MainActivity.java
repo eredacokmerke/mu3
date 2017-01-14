@@ -19,7 +19,11 @@ import android.widget.Toast;
 
 public class MainActivity
         extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, KlasorFragment.OnFragmentInteractionListener, YeniKayitFragment.OnFragmentInteractionListener, YeniKlasorFragment.OnFragmentInteractionListener
+        implements NavigationView.OnNavigationItemSelectedListener,
+        KlasorFragment.OnFragmentInteractionListener,
+        YeniKayitFragment.OnFragmentInteractionListener,
+        YeniKlasorFragment.OnFragmentInteractionListener,
+        KayitFragment.OnFragmentInteractionListener
 {
     //private Context cnt;
     //private static Bundle _savedInstanceState;

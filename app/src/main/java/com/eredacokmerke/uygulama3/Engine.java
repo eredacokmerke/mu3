@@ -258,6 +258,14 @@ public class Engine
     }
 
     /**
+     * veritabanindan kayit icerigini alir
+     */
+    public String kayitFragmentKayitAyrintisiniVeritabanindanAl()
+    {
+        return getVty().kayitFragmentKayitAyrintisiniVeritabanindanAl();
+    }
+
+    /**
      * yeniKayitFragment te kaydet tusuna basilinca ekranadaki verileri veritabanina kaydeder
      */
     public void yeniKayitFragmentKaydet()
@@ -300,6 +308,20 @@ public class Engine
         FragmentYoneticisi.fragmentAc(fr, getMa());
     }
 
+    /**
+     * KayitFragment acar
+     */
+    public void kayitAc(int kayitID, String baslik)
+    {
+        KayitFragment fr = KayitFragment.newInstance(getMa());
+
+        Bundle args = new Bundle();
+        args.putString(SabitYoneticisi.BILGI_KAYITFRAGMENT_BASLIK, baslik);
+        args.putInt(SabitYoneticisi.BILGI_KAYITFRAGMENT_KAYIT_ID, kayitID);
+        args.putInt(SabitYoneticisi.BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID, getFragmentKlasorID());
+        fr.setArguments(args);
+
+        FragmentYoneticisi.fragmentAc(fr, getMa());
     }
 
     /**
@@ -313,7 +335,7 @@ public class Engine
         int parentID = getVty().parentKlasorIDyiVeritabanindanGetir(klasorID);
         if (parentID == -1)
         {
-            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "22", "hatali parent id");
+            HataYoneticisi.ekranaHataYazdir(getMa().getApplicationContext(), "14", "hatali parent id , klasorID:" + klasorID);
         }
 
         return parentID;
@@ -367,11 +389,21 @@ public class Engine
         return getFry().getFragmentKlasorID();
     }
 
+    /**
+     * fragment te acik olan klasorun parent ini getirir
+     *
+     * @return
+     */
     public int getFragmentParentKlasorID()
     {
         return getFry().getFragmentParentKlasorID();
     }
 
+    /**
+     * fragment te acik olan kaydin id sini getirir
+     *
+     * @return
+     */
     public int getFragmentKayitID()
     {
         return getFry().getFragmentKayitID();
