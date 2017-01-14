@@ -29,6 +29,8 @@ public class KlasorFragment extends FragmentYoneticisi
 {
     private MainActivity ma;
     private View rootView;
+    private int klasorID;//fragment te acilan klasorun id si
+    private int parentKlasorID;//fragment te acilan klasorun parent inin id si
     private OnFragmentInteractionListener mListener;
 
     public KlasorFragment()
@@ -96,39 +98,40 @@ public class KlasorFragment extends FragmentYoneticisi
 
         if (getArguments() != null)
         {
-            String klasorBaslik = getArguments().getString(SabitYoneticisi.BILGI_KLASORFRAGMENT_BASLIK);
-            int klasorID = getArguments().getInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_KLASOR_ID);
+            String bilgiKlasorBaslik = getArguments().getString(SabitYoneticisi.BILGI_KLASORFRAGMENT_BASLIK);
+            int bilgiKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_KLASOR_ID);
+            int bilgiParentKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_PARENT_KLASOR_ID);
             Engine.HAREKET hareket = (Engine.HAREKET) getArguments().get(SabitYoneticisi.BILGI_KLASORFRAGMENT_HAREKET);
 
             //KlasorFragment ta etkin ekran klasor ekrani
             SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_KLASOR);
+            setKlasorID(bilgiKlasorID);
 
             switch (hareket)
             {
                 case ILERI:
-                    setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
+                    setParentKlasorID(bilgiParentKlasorID);
+                    //setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
 
                     //eger hareket ileri ise ve baslik bos gelmisse baslik degistirilmeyecek
                     //ornegin yeni klasor ekraninda tamam a basinca hareket ileri fakat basligin degismesine gerek yok
-                    if (!klasorBaslik.equals(""))
+                    if (!bilgiKlasorBaslik.equals(""))
                     {
-                        ma.toolbarBaslikGuncelle(klasorBaslik);
+                        ma.toolbarBaslikGuncelle(bilgiKlasorBaslik);
                     }
 
                     break;
 
                 case GERI:
-                    setParentFragmentKlasorID(ma.getEngine().parentKlasorIDyiGetir(klasorID));//fragmentte acilan klasorun parent ini veritabanindan aliyorum
-                    ma.toolbarBaslikGuncelle(ma.getEngine().klasorBaslikGetir(klasorID));
+                    setParentKlasorID(ma.getEngine().parentKlasorIDyiGetir(bilgiKlasorID));
+                    //setParentFragmentKlasorID(ma.getEngine().parentKlasorIDyiGetir(klasorID));//fragmentte acilan klasorun parent ini veritabanindan aliyorum
+                    ma.toolbarBaslikGuncelle(ma.getEngine().klasorBaslikGetir(bilgiKlasorID));
 
                     break;
 
                 default:
                     break;
             }
-
-            //ilk once parentFragmentID set edilmeli
-            setFragmentKlasorID(klasorID);
         }
     }
 
@@ -411,5 +414,25 @@ public class KlasorFragment extends FragmentYoneticisi
     public void setMa(MainActivity ma)
     {
         this.ma = ma;
+    }
+
+    public int getParentKlasorID()
+    {
+        return parentKlasorID;
+    }
+
+    public void setParentKlasorID(int parentKlasorID)
+    {
+        this.parentKlasorID = parentKlasorID;
+    }
+
+    public int getKlasorID()
+    {
+        return klasorID;
+    }
+
+    public void setKlasorID(int klasorID)
+    {
+        this.klasorID = klasorID;
     }
 }

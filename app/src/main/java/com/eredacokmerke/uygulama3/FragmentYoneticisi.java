@@ -20,8 +20,8 @@ public class FragmentYoneticisi extends Fragment
     //private View fragmentRootView;//acilan fragmentin root view i
     private FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
     private boolean fragmentAcikMi = false;
-    private static int fragmentKlasorID = 0;//acilan fragment in id si
-    private static int parentFragmentKlasorID = 0;//acilan fragment in parent inin id si
+    //private static int fragmentKlasorID = 0;//acilan fragment in id si
+    //private static int parentFragmentKlasorID = 0;//acilan fragment in parent inin id si
     private MainActivity ma;
 
     /**
@@ -100,13 +100,13 @@ public class FragmentYoneticisi extends Fragment
      */
     public void klasorEkranindaGeriTusunaBasildi()
     {
-        if (getParentFragmentKlasorID() == 0)//parent id si 0 ise root klasordur. root klasordeyken geriye basilirsa uygulama kapanacak
+        if (getFragmentParentKlasorID() == 0)//parent id si 0 ise root klasordur. root klasordeyken geriye basilirsa uygulama kapanacak
         {
             getMa().finish();
         }
         else
         {
-            getMa().getEngine().klasorAc(getParentFragmentKlasorID(), Engine.HAREKET.GERI, "");
+            getMa().getEngine().klasorAc(getFragmentParentKlasorID(), -1, Engine.HAREKET.GERI, "");
         }
     }
 
@@ -115,7 +115,7 @@ public class FragmentYoneticisi extends Fragment
      */
     public void kayitEkranindaGeriTusunaBasildi()
     {
-        getMa().getEngine().klasorAc(getFragmentKlasorID(), Engine.HAREKET.GERI, "");
+        getMa().getEngine().klasorAc(getFragmentKlasorID(), -1, Engine.HAREKET.GERI, "");
     }
 
     /**
@@ -317,6 +317,24 @@ public class FragmentYoneticisi extends Fragment
         }
     }
 
+    public int getFragmentKlasorID()
+    {
+        KlasorFragment kf = (KlasorFragment) getAcikFragment();
+        return kf.getKlasorID();
+    }
+
+    public int getFragmentParentKlasorID()
+    {
+        KlasorFragment kf = (KlasorFragment) getAcikFragment();
+        return kf.getParentKlasorID();
+    }
+
+    public int getFragmentKayitID()
+    {
+        KayitFragment kf = (KayitFragment) getAcikFragment();
+        return kf.getKayitID();
+    }
+
 
     /////getter & setter/////
 
@@ -353,6 +371,7 @@ public class FragmentYoneticisi extends Fragment
         this.fragmentAcikMi = fragmentAcikMi;
     }
 
+    /*
     public static int getFragmentKlasorID()
     {
         return fragmentKlasorID;
@@ -362,6 +381,7 @@ public class FragmentYoneticisi extends Fragment
     {
         FragmentYoneticisi.fragmentKlasorID = fragmentKlasorID;
     }
+    */
 
     public MainActivity getMa()
     {
@@ -378,6 +398,7 @@ public class FragmentYoneticisi extends Fragment
         return getMa().getEngine().getFry();
     }
 
+    /*
     public static int getParentFragmentKlasorID()
     {
         return parentFragmentKlasorID;
@@ -387,4 +408,5 @@ public class FragmentYoneticisi extends Fragment
     {
         FragmentYoneticisi.parentFragmentKlasorID = parentFragmentKlasorID;
     }
+    */
 }

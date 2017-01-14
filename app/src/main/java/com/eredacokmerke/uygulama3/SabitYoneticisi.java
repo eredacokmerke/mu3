@@ -181,6 +181,7 @@ public class SabitYoneticisi
 
     //KlasorFragment gerekli bilgiler
     public static final String BILGI_KLASORFRAGMENT_KLASOR_ID = "BILGI_KLASORFRAGMENT_KLASOR_ID";
+    public static final String BILGI_KLASORFRAGMENT_PARENT_KLASOR_ID = "BILGI_KLASORFRAGMENT_PARENT_KLASOR_ID";
     public static final String BILGI_KLASORFRAGMENT_BASLIK = "BILGI_KLASORFRAGMENT_BASLIK";
     public static final String BILGI_KLASORFRAGMENT_HAREKET = "BILGI_KLASORFRAGMENT_HAREKET";
 

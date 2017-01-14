@@ -86,12 +86,12 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     /**
      * mainFragment de gosterilecek klasorleri veritabanindan alir
      *
-     * @param klasorID : klasorlerin icinde yer aldigi klasorun id si
+     * @param parentKlasorID : klasorlerin icinde yer aldigi klasorun id si
      * @return : klasor listesi
      */
-    public List<KlasorLayout> mainFragmentKlasorleriGetir(int klasorID)
+    public List<KlasorLayout> mainFragmentKlasorleriGetir(int parentKlasorID)
     {
-        String selectQuery = "select K.KLASOR_ISIM, R.RENK_ISIM, K.ID from KLASOR as K, RENK as R where K.KLASOR_RENK_KODU_ID=R.ID and UST_KLASOR_ID='" + klasorID + "';";
+        String selectQuery = "select K.KLASOR_ISIM, R.RENK_ISIM, K.ID from KLASOR as K, RENK as R where K.KLASOR_RENK_KODU_ID=R.ID and UST_KLASOR_ID='" + parentKlasorID + "';";
 
         Cursor cursor = getVT().rawQuery(selectQuery, null);
         List<KlasorLayout> listeVeri = new ArrayList<>();
@@ -104,7 +104,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
                 String veriKlasorRenk = cursor.getString(1);
                 int veriKlasorID = cursor.getInt(2);
 
-                listeVeri.add(new KlasorLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID, ma));
+                listeVeri.add(new KlasorLayout(cnt, veriKlasorIsim, veriKlasorRenk, veriKlasorID, parentKlasorID, ma));
             } while (cursor.moveToNext());
         }
 

@@ -1,6 +1,7 @@
 package com.eredacokmerke.uygulama3;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -275,7 +276,8 @@ public class Engine
     {
         String baslik = getFry().yeniKlasorFragmentBaslikGetir();
 
-        getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
+        getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, getFry().getFragmentKlasorID());
+        //getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
     }
 
     /**
@@ -284,13 +286,14 @@ public class Engine
      * @param klasorID : acilan klasorun id si
      * @param hareket  : fragment geri tusuna basilarak mi acildi yoksa kayitLayout a tiklanarak mi
      */
-    public void klasorAc(int klasorID, HAREKET hareket, String baslik)
+    public void klasorAc(int klasorID, int parentKlasorID, HAREKET hareket, String baslik)
     {
         KlasorFragment fr = KlasorFragment.newInstance(getMa());
 
         Bundle args = new Bundle();
         args.putString(SabitYoneticisi.BILGI_KLASORFRAGMENT_BASLIK, baslik);
         args.putInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_KLASOR_ID, klasorID);
+        args.putInt(SabitYoneticisi.BILGI_KLASORFRAGMENT_PARENT_KLASOR_ID, parentKlasorID);
         args.putSerializable(SabitYoneticisi.BILGI_KLASORFRAGMENT_HAREKET, hareket);
         fr.setArguments(args);
 
@@ -361,7 +364,17 @@ public class Engine
      */
     public int getFragmentKlasorID()
     {
-        return FragmentYoneticisi.getFragmentKlasorID();
+        return getFry().getFragmentKlasorID();
+    }
+
+    public int getFragmentParentKlasorID()
+    {
+        return getFry().getFragmentParentKlasorID();
+    }
+
+    public int getFragmentKayitID()
+    {
+        return getFry().getFragmentKayitID();
     }
 
 

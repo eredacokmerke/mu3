@@ -10,14 +10,16 @@ public class KlasorLayout extends LayoutYoneticisi
     private String baslik;//klasorun basligi, layout ta ve toolbar da yazdirilacak
     private String renk;//layout un rengi
     private int klasorID;//layouta tiklaninca acilacak klasorun id si
+    private int parentKlasorID;//layouta tiklaninca acilacak klasorun id si
     private MainActivity ma;//mainActivity nesnesi
 
-    public KlasorLayout(Context context, String baslik, String renk, int klasorID, MainActivity ma)
+    public KlasorLayout(Context context, String baslik, String renk, int klasorID, int parentKlasorID, MainActivity ma)
     {
         super(context);
         this.baslik = baslik;
         this.renk = renk;
         this.klasorID = klasorID;
+        this.parentKlasorID = parentKlasorID;
         this.ma = ma;
     }
 
@@ -26,7 +28,7 @@ public class KlasorLayout extends LayoutYoneticisi
     {
         super.tiklandi();
 
-        getMa().getEngine().klasorAc(getKlasorID(), Engine.HAREKET.ILERI, getBaslik());
+        getMa().getEngine().klasorAc(getKlasorID(), getParentKlasorID(), Engine.HAREKET.ILERI, getBaslik());
     }
 
 
@@ -61,6 +63,16 @@ public class KlasorLayout extends LayoutYoneticisi
     public void setKlasorID(int klasorID)
     {
         this.klasorID = klasorID;
+    }
+
+    public int getParentKlasorID()
+    {
+        return parentKlasorID;
+    }
+
+    public void setParentKlasorID(int parentKlasorID)
+    {
+        this.parentKlasorID = parentKlasorID;
     }
 
     public MainActivity getMa()

@@ -113,7 +113,7 @@ public class MainActivity
     public void UIYukle()
     {
         //activity icinde ilk nesil kayitlari gosterecek fragment aciliyor
-        getEngine().klasorAc(1, Engine.HAREKET.ILERI, getApplicationContext().getString(R.string.app_name));
+        getEngine().klasorAc(1, 0, Engine.HAREKET.ILERI, getApplicationContext().getString(R.string.app_name));
 
         //fab lar olusturuluyor
         getEngine().initFABYoneticisi();
