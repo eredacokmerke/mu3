@@ -284,7 +284,7 @@ public class Engine
     {
         String baslik = getFry().yeniKlasorFragmentBaslikGetir();
 
-        getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, getFry().getFragmentKlasorID());
+        getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, getFry().getYeniKlasorFragmentKlasorID());
         //getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
     }
 
@@ -407,6 +407,26 @@ public class Engine
     public int getFragmentKayitID()
     {
         return getFry().getFragmentKayitID();
+    }
+
+    /**
+     * yeniKlasorFragment te olusturulacak fragment in icinde yer alacagi klasorun id si
+     *
+     * @return
+     */
+    public int getYeniKlasorFragmentKlasorID()
+    {
+        return getFry().getYeniKlasorFragmentKlasorID();
+    }
+
+    /**
+     * yeniKlasorFragment te olusturulacak fragment in icinde yer alacagi klasorun parentinin id si
+     *
+     * @return
+     */
+    public int getYeniKlasorFragmentParentKlasorID()
+    {
+        return getFry().getYeniKlasorFragmentParentKlasorID();
     }
 
 

@@ -366,21 +366,31 @@ public class FragmentYoneticisi extends Fragment
         return kf.getKayitKlasorID();
     }
 
+    /**
+     * kaydin icinde yer aldigi klasorun id si
+     *
+     * @return
+     */
+    public int getYeniKlasorFragmentKlasorID()
+    {
+        YeniKlasorFragment kf = (YeniKlasorFragment) getAcikFragment();
+        return kf.getKlasorID();
+    }
+
+    /**
+     * kaydin icinde yer aldigi klasorun parent inin id si
+     *
+     * @return
+     */
+    public int getYeniKlasorFragmentParentKlasorID()
+    {
+        YeniKlasorFragment kf = (YeniKlasorFragment) getAcikFragment();
+        return kf.getParentKlasorID();
+    }
+
 
     /////getter & setter/////
 
-
-    /*
-    public View getFragmentRootView()
-    {
-        return fragmentRootView;
-    }
-
-    public void setFragmentRootView(View fragmentRootView)
-    {
-        this.fragmentRootView = fragmentRootView;
-    }
-    */
 
     public FragmentYoneticisi getAcikFragment()
     {

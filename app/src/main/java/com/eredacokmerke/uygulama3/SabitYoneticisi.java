@@ -190,6 +190,10 @@ public class SabitYoneticisi
     public static final String BILGI_KAYITFRAGMENT_KAYIT_ID = "BILGI_KAYITFRAGMENT_KAYIT_ID";
     public static final String BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID = "BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID";
 
+    //YeniKlasorFragment gerekli bilgiler
+    public static final String BILGI_YENIKLASORFRAGMENT_KLASOR_ID = "BILGI_YENIKLASORFRAGMENT_KLASOR_ID";
+    public static final String BILGI_YENIKLASORFRAGMENT_PARENT_KLASOR_ID = "BILGI_YENIKLASORFRAGMENT_PARENT_KLASOR_ID";
+
 
     /////getter & setter/////
 

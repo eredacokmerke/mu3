@@ -23,6 +23,8 @@ public class YeniKlasorFragment extends FragmentYoneticisi
 {
     private View rootView;
     private MainActivity ma;
+    private int klasorID;//yeni klasorun icinde olusacagi klasorun id si
+    private int parentKlasorID;//yeni klasorun icinde olusacagi klasorun parentinin id si
     private OnFragmentInteractionListener mListener;
 
     public YeniKlasorFragment()
@@ -67,6 +69,32 @@ public class YeniKlasorFragment extends FragmentYoneticisi
         getFragmentYoneticisi().setFragmentAcikMi(false);//ilk deger
     }
 
+    @Override
+    public void geriTusunaBasildi()
+    {
+        super.geriTusunaBasildi();
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+
+        if (getArguments() != null)
+        {
+            int bilgiKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_KLASOR_ID);
+            int bilgiParentKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_PARENT_KLASOR_ID);
+
+            setKlasorID(bilgiKlasorID);
+            setParentKlasorID(bilgiParentKlasorID);
+        }
+    }
+
+    /**
+     * baslik verisini doner
+     *
+     * @return
+     */
     public String baslikGetir()
     {
         EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_klasor_edittext);
@@ -153,5 +181,25 @@ public class YeniKlasorFragment extends FragmentYoneticisi
     public void setMa(MainActivity ma)
     {
         this.ma = ma;
+    }
+
+    public int getKlasorID()
+    {
+        return klasorID;
+    }
+
+    public void setKlasorID(int klasorID)
+    {
+        this.klasorID = klasorID;
+    }
+
+    public int getParentKlasorID()
+    {
+        return parentKlasorID;
+    }
+
+    public void setParentKlasorID(int parentKlasorID)
+    {
+        this.parentKlasorID = parentKlasorID;
     }
 }

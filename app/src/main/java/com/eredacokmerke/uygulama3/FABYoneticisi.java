@@ -1,5 +1,6 @@
 package com.eredacokmerke.uygulama3;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.animation.Animation;
@@ -130,6 +131,14 @@ public class FABYoneticisi extends FloatingActionButton
 
                         //fragment aciliyor
                         FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(ma), ma, eng.getFragmentKlasorID());
+                        YeniKlasorFragment fr = YeniKlasorFragment.newInstance(ma);
+
+                        Bundle args = new Bundle();
+                        args.putInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_KLASOR_ID, ma.getEngine().getFragmentKlasorID());
+                        args.putInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_PARENT_KLASOR_ID, ma.getEngine().getFragmentParentKlasorID());
+                        fr.setArguments(args);
+
+                        FragmentYoneticisi.fragmentAc(fr, ma);
 
                         break;
 

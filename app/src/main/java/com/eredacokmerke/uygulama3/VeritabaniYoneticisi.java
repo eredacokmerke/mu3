@@ -212,7 +212,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     }
 
     /**
-     * yeniFragment ekraninda kaydet e tiklayinca verileri veritabanina kaydeder
+     * yeniKayitFragment ekraninda kaydet e tiklayinca verileri veritabanina kaydeder
      *
      * @param seciliIcerikTuruID : secili veri turunun id si
      * @param baslik             : ekranda girilen baslik
@@ -231,11 +231,17 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
         }
     }
 
-    public void yeniKlasorFragmentVeritabaninaKaydet(String baslik, int klasorID)
+    /**
+     * yeniKlasorFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
+     *
+     * @param baslik : klasorun basligi
+     * @param parentKlasorID : klasorun parentinin id si
+     */
+    public void yeniKlasorFragmentVeritabaninaKaydet(String baslik, int parentKlasorID)
     {
         if (veritabaniAcikDegilseAc())
         {
-            getVtKayit().yeniKlasorFragmentVerileriKaydet(baslik, klasorID);
+            getVtKayit().yeniKlasorFragmentVerileriKaydet(baslik, parentKlasorID);
             getVtKayit().veritabaniKapat();
         }
         else

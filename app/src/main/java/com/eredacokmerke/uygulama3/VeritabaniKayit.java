@@ -177,12 +177,12 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
     /**
      * yeniKlasorFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
      *
-     * @param baslik    :klasor ismi
-     * @param klasorID: klasorun icinde olusturulacagi klasorun id si
+     * @param baslik         : klasor ismi
+     * @param parentKlasorID : klasorun icinde olusturulacagi klasorun id si
      */
-    public void yeniKlasorFragmentVerileriKaydet(String baslik, int klasorID)
+    public void yeniKlasorFragmentVerileriKaydet(String baslik, int parentKlasorID)
     {
-        String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('" + baslik + "', " + klasorID + ", 2);";
+        String insertQuery = "INSERT INTO KLASOR (KLASOR_ISIM, UST_KLASOR_ID, KLASOR_RENK_KODU_ID) VALUES ('" + baslik + "', " + parentKlasorID + ", 2);";
         getVT().execSQL(insertQuery);
     }
 
