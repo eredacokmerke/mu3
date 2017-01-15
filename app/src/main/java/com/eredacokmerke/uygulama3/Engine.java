@@ -429,6 +429,26 @@ public class Engine
         return getFry().getYeniKlasorFragmentParentKlasorID();
     }
 
+    /**
+     * yeniKayitFragment te olusturulacak kaydin icinde yer alacagi klasorun id si
+     *
+     * @return
+     */
+    public int getYeniKayitFragmentKlasorID()
+    {
+        return getFry().getYeniKayitFragmentKlasorID();
+    }
+
+    /**
+     * yeniKayitFragment te olusturulacak kaydin icinde yer alacagi klasorun parentinin id si
+     *
+     * @return
+     */
+    public int getYeniKayitFragmentParentKlasorID()
+    {
+        return getFry().getYeniKayitFragmentParentKlasorID();
+    }
+
 
     /////getter & setter/////
 

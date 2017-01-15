@@ -50,7 +50,7 @@ public class FABYoneticisi extends FloatingActionButton
 
                         eng.yeniKayitFragmentKaydet();
 
-                        eng.klasorAc(eng.getFragmentKlasorID(), eng.getFragmentParentKlasorID(), Engine.HAREKET.ILERI, "");
+                        eng.klasorAc(eng.getYeniKayitFragmentKlasorID(), eng.getYeniKayitFragmentParentKlasorID(), Engine.HAREKET.ILERI, "");
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -85,17 +85,20 @@ public class FABYoneticisi extends FloatingActionButton
 
                 switch (SabitYoneticisi.etkinEkran)
                 {
-                    //kayit ekrani aciliyken fab1 e basildi
+                    //klasor ekrani aciliyken fab1 e basildi
                     case SabitYoneticisi.EKRAN_KLASOR:
-
-                        //yeni kayit ekrani acilacak
-                        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KAYIT);
 
                         //fab in resmi degisiyor
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
                         //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKayitFragment.newInstance(ma), ma, eng.getFragmentKlasorID());
+                        YeniKayitFragment fr = YeniKayitFragment.newInstance(ma);
+                        Bundle args = new Bundle();
+                        args.putInt(SabitYoneticisi.BILGI_YENIKAYITFRAGMENT_KLASOR_ID, ma.getEngine().getKlasorFragmentKlasorID());
+                        args.putInt(SabitYoneticisi.BILGI_YENIKAYITFRAGMENT_PARENT_KLASOR_ID, ma.getEngine().getKlasorFragmentParentKlasorID());
+                        fr.setArguments(args);
+
+                        FragmentYoneticisi.fragmentAc(fr, ma);
 
                         break;
 

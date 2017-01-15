@@ -198,7 +198,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
 
         if (veritabaniAcikDegilseAc())
         {
-            String icerik = getVtKayit().kayitFragmentKayitAyrintisiniGetir(getMa().getEngine().getFragmentKayitID());
+            String icerik = getVtKayit().kayitFragmentKayitAyrintisiniGetir(getMa().getEngine().getKayitFragmentKayitID());
             getVtKayit().veritabaniKapat();
 
             return icerik;

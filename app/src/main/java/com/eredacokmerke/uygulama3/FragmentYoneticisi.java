@@ -115,7 +115,7 @@ public class FragmentYoneticisi extends Fragment
      */
     public void kayitEkranindaGeriTusunaBasildi()
     {
-        getMa().getEngine().klasorAc(getFragmentKayitKlasorID(), -1, Engine.HAREKET.GERI, "");
+        getMa().getEngine().klasorAc(getKayitFragmentKayitKlasorID(), -1, Engine.HAREKET.GERI, "");
     }
 
     /**
@@ -385,6 +385,24 @@ public class FragmentYoneticisi extends Fragment
     public int getYeniKlasorFragmentParentKlasorID()
     {
         YeniKlasorFragment kf = (YeniKlasorFragment) getAcikFragment();
+        return kf.getParentKlasorID();
+    }
+
+    /**
+     * yeniKayitFragment te olusturulacak kaydin icinde yer alacagi klasorun id si
+     */
+    public int getYeniKayitFragmentKlasorID()
+    {
+        YeniKayitFragment kf = (YeniKayitFragment) getAcikFragment();
+        return kf.getKlasorID();
+    }
+
+    /**
+     * yeniKayitFragment te olusturulacak kaydin icinde yer alacagi klasorun parentinin id si
+     */
+    public int getYeniKayitFragmentParentKlasorID()
+    {
+        YeniKayitFragment kf = (YeniKayitFragment) getAcikFragment();
         return kf.getParentKlasorID();
     }
 

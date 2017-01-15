@@ -28,6 +28,8 @@ public class YeniKayitFragment extends FragmentYoneticisi
 {
     private View rootView;
     private MainActivity ma;
+    private int klasorID;//yeni klasorun icinde olusacagi klasorun id si
+    private int parentKlasorID;//yeni klasorun icinde olusacagi klasorun parentinin id si
     private Spinner spinner;
     private OnFragmentInteractionListener mListener;
 
@@ -73,6 +75,29 @@ public class YeniKayitFragment extends FragmentYoneticisi
         getFragmentYoneticisi().setFragmentAcikMi(false);//ilk deger
     }
 
+    @Override
+    public void geriTusunaBasildi()
+    {
+        super.geriTusunaBasildi();
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+
+        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KAYIT);
+
+        if (getArguments() != null)
+        {
+            int bilgiKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_YENIKAYITFRAGMENT_KLASOR_ID);
+            int bilgiParentKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_YENIKAYITFRAGMENT_PARENT_KLASOR_ID);
+
+            setKlasorID(bilgiKlasorID);
+            setParentKlasorID(bilgiParentKlasorID);
+        }
+    }
+
     /*
     @Override
     public void setAcikFragment(FragmentYoneticisi acikFragment)
@@ -88,24 +113,16 @@ public class YeniKayitFragment extends FragmentYoneticisi
     }
 
     @Override
-    public void geriTusunaBasildi()
-    {
-        super.geriTusunaBasildi();
-    }
-
-    @Override
     public void UIYukle()
     {
         super.UIYukle();
 
+        renkleriAyarla();
         spinnerDoldur();
     }
 
-    @Override
     public void renkleriAyarla()
     {
-        super.renkleriAyarla();
-
         editTextRenkAyarla(rootView.findViewById(R.id.fragment_yeni_llBaslik), (EditText) rootView.findViewById(R.id.fragment_yeni_llBaslik_edittext));
         editTextRenkAyarla(rootView.findViewById(R.id.fragment_yeni_llIcerik), (EditText) rootView.findViewById(R.id.fragment_yeni_llIcerik_edittext));
     }
@@ -278,6 +295,26 @@ public class YeniKayitFragment extends FragmentYoneticisi
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public int getKlasorID()
+    {
+        return klasorID;
+    }
+
+    public void setKlasorID(int klasorID)
+    {
+        this.klasorID = klasorID;
+    }
+
+    public int getParentKlasorID()
+    {
+        return parentKlasorID;
+    }
+
+    public void setParentKlasorID(int parentKlasorID)
+    {
+        this.parentKlasorID = parentKlasorID;
     }
 
     @Override

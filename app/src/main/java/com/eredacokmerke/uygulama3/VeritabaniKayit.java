@@ -170,7 +170,7 @@ public class VeritabaniKayit extends VeritabaniYoneticisi
      */
     public void yeniKayitFragmentVerileriKaydet(int seciliIcerikTuruID, String baslik, String icerik)
     {
-        String insertQuery = "INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (" + seciliIcerikTuruID + ", 1," + super.getFragmentKlasorID() + " ,'" + baslik + "', '" + icerik + "');";
+        String insertQuery = "INSERT INTO KAYIT (ICERIK_TURU_ID, RENK_KODU_ID, KLASOR_ID, BASLIK, ICERIK) VALUES (" + seciliIcerikTuruID + ", 1," + getMa().getEngine().getYeniKayitFragmentKlasorID() + " ,'" + baslik + "', '" + icerik + "');";
         getVT().execSQL(insertQuery);
     }
 
