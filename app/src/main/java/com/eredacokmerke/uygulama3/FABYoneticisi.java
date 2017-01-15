@@ -37,7 +37,7 @@ public class FABYoneticisi extends FloatingActionButton
             {
                 switch (SabitYoneticisi.etkinEkran)
                 {
-                    //kayit ekrani aciliyken fab a basildi
+                    //klasor ekrani aciliyken fab a basildi
                     case SabitYoneticisi.EKRAN_KLASOR:
 
                         //acik olan fab menusu kapaniyor
@@ -57,11 +57,12 @@ public class FABYoneticisi extends FloatingActionButton
 
                         break;
 
+                    //yeni klasor ekrani acikken fab a basildi
                     case SabitYoneticisi.EKRAN_YENI_KLASOR:
 
                         eng.yeniKlasorFragmentKaydet();
 
-                        eng.klasorAc(eng.getFragmentKlasorID(), eng.getFragmentParentKlasorID(), Engine.HAREKET.ILERI, "");
+                        eng.klasorAc(eng.getYeniKlasorFragmentKlasorID(), eng.getYeniKlasorFragmentParentKlasorID(), Engine.HAREKET.ILERI, "");
                         fab.setImageResource(R.drawable.ic_menu_slideshow);//fab in resmi degisiyor
 
                         Engine.klavyeKapat(view, ma);
@@ -123,22 +124,16 @@ public class FABYoneticisi extends FloatingActionButton
                 menuDurumunuDegistir();
                 switch (SabitYoneticisi.etkinEkran)
                 {
-                    //kayit ekrani aciliyken fab2 ye basildi
+                    //klasor ekrani aciliyken fab2 ye basildi
                     case SabitYoneticisi.EKRAN_KLASOR:
-
-                        //yeni klasor ekrani acilacak
-                        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KLASOR);
 
                         //fab in resmi degisiyor
                         fab.setImageResource(R.drawable.ic_menu_camera);
 
-                        //fragment aciliyor
-                        FragmentYoneticisi.fragmentAc(YeniKlasorFragment.newInstance(ma), ma, eng.getFragmentKlasorID());
                         YeniKlasorFragment fr = YeniKlasorFragment.newInstance(ma);
-
                         Bundle args = new Bundle();
-                        args.putInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_KLASOR_ID, ma.getEngine().getFragmentKlasorID());
-                        args.putInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_PARENT_KLASOR_ID, ma.getEngine().getFragmentParentKlasorID());
+                        args.putInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_KLASOR_ID, ma.getEngine().getKlasorFragmentKlasorID());
+                        args.putInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_PARENT_KLASOR_ID, ma.getEngine().getKlasorFragmentParentKlasorID());
                         fr.setArguments(args);
 
                         FragmentYoneticisi.fragmentAc(fr, ma);

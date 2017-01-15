@@ -285,7 +285,6 @@ public class Engine
         String baslik = getFry().yeniKlasorFragmentBaslikGetir();
 
         getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, getFry().getYeniKlasorFragmentKlasorID());
-        //getVty().yeniKlasorFragmentVeritabaninaKaydet(baslik, FragmentYoneticisi.getFragmentKlasorID());
     }
 
     /**
@@ -318,7 +317,7 @@ public class Engine
         Bundle args = new Bundle();
         args.putString(SabitYoneticisi.BILGI_KAYITFRAGMENT_BASLIK, baslik);
         args.putInt(SabitYoneticisi.BILGI_KAYITFRAGMENT_KAYIT_ID, kayitID);
-        args.putInt(SabitYoneticisi.BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID, getFragmentKlasorID());
+        args.putInt(SabitYoneticisi.BILGI_KAYITFRAGMENT_KAYIT_KLASOR_ID, getKlasorFragmentKlasorID());
         fr.setArguments(args);
 
         FragmentYoneticisi.fragmentAc(fr, getMa());
@@ -380,37 +379,37 @@ public class Engine
     }
 
     /**
-     * fragment te acik olan klasorun id sini getirir
+     * KlasorFragment te acik olan klasorun id sini getirir
      *
      * @return : klasor id si
      */
-    public int getFragmentKlasorID()
+    public int getKlasorFragmentKlasorID()
     {
-        return getFry().getFragmentKlasorID();
+        return getFry().getKlasorFragmentKlasorID();
     }
 
     /**
-     * fragment te acik olan klasorun parent ini getirir
+     * KlasorFragment te acik olan klasorun parent ini getirir
      *
      * @return
      */
-    public int getFragmentParentKlasorID()
+    public int getKlasorFragmentParentKlasorID()
     {
-        return getFry().getFragmentParentKlasorID();
+        return getFry().getKlasorFragmentParentKlasorID();
     }
 
     /**
-     * fragment te acik olan kaydin id sini getirir
+     * KayitFragment te acik olan kaydin id sini getirir
      *
      * @return
      */
-    public int getFragmentKayitID()
+    public int getKayitFragmentKayitID()
     {
-        return getFry().getFragmentKayitID();
+        return getFry().getKayitFragmentKayitID();
     }
 
     /**
-     * yeniKlasorFragment te olusturulacak fragment in icinde yer alacagi klasorun id si
+     * yeniKlasorFragment te olusturulacak klasorun icinde yer alacagi klasorun id si
      *
      * @return
      */
@@ -420,7 +419,7 @@ public class Engine
     }
 
     /**
-     * yeniKlasorFragment te olusturulacak fragment in icinde yer alacagi klasorun parentinin id si
+     * yeniKlasorFragment te olusturulacak klasorun icinde yer alacagi klasorun parentinin id si
      *
      * @return
      */

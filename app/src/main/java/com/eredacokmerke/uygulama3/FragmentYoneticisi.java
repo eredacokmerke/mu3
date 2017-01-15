@@ -17,11 +17,8 @@ import java.util.List;
 
 public class FragmentYoneticisi extends Fragment
 {
-    //private View fragmentRootView;//acilan fragmentin root view i
     private FragmentYoneticisi acikFragment;//acilan fragmentin nesnesi
     private boolean fragmentAcikMi = false;
-    //private static int fragmentKlasorID = 0;//acilan fragment in id si
-    //private static int parentFragmentKlasorID = 0;//acilan fragment in parent inin id si
     private MainActivity ma;
 
     /**
@@ -100,13 +97,13 @@ public class FragmentYoneticisi extends Fragment
      */
     public void klasorEkranindaGeriTusunaBasildi()
     {
-        if (getFragmentParentKlasorID() == 0)//parent id si 0 ise root klasordur. root klasordeyken geriye basilirsa uygulama kapanacak
+        if (getKlasorFragmentParentKlasorID() == 0)//parent id si 0 ise root klasordur. root klasordeyken geriye basilirsa uygulama kapanacak
         {
             getMa().finish();
         }
         else
         {
-            getMa().getEngine().klasorAc(getFragmentParentKlasorID(), -1, Engine.HAREKET.GERI, "");
+            getMa().getEngine().klasorAc(getKlasorFragmentParentKlasorID(), -1, Engine.HAREKET.GERI, "");
         }
     }
 
@@ -323,33 +320,33 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * fragment te acik olan klasorun id sini getirir
+     * KlasorFragment te acik olan klasorun id sini getirir
      *
      * @return : klasor id si
      */
-    public int getFragmentKlasorID()
+    public int getKlasorFragmentKlasorID()
     {
         KlasorFragment kf = (KlasorFragment) getAcikFragment();
         return kf.getKlasorID();
     }
 
     /**
-     * fragment te acik olan klasorun parent ini getirir
+     * KlasorFragment te acik olan klasorun parent ini getirir
      *
      * @return
      */
-    public int getFragmentParentKlasorID()
+    public int getKlasorFragmentParentKlasorID()
     {
         KlasorFragment kf = (KlasorFragment) getAcikFragment();
         return kf.getParentKlasorID();
     }
 
     /**
-     * fragment te acik olan kaydin id sini getirir
+     * KayitFragment te acik olan kaydin id sini getirir
      *
      * @return
      */
-    public int getFragmentKayitID()
+    public int getKayitFragmentKayitID()
     {
         KayitFragment kf = (KayitFragment) getAcikFragment();
         return kf.getKayitID();
@@ -360,14 +357,14 @@ public class FragmentYoneticisi extends Fragment
      *
      * @return
      */
-    public int getFragmentKayitKlasorID()
+    public int getKayitFragmentKayitKlasorID()
     {
         KayitFragment kf = (KayitFragment) getAcikFragment();
         return kf.getKayitKlasorID();
     }
 
     /**
-     * kaydin icinde yer aldigi klasorun id si
+     * yeniKlasorFragment te olusturulacak klasorun icinde yer alacagi klasorun id si
      *
      * @return
      */
@@ -378,7 +375,7 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
-     * kaydin icinde yer aldigi klasorun parent inin id si
+     * yeniKlasorFragment te olusturulacak klasorun icinde yer alacagi klasorun parentinin id si
      *
      * @return
      */
@@ -430,18 +427,6 @@ public class FragmentYoneticisi extends Fragment
         this.fragmentAcikMi = fragmentAcikMi;
     }
 
-    /*
-    public static int getFragmentKlasorID()
-    {
-        return fragmentKlasorID;
-    }
-
-    public static void setFragmentKlasorID(int fragmentKlasorID)
-    {
-        FragmentYoneticisi.fragmentKlasorID = fragmentKlasorID;
-    }
-    */
-
     public MainActivity getMa()
     {
         return ma;
@@ -456,16 +441,4 @@ public class FragmentYoneticisi extends Fragment
     {
         return getMa().getEngine().getFry();
     }
-
-    /*
-    public static int getParentFragmentKlasorID()
-    {
-        return parentFragmentKlasorID;
-    }
-
-    public static void setParentFragmentKlasorID(int parentFragmentKlasorID)
-    {
-        FragmentYoneticisi.parentFragmentKlasorID = parentFragmentKlasorID;
-    }
-    */
 }

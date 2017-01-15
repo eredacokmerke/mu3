@@ -111,7 +111,6 @@ public class KlasorFragment extends FragmentYoneticisi
             {
                 case ILERI:
                     setParentKlasorID(bilgiParentKlasorID);
-                    //setParentFragmentKlasorID(getFragmentKlasorID());//alt fragment acilirken icinde bulundugum fragmentin id sini parenta kopyaliyorum
 
                     //eger hareket ileri ise ve baslik bos gelmisse baslik degistirilmeyecek
                     //ornegin yeni klasor ekraninda tamam a basinca hareket ileri fakat basligin degismesine gerek yok
@@ -124,7 +123,6 @@ public class KlasorFragment extends FragmentYoneticisi
 
                 case GERI:
                     setParentKlasorID(ma.getEngine().parentKlasorIDyiGetir(bilgiKlasorID));
-                    //setParentFragmentKlasorID(ma.getEngine().parentKlasorIDyiGetir(klasorID));//fragmentte acilan klasorun parent ini veritabanindan aliyorum
                     ma.toolbarBaslikGuncelle(ma.getEngine().klasorBaslikGetir(bilgiKlasorID));
 
                     break;

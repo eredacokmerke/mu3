@@ -153,7 +153,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(getMa().getEngine().getFragmentKlasorID());
+            List<KayitLayout> listVeriler = getVtKayit().mainFragmentKayitlariGetir(getMa().getEngine().getKlasorFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -175,7 +175,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     {
         if (veritabaniAcikDegilseAc())
         {
-            List<KlasorLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(getMa().getEngine().getFragmentKlasorID());
+            List<KlasorLayout> listVeriler = getVtKayit().mainFragmentKlasorleriGetir(getMa().getEngine().getKlasorFragmentKlasorID());
             getVtKayit().veritabaniKapat();
 
             return listVeriler;
@@ -234,7 +234,7 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
     /**
      * yeniKlasorFragment ekraninda kaydet tusuna basildiginda verileri veritabanina kaydeder
      *
-     * @param baslik : klasorun basligi
+     * @param baslik         : klasorun basligi
      * @param parentKlasorID : klasorun parentinin id si
      */
     public void yeniKlasorFragmentVeritabaninaKaydet(String baslik, int parentKlasorID)
@@ -255,10 +255,13 @@ public class VeritabaniYoneticisi extends SQLiteOpenHelper
      *
      * @return : klasor id si
      */
+
+    /*
     public int getFragmentKlasorID()
     {
-        return getMa().getEngine().getFragmentKlasorID();
+        return getMa().getEngine().getKlasorFragmentKlasorID();
     }
+    */
 
     /**
      * id si verilen klasorun parentinin id sini doner

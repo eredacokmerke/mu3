@@ -80,6 +80,8 @@ public class YeniKlasorFragment extends FragmentYoneticisi
     {
         super.init();
 
+        SabitYoneticisi.setEtkinEkran(SabitYoneticisi.EKRAN_YENI_KLASOR);
+
         if (getArguments() != null)
         {
             int bilgiKlasorID = getArguments().getInt(SabitYoneticisi.BILGI_YENIKLASORFRAGMENT_KLASOR_ID);
