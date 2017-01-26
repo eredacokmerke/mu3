@@ -93,6 +93,14 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
+     * yeni klasor ekrani acikken geri tusuna basildi
+     */
+    public void yeniKlasorEkranindaGeriTusunaBasildi()
+    {
+        getMa().getEngine().klasorAc(getYeniKlasorFragmentKlasorID(), getYeniKlasorFragmentParentKlasorID(), Engine.HAREKET.GERI, "");
+    }
+
+    /**
      * klasor ekrani acikken geri tusuna basilirsa yapilacaklar
      */
     public void klasorEkranindaGeriTusunaBasildi()

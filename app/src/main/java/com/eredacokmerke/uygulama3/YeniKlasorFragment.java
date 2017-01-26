@@ -4,11 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 
 /**
@@ -56,6 +57,39 @@ public class YeniKlasorFragment extends FragmentYoneticisi
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_yeni_klasor, container, false);
         this.rootView = v;
+
+        TextInputLayout til = (TextInputLayout) rootView.findViewById(R.id.fragment_yeni_klasor_textInputLayout);
+        CustomEditText cet = new CustomEditText(getContext(), getMa(), this);
+        cet.setHint("folder name");
+
+        //CustomEditText ilk dokunusta onClickListener cagrilmadigi icin onTouchListener kullaniyorum
+        cet.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent)
+            {
+                getMa().setKeyboardOpen(true);
+                return false;
+            }
+        });
+        cet.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                getMa().setKeyboardOpen(true);
+            }
+        });
+        cet.setBackPressedListener(new CustomEditText.BackPressedListener()
+        {
+            @Override
+            public void onImeBack(CustomEditText editText)
+            {
+                getMa().setKeyboardOpen(false);
+            }
+        });
+        til.addView(cet);
+
         //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
@@ -73,6 +107,8 @@ public class YeniKlasorFragment extends FragmentYoneticisi
     public void geriTusunaBasildi()
     {
         super.geriTusunaBasildi();
+
+        getFragmentYoneticisi().yeniKlasorEkranindaGeriTusunaBasildi();
     }
 
     @Override
@@ -124,6 +160,8 @@ public class YeniKlasorFragment extends FragmentYoneticisi
 
         //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
         getFragmentYoneticisi().setFragmentAcikMi(true);
+
+        getMa().setKeyboardOpen(false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

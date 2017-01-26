@@ -27,7 +27,8 @@ public class MainActivity
 {
     //private Context cnt;
     //private static Bundle _savedInstanceState;
-    private Engine engine;
+    private Engine engine;//engine sinifina ulasmak icin nesne
+    private boolean isKeyboardOpen = false;//klavyenin acik olup olmadigini anlamak icin flag
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -133,7 +134,8 @@ public class MainActivity
         }
         else
         {
-            super.onBackPressed();
+            //geri tusu kendi kendine uygulamadan cikmasin
+            //super.onBackPressed();
         }
     }
 
@@ -227,5 +229,15 @@ public class MainActivity
     public void setEngine(Engine engine)
     {
         this.engine = engine;
+    }
+
+    public boolean isKeyboardOpen()
+    {
+        return isKeyboardOpen;
+    }
+
+    public void setKeyboardOpen(boolean keyboardOpen)
+    {
+        isKeyboardOpen = keyboardOpen;
     }
 }
