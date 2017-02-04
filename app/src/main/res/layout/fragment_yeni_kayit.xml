@@ -6,36 +6,33 @@
     android:orientation="vertical"
     tools:context=".YeniKayitFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/fragment_yeni_llBaslik"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|top"
-        android:layout_weight="0.2"
-        android:background="@color/colorAccent"
+        android:background="@android:color/holo_green_dark"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/fragment_yeni_llBaslik_edittext"
+        <com.eredacokmerke.uygulama3.CustomTextInputLayout
+            android:id="@+id/fragment_yeni_kayit_textInputLayout_baslik"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:inputType="text"
-            android:maxLines="1"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/fragment_yeni_llIcerikTuru"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|top"
-        android:layout_weight="0.2"
         android:background="@color/colorAccent"
         android:orientation="vertical">
 
         <Spinner
+            android:id="@+id/fragment_yeni_spinner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fragment_yeni_spinner"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
     <LinearLayout
@@ -43,18 +40,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_weight="0.8"
+        android:layout_weight="0.6"
         android:background="@color/colorPrimaryDark"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/fragment_yeni_llIcerik_edittext"
+        <com.eredacokmerke.uygulama3.CustomTextInputLayout
+            android:id="@+id/fragment_yeni_kayit_textInputLayout_icerik"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:gravity="top|start"
-            android:inputType="textMultiLine"
-            android:scrollbars="vertical"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

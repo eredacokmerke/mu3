@@ -5,12 +5,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.List;
@@ -62,6 +62,18 @@ public class YeniKayitFragment extends FragmentYoneticisi
         View v = inflater.inflate(R.layout.fragment_yeni_kayit, container, false);
         this.rootView = v;
         spinner = (Spinner) rootView.findViewById(R.id.fragment_yeni_spinner);
+
+        CustomEditText cetBaslik = new CustomEditText(getContext(), getMa(), this);
+        cetBaslik.setHint("title");
+        cetBaslik.setSingleLine(true);
+        CustomTextInputLayout ctilBaslik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_baslik);
+        ctilBaslik.addCET(cetBaslik);
+
+        CustomEditText cetIcerik = new CustomEditText(getContext(), getMa(), this);
+        cetIcerik.setHint("description");
+        CustomTextInputLayout ctilIcerik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_icerik);
+        ctilIcerik.addCET(cetIcerik);
+
         //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
@@ -123,17 +135,20 @@ public class YeniKayitFragment extends FragmentYoneticisi
 
     public void renkleriAyarla()
     {
-        editTextRenkAyarla(rootView.findViewById(R.id.fragment_yeni_llBaslik), (EditText) rootView.findViewById(R.id.fragment_yeni_llBaslik_edittext));
-        editTextRenkAyarla(rootView.findViewById(R.id.fragment_yeni_llIcerik), (EditText) rootView.findViewById(R.id.fragment_yeni_llIcerik_edittext));
+        CustomTextInputLayout ctilBaslik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_baslik);
+        CustomTextInputLayout ctilIcerik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_icerik);
+
+        editTextRenkAyarla(rootView.findViewById(R.id.fragment_yeni_llBaslik), ctilBaslik.getCet());
+        editTextRenkAyarla(rootView.findViewById(R.id.fragment_yeni_llIcerik), ctilIcerik.getCet());
     }
 
     /**
      * editText yazi, imlec ve alt cizgi rengini zemin rengine gore degistirir
      *
      * @param view : zemindeki layout
-     * @param et   : renk ayarlamasi yapilacak edittext
+     * @param cet  : renk ayarlamasi yapilacak edittext
      */
-    public void editTextRenkAyarla(View view, EditText et)
+    public void editTextRenkAyarla(View view, CustomEditText cet)
     {
         String renk = zeminRenginiGetir(view);
 
@@ -141,20 +156,20 @@ public class YeniKayitFragment extends FragmentYoneticisi
         {
             if (renkKoyuMu(renk))
             {
-                et.setTextColor(Color.WHITE);
-                editTextImlecRenginiAyarla(et, Color.WHITE);
+                cet.setTextColor(Color.WHITE);
+                editTextImlecRenginiAyarla(cet, Color.WHITE);
 
             }
             else
             {
-                et.setTextColor(Color.BLACK);
-                editTextImlecRenginiAyarla(et, Color.BLACK);
+                cet.setTextColor(Color.BLACK);
+                editTextImlecRenginiAyarla(cet, Color.BLACK);
             }
         }
         else//zemin rengi alinamadi. siyah yazdirilacak
         {
-            et.setTextColor(Color.BLACK);
-            editTextImlecRenginiAyarla(et, Color.BLACK);
+            cet.setTextColor(Color.BLACK);
+            editTextImlecRenginiAyarla(cet, Color.BLACK);
         }
     }
 
@@ -210,8 +225,9 @@ public class YeniKayitFragment extends FragmentYoneticisi
      */
     public String baslikGetir()
     {
-        EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_llBaslik_edittext);
-        String baslik = et.getText().toString();
+        TextInputLayout til = (TextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_baslik);
+        CustomEditText cet = (CustomEditText) til.getRootView();
+        String baslik = cet.getText().toString();
 
         return baslik;
     }
@@ -223,8 +239,9 @@ public class YeniKayitFragment extends FragmentYoneticisi
      */
     public String icerikGetir()
     {
-        EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_llIcerik_edittext);
-        String icerik = et.getText().toString();
+        TextInputLayout til = (TextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_icerik);
+        CustomEditText cet = (CustomEditText) til.getRootView();
+        String icerik = cet.getText().toString();
 
         return icerik;
     }
