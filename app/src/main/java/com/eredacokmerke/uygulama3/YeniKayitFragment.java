@@ -74,6 +74,39 @@ public class YeniKayitFragment extends FragmentYoneticisi
         CustomTextInputLayout ctilIcerik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_icerik);
         ctilIcerik.addCET(cetIcerik);
 
+        cetBaslik.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                getMa().setKeyboardOpen(true);
+            }
+        });
+        cetBaslik.setBackPressedListener(new CustomEditText.BackPressedListener()
+        {
+            @Override
+            public void onImeBack(CustomEditText editText)
+            {
+                getMa().setKeyboardOpen(false);
+            }
+        });
+
+        cetIcerik.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                getMa().setKeyboardOpen(true);
+            }
+        });
+        cetIcerik.setBackPressedListener(new CustomEditText.BackPressedListener()
+        {
+            @Override
+            public void onImeBack(CustomEditText editText)
+            {
+                getMa().setKeyboardOpen(false);
+            }
+        });
         //getFragmentYoneticisi().setFragmentRootView(rootView);
 
         return v;
@@ -91,6 +124,8 @@ public class YeniKayitFragment extends FragmentYoneticisi
     public void geriTusunaBasildi()
     {
         super.geriTusunaBasildi();
+
+        getFragmentYoneticisi().yeniKayitEkranindaGeriTusunaBasildi();
     }
 
     @Override
@@ -225,9 +260,9 @@ public class YeniKayitFragment extends FragmentYoneticisi
      */
     public String baslikGetir()
     {
-        TextInputLayout til = (TextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_baslik);
-        CustomEditText cet = (CustomEditText) til.getRootView();
-        String baslik = cet.getText().toString();
+        CustomTextInputLayout ctilBaslik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_baslik);
+        CustomEditText cetBaslik = ctilBaslik.getCet();
+        String baslik = cetBaslik.getText().toString();
 
         return baslik;
     }
@@ -239,9 +274,9 @@ public class YeniKayitFragment extends FragmentYoneticisi
      */
     public String icerikGetir()
     {
-        TextInputLayout til = (TextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_icerik);
-        CustomEditText cet = (CustomEditText) til.getRootView();
-        String icerik = cet.getText().toString();
+        CustomTextInputLayout ctilIcerik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_kayit_textInputLayout_baslik);
+        CustomEditText cetIcerik = ctilIcerik.getCet();
+        String icerik = cetIcerik.getText().toString();
 
         return icerik;
     }
@@ -265,6 +300,8 @@ public class YeniKayitFragment extends FragmentYoneticisi
 
         //fragment arkaplana atildi. onplana geldigi zaman onStart() daki islemlerin tekrar etmemesi icin flag tutuyorum
         getFragmentYoneticisi().setFragmentAcikMi(true);
+
+        getMa().setKeyboardOpen(false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

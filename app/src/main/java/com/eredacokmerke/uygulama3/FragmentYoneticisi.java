@@ -101,6 +101,15 @@ public class FragmentYoneticisi extends Fragment
     }
 
     /**
+     * yeni kayit ekrani acikken geri tusuna basildi
+     */
+    public void yeniKayitEkranindaGeriTusunaBasildi()
+    {
+        getMa().getEngine().klasorAc(getYeniKayitFragmentKlasorID(), getYeniKayitFragmentParentKlasorID(), Engine.HAREKET.GERI, "");
+
+    }
+
+    /**
      * klasor ekrani acikken geri tusuna basilirsa yapilacaklar
      */
     public void klasorEkranindaGeriTusunaBasildi()
@@ -252,7 +261,7 @@ public class FragmentYoneticisi extends Fragment
     /**
      * edittextlerdeki imlec ve alt cizgi renklerini degistirir
      */
-    public static void editTextImlecRenginiAyarla(EditText et, int color)
+    public static void editTextImlecRenginiAyarla(CustomEditText et, int color)
     {
         try
         {
