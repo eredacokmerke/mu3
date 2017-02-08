@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -58,9 +57,10 @@ public class YeniKlasorFragment extends FragmentYoneticisi
         View v = inflater.inflate(R.layout.fragment_yeni_klasor, container, false);
         this.rootView = v;
 
-        TextInputLayout til = (TextInputLayout) rootView.findViewById(R.id.fragment_yeni_klasor_textInputLayout);
         CustomEditText cet = new CustomEditText(getContext(), getMa(), this);
         cet.setHint("folder name");
+        CustomTextInputLayout ctil = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_klasor_textInputLayout);
+        ctil.addCET(cet);
 
         //CustomEditText ilk dokunusta onClickListener cagrilmadigi icin onTouchListener kullaniyorum
         cet.setOnTouchListener(new View.OnTouchListener()
@@ -88,7 +88,6 @@ public class YeniKlasorFragment extends FragmentYoneticisi
                 getMa().setKeyboardOpen(false);
             }
         });
-        til.addView(cet);
 
         //getFragmentYoneticisi().setFragmentRootView(rootView);
 
@@ -135,9 +134,10 @@ public class YeniKlasorFragment extends FragmentYoneticisi
      */
     public String baslikGetir()
     {
-        EditText et = (EditText) rootView.findViewById(R.id.fragment_yeni_klasor_edittext);
-        String baslik = et.getText().toString();
-
+        CustomTextInputLayout ctilBaslik = (CustomTextInputLayout) rootView.findViewById(R.id.fragment_yeni_klasor_textInputLayout);
+        CustomEditText cetBaslik = ctilBaslik.getCet();
+        String baslik = cetBaslik.getText().toString();
+        
         return baslik;
     }
 

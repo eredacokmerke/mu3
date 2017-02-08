@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:layout_weight=".70">
 
-        <android.support.design.widget.TextInputLayout
+        <com.eredacokmerke.uygulama3.CustomTextInputLayout
             android:id="@+id/fragment_yeni_klasor_textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 android:hint="@string/klasor_ismi"/>
                 -->
 
-        </android.support.design.widget.TextInputLayout>
+        </com.eredacokmerke.uygulama3.CustomTextInputLayout>
 
     </RelativeLayout>
 
